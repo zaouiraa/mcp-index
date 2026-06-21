@@ -1,85 +1,180 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
-  title: "Terms of Service | MCPIndex",
-  description: "Terms and conditions for using MCPIndex.dev - the MCP server directory.",
-};
+  title: 'Terms of Service — MCP Index',
+  description: 'Terms of Service for MCP Index',
+}
 
-export default function TermsOfServicePage() {
+export default function TermsOfService() {
   return (
     <main className="min-h-screen bg-black text-white">
-      <div className="max-w-3xl mx-auto px-6 py-16 space-y-10">
-        <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono">
-          <a href="/" className="hover:text-white transition-colors">MCPIndex</a>
-          <span>/</span>
-          <span className="text-zinc-300">Terms of Service</span>
-        </nav>
-
-        <h1 className="text-4xl font-bold tracking-tight">Terms of Service</h1>
-        <p className="text-zinc-500 text-sm">Last updated: January 25, 2025</p>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">1. Acceptance of Terms</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            By accessing and using MCPIndex.dev, you agree to be bound by these Terms of Service. If you do not agree with any part of these terms, you should not use this website. These terms apply to all visitors, users, and contributors.
+      <div className="max-w-4xl mx-auto px-6 py-16">
+        {/* Header */}
+        <div className="mb-12">
+          <h1 className="text-4xl font-bold tracking-tight">Terms of Service</h1>
+          <p className="mt-4 text-zinc-400">
+            Last updated:{' '}
+            {new Date().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">2. Description of Service</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            MCPIndex is a directory and informational resource for Model Context Protocol (MCP) servers. We provide configuration guides, comparisons, and setup instructions for MCP tools. We do not host, operate, or maintain any MCP servers listed on this site.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">3. User Responsibilities</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            You are responsible for verifying the safety and compatibility of any MCP server before installing it. Always review the source code and configuration of third-party tools. We provide information as-is and make no guarantees about the security or functionality of listed tools.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">4. Claimed Profiles</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            Developers may claim their tool profiles for a monthly fee. Claimed profiles allow developers to update their tool information, add documentation, and view analytics. Profile claims are non-exclusive and do not transfer ownership of listing content to the claimant.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">5. Intellectual Property</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            The MCPIndex website design, code, and original content are protected by copyright. Tool names, logos, and trademarks belong to their respective owners. Our editorial content (summaries, comparisons, setup guides) is original work and may not be reproduced without permission.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">6. Limitation of Liability</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            MCPIndex is provided &quot;as is&quot; without warranties of any kind. We are not liable for any damages arising from the use of information on this site, including but not limited to data loss, system damage, or security breaches resulting from installing listed MCP servers.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">7. Changes to Terms</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            We may update these terms at any time. Continued use of the website after changes constitutes acceptance of the revised terms. We will update the &quot;Last updated&quot; date at the top of this page whenever modifications are made.
-          </p>
-        </section>
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">8. Contact</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            For questions about these terms, please visit our <a href="/contact" className="text-purple-400 hover:text-purple-300 transition-colors">contact page</a>.
-          </p>
-        </section>
-      </div>
-
-      <footer className="border-t border-zinc-800/60">
-        <div className="max-w-3xl mx-auto px-6 py-8 text-center text-sm text-zinc-600">
-          © 2025 MCPIndex. All rights reserved.
         </div>
-      </footer>
+
+        {/* Content */}
+        <article className="space-y-8 prose prose-invert max-w-none">
+          {/* Section 1 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              1. Agreement to Terms
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert text acknowledging that by accessing and using this service, users agree to be bound by these Terms of Service. Include information about eligibility and legal capacity.]
+            </p>
+          </section>
+
+          {/* Section 2 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              2. Use License
+            </h2>
+            <div className="space-y-4">
+              <div>
+                <h3 className="text-lg font-medium mb-2 text-zinc-200">
+                  2.1 Grant of License
+                </h3>
+                <p className="text-zinc-400 leading-relaxed">
+                  [Insert details about the limited, non-exclusive, non-transferable license granted to users.]
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium mb-2 text-zinc-200">
+                  2.2 Permitted Uses
+                </h3>
+                <p className="text-zinc-400 leading-relaxed">
+                  [Insert information about what users are permitted to do with the service.]
+                </p>
+              </div>
+              <div>
+                <h3 className="text-lg font-medium mb-2 text-zinc-200">
+                  2.3 Prohibited Activities
+                </h3>
+                <p className="text-zinc-400 leading-relaxed mb-2">
+                  [Insert list of prohibited activities, including but not limited to:]
+                </p>
+                <ul className="list-disc list-inside space-y-1 text-zinc-400">
+                  <li>[Hacking or unauthorized access attempts]</li>
+                  <li>[Reverse engineering or decompiling]</li>
+                  <li>[Scraping or automated data collection]</li>
+                  <li>[Harassment or abusive behavior]</li>
+                  <li>[Spam or phishing attempts]</li>
+                </ul>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 3 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              3. Intellectual Property Rights
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert information about ownership of content, trademarks, copyrights, and other intellectual property associated with the service and user-generated content.]
+            </p>
+          </section>
+
+          {/* Section 4 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              4. User Responsibilities
+            </h2>
+            <p className="text-zinc-400 leading-relaxed mb-2">
+              [Users are responsible for:]
+            </p>
+            <ul className="list-disc list-inside space-y-2 text-zinc-400">
+              <li>[Maintaining account security and password confidentiality]</li>
+              <li>[Providing accurate information]</li>
+              <li>[Complying with all applicable laws and regulations]</li>
+              <li>[Not violating any third-party rights]</li>
+            </ul>
+          </section>
+
+          {/* Section 5 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              5. Disclaimer of Warranties
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert disclaimer stating that the service is provided "as-is" without warranties of any kind, express or implied, including warranties of merchantability, fitness for a particular purpose, or non-infringement.]
+            </p>
+          </section>
+
+          {/* Section 6 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              6. Limitation of Liability
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert limitation of liability clause specifying the maximum extent to which the company can be held liable for damages, including direct, indirect, incidental, special, or consequential damages.]
+            </p>
+          </section>
+
+          {/* Section 7 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              7. Indemnification
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert clause requiring users to indemnify and hold harmless the company from any claims, damages, or expenses arising from user violation of these terms or misuse of the service.]
+            </p>
+          </section>
+
+          {/* Section 8 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              8. Termination
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert information about conditions under which the company may terminate user access, suspension policies, and appeals process.]
+            </p>
+          </section>
+
+          {/* Section 9 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              9. Modification of Terms
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert statement that the company reserves the right to modify these terms at any time, with notice to users of material changes.]
+            </p>
+          </section>
+
+          {/* Section 10 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              10. Governing Law
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              [Insert the jurisdiction and governing law applicable to these terms and any disputes arising from them.]
+            </p>
+          </section>
+
+          {/* Section 11 */}
+          <section>
+            <h2 className="text-2xl font-semibold tracking-tight mb-4 text-white">
+              11. Contact Information
+            </h2>
+            <p className="text-zinc-400 leading-relaxed">
+              For questions about these Terms of Service, please contact us at{' '}
+              <a href="mailto:hello@mcpindex.dev" className="text-purple-400 hover:text-purple-300">
+                hello@mcpindex.dev
+              </a>
+              .
+            </p>
+          </section>
+        </article>
+      </div>
     </main>
-  );
+  )
 }

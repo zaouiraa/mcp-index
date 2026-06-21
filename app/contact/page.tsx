@@ -1,8 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
-  title: "Contact Us | MCPIndex",
-  description: "Get in touch with the MCPIndex team - questions, feedback, or profile claims.",
+  title: 'Contact Us | MCPIndex',
+  description: 'Get in touch with the MCPIndex team - questions, feedback, or profile claims.',
 };
 
 export default function ContactPage() {
@@ -10,7 +10,9 @@ export default function ContactPage() {
     <main className="min-h-screen bg-black text-white">
       <div className="max-w-3xl mx-auto px-6 py-16 space-y-10">
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono">
-          <a href="/" className="hover:text-white transition-colors">MCPIndex</a>
+          <a href="/" className="hover:text-white transition-colors">
+            MCPIndex
+          </a>
           <span>/</span>
           <span className="text-zinc-300">Contact</span>
         </nav>
