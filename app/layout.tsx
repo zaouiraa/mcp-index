@@ -14,6 +14,9 @@ export const metadata: Metadata = {
   title: 'MCP Index — The definitive index for Model Context Protocol servers',
   description:
     'The definitive index for Model Context Protocol (MCP) servers. Verified, standardized, and ready to deploy.',
+  verification: {
+    google: "ZZYk3uQ9OQJg6UiLev3bLx--k5uH-UBHC8T6-1UGmuE",
+  },
   metadataBase: new URL('https://mcpindex.dev'),
   generator: 'v0.app',
   icons: {
