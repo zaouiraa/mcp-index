@@ -1,14 +1,25 @@
 import { createClient } from "@supabase/supabase-js";
-import { getAllSlugs as getStaticSlugs, getToolBySlug as getStaticTool } from "@/lib/tools-data";
+import {
+  getAllSlugs as getStaticSlugs,
+  getToolBySlug as getStaticTool,
+} from "@/lib/tools-data";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+// ---------------------------------------------------------------------------
+// Client
+// ---------------------------------------------------------------------------
 
-let supabaseClient: ReturnType<typeof createClient> | null = null;
-
-if (supabaseUrl && supabaseAnonKey) {
-  supabaseClient = createClient(supabaseUrl, supabaseAnonKey);
+function getSupabaseClient() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+  const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  if (!url || !key) return null;
+  return createClient(url, key);
 }
+
+const supabaseClient = getSupabaseClient();
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
 
 export interface DBTool {
   id: number;
@@ -38,7 +49,7 @@ export interface DBTool {
   created_at: string;
 }
 
-function toDBTool(tool: {
+type StaticToolInput = {
   slug: string;
   name: string;
   shortDescription: string;
@@ -62,9 +73,19 @@ function toDBTool(tool: {
   }[];
   lastUpdated: string;
   installs: string;
-}): DBTool {
+};
+
+// ---------------------------------------------------------------------------
+// Helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Maps a camelCase static tool to the snake_case DBTool shape.
+ * id = -1 signals "static origin, not persisted in DB".
+ */
+function toDBTool(tool: StaticToolInput): DBTool {
   return {
-    id: 0,
+    id: -1,
     slug: tool.slug,
     name: tool.name,
     short_description: tool.shortDescription,
@@ -86,30 +107,64 @@ function toDBTool(tool: {
   };
 }
 
+/**
+ * Wraps a Supabase query with a timeout.
+ * Returns null if the query exceeds the given ms threshold.
+ */
+async function withTimeout<T>(
+  promise: Promise<T>,
+  ms = 3000,
+  label = "supabase"
+): Promise<T | null> {
+  let timer: ReturnType<typeof setTimeout>;
+
+  const timeout = new Promise<null>((resolve) => {
+    timer = setTimeout(() => {
+      console.warn(`[${label}] query timed out after ${ms}ms — falling back to static data`);
+      resolve(null);
+    }, ms);
+  });
+
+  const result = await Promise.race([promise, timeout]);
+  clearTimeout(timer!);
+  return result;
+}
+
+// ---------------------------------------------------------------------------
+// Public API  ← all three exports are present
+// ---------------------------------------------------------------------------
+
 export async function getToolBySlug(slug: string): Promise<DBTool | null> {
   if (supabaseClient) {
-    const { data, error } = await supabaseClient
-      .from("tools")
-      .select("*")
-      .eq("slug", slug)
-      .single();
+    const result = await withTimeout(
+      supabaseClient.from("tools").select("*").eq("slug", slug).single(),
+      3000,
+      "getToolBySlug"
+    );
 
-    if (!error && data) return data as DBTool;
+    if (result) {
+      const { data, error } = result;
+      if (error) console.warn("[supabase] getToolBySlug error:", error.message);
+      if (data) return data as DBTool;
+    }
   }
 
   const staticTool = getStaticTool(slug);
-  if (staticTool) return toDBTool(staticTool);
-  return null;
+  return staticTool ? toDBTool(staticTool) : null;
 }
 
 export async function getAllSlugs(): Promise<string[]> {
   if (supabaseClient) {
-    const { data, error } = await supabaseClient
-      .from("tools")
-      .select("slug");
+    const result = await withTimeout(
+      supabaseClient.from("tools").select("slug"),
+      3000,
+      "getAllSlugs"
+    );
 
-    if (!error && data) {
-      return data.map((t: { slug: string }) => t.slug);
+    if (result) {
+      const { data, error } = result;
+      if (error) console.warn("[supabase] getAllSlugs error:", error.message);
+      if (data) return data.map((t: { slug: string }) => t.slug);
     }
   }
 
@@ -118,18 +173,23 @@ export async function getAllSlugs(): Promise<string[]> {
 
 export async function getAllTools(): Promise<DBTool[]> {
   if (supabaseClient) {
-    const { data, error } = await supabaseClient
-      .from("tools")
-      .select("*")
-      .order("id", { ascending: true });
+    const result = await withTimeout(
+      supabaseClient.from("tools").select("*").order("id", { ascending: true }),
+      3000,
+      "getAllTools"
+    );
 
-    if (!error && data) return data as DBTool[];
+    if (result) {
+      const { data, error } = result;
+      if (error) console.warn("[supabase] getAllTools error:", error.message);
+      if (data) return data as DBTool[];
+    }
   }
 
-  const staticTools = getStaticSlugs().map(slug => {
-    const tool = getStaticTool(slug);
-    return tool ? toDBTool(tool) : null;
-  }).filter(Boolean) as DBTool[];
-
-  return staticTools;
+  return getStaticSlugs()
+    .map((slug) => {
+      const tool = getStaticTool(slug);
+      return tool ? toDBTool(tool) : null;
+    })
+    .filter((t): t is DBTool => t !== null);
 }
