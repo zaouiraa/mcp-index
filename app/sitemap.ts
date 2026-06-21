@@ -1,16 +1,24 @@
 import type { MetadataRoute } from "next"
-import { getAllSlugs } from "@/lib/tools-data"
+import { getAllSlugs } from "@/lib/supabase"
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export const revalidate = 3600 // regenerate sitemap every hour
+
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://mcpindex.dev"
   const lastModified = new Date()
 
-  const slugs = getAllSlugs()
+  let slugs: string[] = []
+  try {
+    slugs = await getAllSlugs()
+  } catch (err) {
+    console.error("[sitemap] failed to fetch slugs:", err)
+    // sitemap will be generated with static pages only — tools will be missing
+  }
 
-  const toolPages = slugs.map((slug) => ({
+  const toolPages: MetadataRoute.Sitemap = slugs.map((slug) => ({
     url: `${baseUrl}/tools/${slug}`,
     lastModified,
-    changeFrequency: "weekly" as const,
+    changeFrequency: "weekly",
     priority: 0.8,
   }))
 
@@ -20,6 +28,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified,
       changeFrequency: "daily",
       priority: 1,
+    },
+    {
+      url: `${baseUrl}/tools`,
+      lastModified,
+      changeFrequency: "daily",
+      priority: 0.9,
     },
     ...toolPages,
     {
