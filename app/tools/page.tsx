@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { BadgeCheck } from "lucide-react"
-import { supabase } from "@/lib/supabase"
+import { getAllTools } from "@/lib/supabase"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -14,18 +14,8 @@ export const metadata: Metadata = {
   },
 }
 
-async function getTools() {
-  const { data, error } = await supabase
-    .from("tools")
-    .select("*")
-    .order("id", { ascending: true })
-
-  if (error || !data) return []
-  return data
-}
-
 export default async function ToolsPage() {
-  const tools = await getTools()
+  const tools = await getAllTools()
 
   return (
     <main className="min-h-screen bg-background">
@@ -44,14 +34,7 @@ export default async function ToolsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {tools.map((tool: {
-            slug: string
-            name: string
-            short_description: string
-            category: string
-            is_free: boolean
-            installs: string
-          }) => (
+          {tools.map((tool) => (
             <Link
               key={tool.slug}
               href={`/tools/${tool.slug}`}
