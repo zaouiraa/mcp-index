@@ -1,21 +1,16 @@
 import Link from "next/link"
 import { BadgeCheck } from "lucide-react"
-import { getAllTools } from "@/lib/supabase"
+import { getAllSlugs, getToolBySlug } from "@/lib/tools-data"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "All MCP Servers | MCPIndex",
-  description: "Browse the complete index of Model Context Protocol servers. Find the perfect MCP tool for your AI workflow.",
-  openGraph: {
-    title: "All MCP Servers | MCPIndex",
-    description: "Browse the complete index of Model Context Protocol servers.",
-    url: "https://mcpindex.dev/tools",
-    siteName: "MCPIndex",
-  },
+  description: "Browse the complete index of Model Context Protocol servers.",
 }
 
 export default async function ToolsPage() {
-  const tools = await getAllTools()
+  const slugs = getAllSlugs()
+  const tools = slugs.map(slug => getToolBySlug(slug)).filter(Boolean)
 
   return (
     <main className="min-h-screen bg-background">
@@ -49,13 +44,13 @@ export default async function ToolsPage() {
                     <BadgeCheck className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                    {tool.short_description}
+                    {tool.shortDescription}
                   </p>
                   <div className="flex items-center gap-3 flex-wrap">
                     <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
                       {tool.category}
                     </span>
-                    {tool.is_free ? (
+                    {tool.isFree ? (
                       <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         Free
                       </span>
@@ -76,10 +71,7 @@ export default async function ToolsPage() {
         </div>
 
         <div className="mt-12 flex justify-center">
-          <Link
-            href="/"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
+          <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
             ← Back to Home
           </Link>
         </div>
