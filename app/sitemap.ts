@@ -1,11 +1,13 @@
 import type { MetadataRoute } from "next"
-import { getAllSlugs } from "@/lib/tools-data"
+import { getAllSlugs } from "@/lib/supabase"
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = "https://mcpindex.dev"
   const lastModified = new Date()
 
-  const toolPages = getAllSlugs().map((slug) => ({
+  const slugs = await getAllSlugs()
+
+  const toolPages = slugs.map((slug) => ({
     url: `${baseUrl}/tools/${slug}`,
     lastModified,
     changeFrequency: "weekly" as const,
@@ -14,7 +16,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     {
-      url: `${baseUrl}/`,
+      url: baseUrl,
       lastModified,
       changeFrequency: "daily",
       priority: 1,
