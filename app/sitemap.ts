@@ -1,11 +1,11 @@
 import type { MetadataRoute } from "next"
-import { getAllSlugs } from "@/lib/supabase"
+import { getAllSlugs } from "@/lib/tools-data"
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://mcpindex.dev"
   const lastModified = new Date()
 
-  const slugs = await getAllSlugs()
+  const slugs = getAllSlugs()
 
   const toolPages = slugs.map((slug) => ({
     url: `${baseUrl}/tools/${slug}`,
