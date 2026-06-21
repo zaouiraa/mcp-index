@@ -40,9 +40,9 @@ export function FeaturedServers() {
           <h2 className="text-lg font-semibold tracking-tight text-foreground">Featured Servers</h2>
           <p className="mt-1 text-sm text-muted-foreground">Verified servers, ranked by installs.</p>
         </div>
-        <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-          View all →
-        </Link>
+        <Link href="/tools" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+  View all →
+</Link>
       </div>
 
       <div className="overflow-hidden rounded-lg border border-border">
