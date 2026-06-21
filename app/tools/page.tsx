@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { BadgeCheck } from "lucide-react"
-import { getAllSlugs, getToolBySlug } from "@/lib/tools-data"
+import { supabase } from "@/lib/supabase"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -14,9 +14,18 @@ export const metadata: Metadata = {
   },
 }
 
+async function getTools() {
+  const { data, error } = await supabase
+    .from("tools")
+    .select("*")
+    .order("id", { ascending: true })
+
+  if (error || !data) return []
+  return data
+}
+
 export default async function ToolsPage() {
-  const slugs = getAllSlugs()
-  const tools = slugs.map(slug => getToolBySlug(slug)).filter(Boolean)
+  const tools = await getTools()
 
   return (
     <main className="min-h-screen bg-background">
@@ -24,7 +33,7 @@ export default async function ToolsPage() {
         <nav className="flex items-center gap-2 text-sm text-muted-foreground font-mono mb-8">
           <Link href="/" className="hover:text-foreground transition-colors">MCPIndex</Link>
           <span>/</span>
-          <span className="text-foreground">All Tools</span>
+          <span className="text-foreground">All Tools ({tools.length})</span>
         </nav>
 
         <div className="mb-10 space-y-3">
@@ -35,48 +44,52 @@ export default async function ToolsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {tools.map((tool) => {
-            if (!tool) return null
-            return (
-              <Link
-                key={tool.slug}
-                href={`/tools/${tool.slug}`}
-                className="group block rounded-xl border border-border bg-card p-6 transition-all hover:border-zinc-600 hover:shadow-lg hover:shadow-purple-500/5"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-3 flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h3 className="font-mono text-sm font-semibold text-foreground truncate">
-                        {tool.name}
-                      </h3>
-                      <BadgeCheck className="h-4 w-4 text-emerald-500 flex-shrink-0" />
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                      {tool.shortDescription}
-                    </p>
-                    <div className="flex items-center gap-3 flex-wrap">
-                      <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
-                        {tool.category}
-                      </span>
-                      {tool.isFree ? (
-                        <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          Free
-                        </span>
-                      ) : (
-                        <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                          Freemium
-                        </span>
-                      )}
-                    </div>
+          {tools.map((tool: {
+            slug: string
+            name: string
+            short_description: string
+            category: string
+            is_free: boolean
+            installs: string
+          }) => (
+            <Link
+              key={tool.slug}
+              href={`/tools/${tool.slug}`}
+              className="group block rounded-xl border border-border bg-card p-6 transition-all hover:border-zinc-600 hover:shadow-lg hover:shadow-purple-500/5"
+            >
+              <div className="flex items-start justify-between gap-4">
+                <div className="space-y-3 flex-1 min-w-0">
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-mono text-sm font-semibold text-foreground truncate">
+                      {tool.name}
+                    </h3>
+                    <BadgeCheck className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                   </div>
-                  <div className="text-right flex-shrink-0">
-                    <div className="font-mono text-sm text-foreground">{tool.installs}</div>
-                    <div className="text-xs text-muted-foreground">installs</div>
+                  <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
+                    {tool.short_description}
+                  </p>
+                  <div className="flex items-center gap-3 flex-wrap">
+                    <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
+                      {tool.category}
+                    </span>
+                    {tool.is_free ? (
+                      <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        Free
+                      </span>
+                    ) : (
+                      <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        Freemium
+                      </span>
+                    )}
                   </div>
                 </div>
-              </Link>
-            )
-          })}
+                <div className="text-right flex-shrink-0">
+                  <div className="font-mono text-sm text-foreground">{tool.installs}</div>
+                  <div className="text-xs text-muted-foreground">installs</div>
+                </div>
+              </div>
+            </Link>
+          ))}
         </div>
 
         <div className="mt-12 flex justify-center">
