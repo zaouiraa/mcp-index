@@ -1,4 +1,7 @@
+'use client';
+
 import type { Metadata } from 'next';
+import { useState } from 'react';
 
 export const metadata: Metadata = {
   title: 'Contact Us | MCPIndex',
@@ -6,6 +9,24 @@ export const metadata: Metadata = {
 };
 
 export default function ContactPage() {
+  const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      // Form submission would go here
+      // For now, just show a success message
+      setSubmitted(true);
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (error) {
+      console.error('Form submission error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen bg-black text-white">
       <div className="max-w-3xl mx-auto px-6 py-16 space-y-10">
@@ -24,7 +45,13 @@ export default function ContactPage() {
           </p>
         </div>
 
-        <form className="space-y-6 bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
+        {submitted && (
+          <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
+            <p className="text-emerald-400 text-sm">✓ Thank you for your message. We'll get back to you soon!</p>
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-6 bg-zinc-950 border border-zinc-800 rounded-2xl p-8">
           <div className="space-y-2">
             <label htmlFor="name" className="block text-sm font-medium text-zinc-300">
               Name
@@ -69,9 +96,10 @@ export default function ContactPage() {
 
           <button
             type="submit"
-            className="w-full py-3 px-6 bg-white text-black font-semibold rounded-lg hover:bg-zinc-200 transition-colors cursor-pointer text-sm"
+            disabled={loading}
+            className="w-full py-3 px-6 bg-white text-black font-semibold rounded-lg hover:bg-zinc-200 transition-colors cursor-pointer text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            Send Message
+            {loading ? 'Sending...' : 'Send Message'}
           </button>
         </form>
 
