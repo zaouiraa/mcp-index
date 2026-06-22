@@ -1,18 +1,18 @@
-import type { MetadataRoute } from "next"
-import { getAllSlugs } from "@/lib/supabase"
+import type { MetadataRoute } from "next";
+import { getAllSlugs } from "@/lib/supabase";
 
-export const revalidate = 3600 // regenerate sitemap every hour
+export const revalidate = 3600;
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = "https://mcpindex.dev"
-  const lastModified = new Date()
+  const baseUrl = "https://www.mcpindex.dev";
+  const lastModified = new Date();
 
-  let slugs: string[] = []
+  let slugs: string[] = [];
+
   try {
-    slugs = await getAllSlugs()
+    slugs = await getAllSlugs();
   } catch (err) {
-    console.error("[sitemap] failed to fetch slugs:", err)
-    // sitemap will be generated with static pages only — tools will be missing
+    console.error("[sitemap] failed to fetch slugs:", err);
   }
 
   const toolPages: MetadataRoute.Sitemap = slugs.map((slug) => ({
@@ -20,11 +20,11 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     lastModified,
     changeFrequency: "weekly",
     priority: 0.8,
-  }))
+  }));
 
   return [
     {
-      url: baseUrl,
+      url: `${baseUrl}/`,
       lastModified,
       changeFrequency: "daily",
       priority: 1,
@@ -35,7 +35,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "daily",
       priority: 0.9,
     },
-    ...toolPages,
     {
       url: `${baseUrl}/privacy-policy`,
       lastModified,
@@ -54,5 +53,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "yearly",
       priority: 0.3,
     },
-  ]
+    ...toolPages,
+  ];
 }
