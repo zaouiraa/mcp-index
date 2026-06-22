@@ -1,15 +1,31 @@
 import Link from "next/link"
 import { BadgeCheck } from "lucide-react"
-import { getAllTools } from "@/lib/supabase"
+import { supabase } from "@/lib/supabase"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
   title: "All MCP Servers | MCPIndex",
-  description: "Browse the complete index of Model Context Protocol servers.",
+  description: "Browse the complete index of Model Context Protocol servers. Find the perfect MCP tool for your AI workflow.",
+  openGraph: {
+    title: "All MCP Servers | MCPIndex",
+    description: "Browse the complete index of Model Context Protocol servers.",
+    url: "https://mcpindex.dev/tools",
+    siteName: "MCPIndex",
+  },
+}
+
+async function getTools() {
+  const { data, error } = await supabase
+    .from("tools")
+    .select("*")
+    .order("id", { ascending: true })
+
+  if (error || !data) return []
+  return data
 }
 
 export default async function ToolsPage() {
-  const tools = await getAllTools()
+  const tools = await getTools()
 
   return (
     <main className="min-h-screen bg-background">
@@ -28,7 +44,14 @@ export default async function ToolsPage() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {tools.map((tool) => (
+          {tools.map((tool: {
+            slug: string
+            name: string
+            short_description: string
+            category: string
+            is_free: boolean
+            installs: string
+          }) => (
             <Link
               key={tool.slug}
               href={`/tools/${tool.slug}`}
@@ -70,7 +93,10 @@ export default async function ToolsPage() {
         </div>
 
         <div className="mt-12 flex justify-center">
-          <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
+          <Link
+            href="/"
+            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          >
             ← Back to Home
           </Link>
         </div>
