@@ -473,5 +473,4 @@ export function getToolBySlug(slug: string): MCPTool | undefined {
 export function getAllSlugs(): string[] {
   return tools.map(tool => tool.slug);
 }
-ENDOFFILE
-echo "Done"
+
