@@ -1,113 +1,160 @@
-import Link from "next/link"
-import { BadgeCheck } from "lucide-react"
-import { getAllTools } from "@/lib/supabase"
-import type { DBTool } from "@/lib/supabase"
-import type { Metadata } from "next"
-
-export const revalidate = 3600
-
-export const metadata: Metadata = {
-  title: "All MCP Servers | MCPIndex",
-  description: "Browse the complete index of Model Context Protocol servers.",
-  alternates: { canonical: "https://mcpindex.dev/tools" },
-}
+import Link from "next/link";
+import { getAllTools } from "@/lib/supabase";
 
 export default async function ToolsPage() {
-  let tools: DBTool[] = []
-  try {
-    tools = await getAllTools()
-  } catch (err) {
-    console.error("[ToolsPage] Failed to load tools:", err)
-  }
+  const tools = await getAllTools();
 
   return (
-    <main className="min-h-screen bg-background">
-      <div className="mx-auto max-w-6xl px-6 py-16">
+    <main className="min-h-screen bg-black text-white">
+      <section className="border-b border-zinc-800/60 bg-zinc-950/40">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-20">
+          <div className="max-w-3xl space-y-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-purple-500/10 text-purple-300 border border-purple-500/20">
+              <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+              MCP TOOLS DIRECTORY
+            </div>
 
-        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm text-muted-foreground font-mono mb-8">
-          <Link href="/" className="hover:text-foreground transition-colors">MCPIndex</Link>
-          <span aria-hidden="true">/</span>
-          <span className="text-foreground" aria-current="page">All Tools ({tools.length})</span>
-        </nav>
+            <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
+              Discover MCP servers for Claude, Cursor, and AI agents
+            </h1>
 
-        <header className="mb-10 space-y-3">
-          <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
-            All MCP Servers
-          </h1>
-          <p className="text-muted-foreground text-lg max-w-2xl">
-            Browse{" "}
-            <span className="text-foreground font-semibold">{tools.length}</span>{" "}
-            verified Model Context Protocol servers.
-          </p>
-        </header>
+            <p className="text-zinc-400 text-lg leading-relaxed max-w-2xl">
+              Browse verified Model Context Protocol tools, setup guides, config examples,
+              and implementation details for development, automation, databases, search,
+              cloud, and productivity workflows.
+            </p>
+          </div>
+        </div>
+      </section>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <section>
+        <div className="max-w-6xl mx-auto px-6 py-10 md:py-12 space-y-8">
+          <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+            <div className="space-y-2">
+              <p className="text-sm font-mono text-zinc-500">Directory</p>
+              <h2 className="text-2xl md:text-3xl font-semibold text-white">
+                {tools.length} tools indexed
+              </h2>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-zinc-500">
+              <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">Live from Supabase</span>
+              <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800">Static route compatible</span>
+            </div>
+          </div>
+
           {tools.length === 0 ? (
-            <div className="col-span-full text-center py-24 text-muted-foreground">
-              No tools found. Check back soon.
+            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-10 text-center">
+              <h3 className="text-xl font-semibold text-white mb-2">No tools found</h3>
+              <p className="text-zinc-500 max-w-xl mx-auto leading-relaxed">
+                Your tools table is currently empty, or the app could not fetch data from Supabase.
+                Add rows to the tools table and reload this page.
+              </p>
             </div>
           ) : (
-            tools.map((tool) => (
-              <Link
-                key={tool.slug}
-                href={`/tools/${tool.slug}`}
-                className="group block rounded-xl border border-border bg-card p-6 transition-all hover:border-zinc-600 hover:shadow-lg hover:shadow-purple-500/5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-500 focus-visible:ring-offset-2"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="space-y-3 flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h2 className="font-mono text-sm font-semibold text-foreground truncate">
-                        {tool.name}
-                      </h2>
-                      <BadgeCheck className="h-4 w-4 text-emerald-500 flex-shrink-0" aria-label="Verified" />
-                    </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                      {tool.short_description}
-                    </p>
-                    <div className="flex items-center gap-2 flex-wrap">
-                      <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
-                        {tool.category}
-                      </span>
-                      {tool.is_free ? (
-                        <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                          Free
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+              {tools.map((tool) => (
+                <Link
+                  key={tool.slug}
+                  href={`/tools/${tool.slug}`}
+                  className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 hover:bg-zinc-900/80 hover:border-zinc-700 transition-colors p-6 flex flex-col gap-5"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="space-y-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800">
+                          {tool.category}
                         </span>
-                      ) : (
-                        <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                          Freemium
+
+                        {tool.is_free ? (
+                          <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                            Free
+                          </span>
+                        ) : (
+                          <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                            Freemium
+                          </span>
+                        )}
+
+                        {tool.status && (
+                          <span
+                            className={`px-2.5 py-1 text-[11px] font-mono rounded-md border ${
+                              tool.status === "active"
+                                ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                                : tool.status === "archived"
+                                ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                                : tool.status === "deprecated"
+                                ? "bg-red-500/10 text-red-400 border-red-500/20"
+                                : "bg-blue-500/10 text-blue-400 border-blue-500/20"
+                            }`}
+                          >
+                            {tool.status}
+                          </span>
+                        )}
+                      </div>
+
+                      <div className="space-y-2">
+                        <h3 className="text-xl font-semibold text-white group-hover:text-purple-300 transition-colors">
+                          {tool.name}
+                        </h3>
+                        <p className="text-sm text-zinc-400 leading-relaxed line-clamp-3">
+                          {tool.short_description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="text-zinc-700 group-hover:text-zinc-500 transition-colors text-lg">→</span>
+                  </div>
+
+                  <div className="rounded-xl border border-zinc-800 bg-black/30 p-4">
+                    <p className="text-sm text-zinc-300 leading-relaxed line-clamp-4">
+                      {tool.answer_first_summary}
+                    </p>
+                  </div>
+
+                  <div className="flex flex-wrap items-center gap-2">
+                    {tool.tags.slice(0, 4).map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2.5 py-1 text-[11px] font-mono rounded-full bg-zinc-900 text-zinc-500 border border-zinc-800"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                    {tool.tags.length > 4 && (
+                      <span className="px-2.5 py-1 text-[11px] font-mono rounded-full bg-zinc-900 text-zinc-500 border border-zinc-800">
+                        +{tool.tags.length - 4}
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-3 pt-1 text-xs text-zinc-500 font-mono">
+                    <span>by {tool.developer}</span>
+                    <div className="flex items-center gap-3">
+                      <span>{tool.installs} installs</span>
+                      {tool.github_status && (
+                        <span
+                          className={
+                            tool.github_status === "ok"
+                              ? "text-emerald-400"
+                              : tool.github_status === "redirected"
+                              ? "text-yellow-400"
+                              : tool.github_status === "not_found"
+                              ? "text-red-400"
+                              : "text-zinc-500"
+                          }
+                        >
+                          github:{tool.github_status}
                         </span>
                       )}
                     </div>
                   </div>
-                  {tool.installs && (
-                    <div className="text-right flex-shrink-0">
-                      <div className="font-mono text-sm text-foreground">{tool.installs}</div>
-                      <div className="text-xs text-muted-foreground">installs</div>
-                    </div>
-                  )}
-                </div>
-              </Link>
-            ))
+                </Link>
+              ))}
+            </div>
           )}
         </div>
-
-        <div className="mt-12 flex justify-center">
-          <Link href="/" className="text-sm text-muted-foreground transition-colors hover:text-foreground">
-            ← Back to Home
-          </Link>
-        </div>
-      </div>
-
-      <footer className="border-t border-border mt-8">
-        <div className="mx-auto max-w-6xl px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-muted-foreground">
-          <span>© 2026 MCPIndex. All rights reserved.</span>
-          <nav aria-label="Footer navigation" className="flex items-center gap-6">
-            <Link href="/privacy-policy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-            <Link href="/terms-of-service" className="hover:text-foreground transition-colors">Terms of Service</Link>
-            <Link href="/contact" className="hover:text-foreground transition-colors">Contact</Link>
-          </nav>
-        </div>
-      </footer>
+      </section>
     </main>
-  )
+  );
 }
