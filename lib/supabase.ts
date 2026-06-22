@@ -1,7 +1,19 @@
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey =
+  process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ||
+  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl) {
+  throw new Error("Missing NEXT_PUBLIC_SUPABASE_URL");
+}
+
+if (!supabaseKey) {
+  throw new Error(
+    "Missing NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY or NEXT_PUBLIC_SUPABASE_ANON_KEY"
+  );
+}
 
 export const supabase = createClient(supabaseUrl, supabaseKey);
 
@@ -83,7 +95,9 @@ export async function getToolBySlug(slug: string): Promise<ToolRow | null> {
   return data;
 }
 
-export async function addTool(tool: ToolRow): Promise<{ data: ToolRow | null; error: string | null }> {
+export async function addTool(
+  tool: ToolRow
+): Promise<{ data: ToolRow | null; error: string | null }> {
   const { data, error } = await supabase
     .from("tools")
     .insert(tool)
