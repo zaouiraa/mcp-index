@@ -1,3 +1,4 @@
+$ cat << 'ENDOFFILE' > /tmp/tools-data-fixed.ts
 export interface MCPTool {
   slug: string;
   name: string;
@@ -25,7 +26,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Secure file system access for AI agents with configurable permissions",
     answerFirstSummary: "Filesystem MCP Server by Anthropic lets AI models read, write, and search files on your local machine through a controlled permission system. It supports directory listing, file creation, and glob-based search patterns, making it essential for coding assistants that need to explore and modify project files safely.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem", // active repo ✅
     npmPackage: "@modelcontextprotocol/server-filesystem",
     license: "MIT",
     isFree: true,
@@ -71,7 +72,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Full GitHub API integration for repositories, issues, and pull requests",
     answerFirstSummary: "GitHub MCP Server enables AI assistants to interact directly with GitHub repositories, create and manage issues, review pull requests, search code, and manage repository settings. It requires a GitHub Personal Access Token and supports both public and private repositories for streamlined development workflows.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/github",
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github", // moved to archived repo ✅
     npmPackage: "@modelcontextprotocol/server-github",
     license: "MIT",
     isFree: true,
@@ -116,7 +117,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Read-only PostgreSQL database query interface for AI assistants",
     answerFirstSummary: "PostgreSQL MCP Server lets AI models run read-only SQL queries against your PostgreSQL database. It provides safe schema inspection, data exploration, and analytical queries without risking data modification. Perfect for debugging database issues, generating reports, or understanding complex schema relationships through natural language.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/postgres",
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/postgres", // moved to archived repo ✅
     npmPackage: "@modelcontextprotocol/server-postgres",
     license: "MIT",
     isFree: true,
@@ -162,7 +163,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Browser automation for web scraping, screenshots, and PDF generation",
     answerFirstSummary: "Puppeteer MCP Server gives AI agents the ability to control a headless Chrome browser for web scraping, taking screenshots, generating PDFs, clicking elements, filling forms, and navigating pages. It bridges the gap between AI reasoning and real-time web interaction, enabling tasks like automated testing and data extraction from dynamic websites.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/puppeteer",
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/puppeteer", // moved to archived repo ✅
     npmPackage: "@modelcontextprotocol/server-puppeteer",
     license: "MIT",
     isFree: true,
@@ -204,7 +205,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Web search powered by Brave Search API for real-time information retrieval",
     answerFirstSummary: "Brave Search MCP Server connects AI assistants to the Brave Search API, enabling real-time web search, news queries, and summarized answers. Unlike generic fetch-based approaches, it returns structured search results with titles, descriptions, and URLs, giving AI models up-to-date information from the indexed web without relying on training data cutoffs.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/brave-search",
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/brave-search", // moved to archived repo ✅
     npmPackage: "@modelcontextprotocol/server-brave-search",
     license: "MIT",
     isFree: false,
@@ -249,7 +250,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Read and post messages, manage channels, and search Slack workspaces",
     answerFirstSummary: "Slack MCP Server allows AI assistants to interact with your Slack workspace: reading channels, posting messages, searching message history, managing channel members, and retrieving thread conversations. It uses a Slack Bot Token with configurable scopes, making it useful for automated status updates, team coordination, and knowledge retrieval from Slack archives.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/slack",
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/slack", // moved to archived repo ✅
     npmPackage: "@modelcontextprotocol/server-slack",
     license: "MIT",
     isFree: true,
@@ -295,7 +296,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Persistent knowledge graph memory for AI conversations across sessions",
     answerFirstSummary: "Memory MCP Server provides AI assistants with a persistent knowledge graph that survives across conversations. It stores entities, relationships, and observations in a local JSON file, allowing the AI to remember facts about you, your projects, and preferences over time. Think of it as long-term memory that turns a stateless chat into a continuously learning assistant.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
+    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/memory", // active repo ✅
     npmPackage: "@modelcontextprotocol/server-memory",
     license: "MIT",
     isFree: true,
@@ -337,8 +338,8 @@ export const tools: MCPTool[] = [
     shortDescription: "HTTP request tool for fetching and parsing web content and APIs",
     answerFirstSummary: "Fetch MCP Server provides AI assistants with the ability to make HTTP requests to any URL or API endpoint. It handles GET and POST requests, follows redirects, parses HTML to extract readable text (stripping navigation and footers), and returns structured content. It is the simplest way to give AI access to web content without running a full browser.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch",
-    npmPackage: "@modelcontextprotocol/server-fetch",
+    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch", // active repo ✅
+    npmPackage: "mcp-server-fetch", // Python package on PyPI — uses uvx, not npx ✅
     license: "MIT",
     isFree: true,
     category: "HTTP Client",
@@ -346,21 +347,21 @@ export const tools: MCPTool[] = [
     configJson: `{
   "mcpServers": {
     "fetch": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-fetch"]
+      "command": "uvx",
+      "args": ["mcp-server-fetch"]
     }
   }
 }`,
     setupSteps: [
+      "Install Python 3.10+ and the uv package manager: pip install uv",
       "Add the configuration JSON above to your Claude Desktop config file.",
       "Restart Claude Desktop to load the fetch server.",
       "Test by asking Claude to fetch a specific URL and summarize its content.",
-      "For APIs, ask Claude to make a GET request to a public API endpoint.",
       "Note: This tool cannot render JavaScript — use Puppeteer MCP for JS-heavy sites."
     ],
     faq: [
       { question: "Is Fetch MCP Server free?", answer: "Yes, it is free and open-source. It makes direct HTTP requests from your machine — no intermediary services, no API keys needed, no usage limits." },
-      { question: "How to setup Fetch MCP Server?", answer: "Add the npx configuration to Claude Desktop config and restart. Zero configuration required. It works immediately without any API keys or accounts." },
+      { question: "How to setup Fetch MCP Server?", answer: "Install Python and uv (pip install uv), add the uvx configuration to Claude Desktop config and restart. Zero API keys required." },
       { question: "What is the difference between Fetch and Puppeteer MCP?", answer: "Fetch is lightweight and fast but only gets the raw HTML — it cannot execute JavaScript. Puppeteer runs a full Chrome browser that renders JavaScript, but is heavier and slower. Use Fetch for APIs and static sites, Puppeteer for SPAs and dynamic content." }
     ],
     comparisons: [
@@ -379,7 +380,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Location search, directions, and place details via Google Maps API",
     answerFirstSummary: "Google Maps MCP Server connects AI assistants to the Google Maps Platform, enabling place searches, route planning, distance calculations, geocoding, and reverse geocoding. It requires a Google Cloud API key with Maps and Places APIs enabled, making it ideal for travel planning, logistics, location-aware applications, and answering geographical questions with precise data.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/google-maps",
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/google-maps", // moved to archived repo ✅
     npmPackage: "@modelcontextprotocol/server-google-maps",
     license: "MIT",
     isFree: false,
@@ -424,8 +425,8 @@ export const tools: MCPTool[] = [
     shortDescription: "Lightweight SQLite database interface for local data analysis and querying",
     answerFirstSummary: "SQLite MCP Server provides AI assistants with a direct interface to SQLite database files on your local machine. It supports schema inspection, running SELECT queries, and exploring data without any server setup — just point it at a .db file. Ideal for analyzing local datasets, inspecting app databases, and rapid prototyping with zero infrastructure overhead.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/sqlite",
-    npmPackage: "@modelcontextprotocol/server-sqlite",
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite", // moved to archived repo ✅
+    npmPackage: "mcp-server-sqlite", // Python package on PyPI — uses uvx, not npx ✅
     license: "MIT",
     isFree: true,
     category: "Database",
@@ -433,25 +434,25 @@ export const tools: MCPTool[] = [
     configJson: `{
   "mcpServers": {
     "sqlite": {
-      "command": "npx",
+      "command": "uvx",
       "args": [
-        "-y",
-        "@modelcontextprotocol/server-sqlite",
+        "mcp-server-sqlite",
+        "--db-path",
         "/path/to/your/database.db"
       ]
     }
   }
 }`,
     setupSteps: [
+      "Install Python 3.10+ and the uv package manager: pip install uv",
       "Locate or create a SQLite database file (.db or .sqlite extension) on your machine.",
       "Add the configuration JSON above, replacing the path with your actual database file path.",
       "Add the configuration to your Claude Desktop config file.",
-      "Restart Claude Desktop to initialize the SQLite connection.",
-      "Test by asking Claude to list tables, describe a schema, or run a SELECT query."
+      "Restart Claude Desktop and test by asking Claude to list tables or run a SELECT query."
     ],
     faq: [
       { question: "Is SQLite MCP Server free?", answer: "Yes, completely free and open-source. SQLite itself is public domain, and this MCP server is MIT-licensed. No costs whatsoever." },
-      { question: "How to setup SQLite MCP Server?", answer: "Point the npx command argument to your .db file path in the Claude Desktop config and restart. No server process, no credentials, no network — it reads the file directly." },
+      { question: "How to setup SQLite MCP Server?", answer: "Install Python and uv (pip install uv), point the uvx command argument to your .db file path in the Claude Desktop config and restart. No server process, no credentials, no network." },
       { question: "Can SQLite MCP Server modify data?", answer: "The official implementation supports read operations (SELECT) for safety. If you need write access for development, you can fork the server and remove the read-only restriction, but this is not recommended for production use with AI." }
     ],
     comparisons: [
@@ -473,3 +474,5 @@ export function getToolBySlug(slug: string): MCPTool | undefined {
 export function getAllSlugs(): string[] {
   return tools.map(tool => tool.slug);
 }
+ENDOFFILE
+echo "Done"
