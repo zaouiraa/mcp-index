@@ -1,3 +1,5 @@
+"use client";
+
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import type { DBTool } from "@/lib/supabase";
@@ -86,9 +88,7 @@ export default function ToolsSearchClient({ tools, compact = false }: Props) {
         </div>
 
         <div className="flex items-center justify-between gap-4 flex-wrap">
-          <p className="text-sm text-zinc-500">
-            {filteredTools.length} matching tools
-          </p>
+          <p className="text-sm text-zinc-500">{filteredTools.length} matching tools</p>
           <Link href="/tools/search" className="text-sm text-purple-300 hover:text-purple-200 transition-colors">
             Open full search page →
           </Link>
