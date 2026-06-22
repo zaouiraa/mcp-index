@@ -463,8 +463,8 @@ export const tools: MCPTool[] = [
     ],
     lastUpdated: "2025-01-11",
     installs: "29K+"
-  }
-];
+    ];
+}
 
 export function getToolBySlug(slug: string): MCPTool | undefined {
   return tools.find(tool => tool.slug === slug);
@@ -473,4 +473,3 @@ export function getToolBySlug(slug: string): MCPTool | undefined {
 export function getAllSlugs(): string[] {
   return tools.map(tool => tool.slug);
 }
-ENDOFFILE
