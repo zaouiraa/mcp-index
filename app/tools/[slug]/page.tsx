@@ -4,6 +4,8 @@ import { getToolBySlug, getAllSlugs, getAllTools } from "@/lib/supabase";
 import { CopyButton } from "@/components/copy-button";
 import type { Metadata } from "next";
 
+export const dynamicParams = true;
+
 const baseUrl = "https://www.mcpindex.dev";
 
 function stripMarkdown(value: string) {
@@ -22,11 +24,11 @@ export async function generateStaticParams() {
 }
 
 type PageProps = {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 };
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { slug } = params;
+  const { slug } = await params;
   const tool = await getToolBySlug(slug);
 
   if (!tool) {
@@ -74,12 +76,11 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export default async function ToolDetailPage({ params }: PageProps) {
-  const { slug } = params;
+  const { slug } = await params;
   const tool = await getToolBySlug(slug);
 
   if (!tool) notFound();
 
-  // فواصل آمنة للـ arrays
   const faq = tool.faq ?? [];
   const setupSteps = tool.setup_steps ?? [];
   const tags = tool.tags ?? [];
