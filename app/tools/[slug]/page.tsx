@@ -11,6 +11,7 @@ function stripMarkdown(value: string) {
 }
 
 function truncate(value: string, max = 160) {
+  if (!value) return "";
   if (value.length <= max) return value;
   return `${value.slice(0, max - 1).trim()}…`;
 }
@@ -20,12 +21,12 @@ export async function generateStaticParams() {
   return slugs.map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}): Promise<Metadata> {
-  const { slug } = await params;
+type PageProps = {
+  params: { slug: string };
+};
+
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = params;
   const tool = await getToolBySlug(slug);
 
   if (!tool) {
@@ -43,7 +44,7 @@ export async function generateMetadata({
   }
 
   const description = truncate(
-    stripMarkdown(tool.answer_first_summary || tool.short_description)
+    stripMarkdown(tool.answer_first_summary || tool.short_description || "")
   );
   const canonical = `${baseUrl}/tools/${tool.slug}`;
 
@@ -72,15 +73,17 @@ export async function generateMetadata({
   };
 }
 
-export default async function ToolDetailPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+export default async function ToolDetailPage({ params }: PageProps) {
+  const { slug } = params;
   const tool = await getToolBySlug(slug);
 
   if (!tool) notFound();
+
+  // فواصل آمنة للـ arrays
+  const faq = tool.faq ?? [];
+  const setupSteps = tool.setup_steps ?? [];
+  const tags = tool.tags ?? [];
+  const comparisons = tool.comparisons ?? [];
 
   const allTools = await getAllTools();
   const relatedTools = allTools
@@ -88,12 +91,14 @@ export default async function ToolDetailPage({
     .filter(
       (item) =>
         item.category === tool.category ||
-        item.tags.some((tag) => tool.tags.includes(tag))
+        (item.tags && tags.length && item.tags.some((tag) => tags.includes(tag)))
     )
     .slice(0, 3);
 
   const pageUrl = `${baseUrl}/tools/${tool.slug}`;
-  const cleanSummary = stripMarkdown(tool.answer_first_summary);
+  const cleanSummary = stripMarkdown(
+    tool.answer_first_summary || tool.short_description || ""
+  );
 
   const jsonLdSoftware = {
     "@context": "https://schema.org",
@@ -103,18 +108,26 @@ export default async function ToolDetailPage({
     applicationCategory: tool.category || "DeveloperApplication",
     operatingSystem: "Cross-platform",
     url: pageUrl,
-    softwareVersion: tool.last_updated,
     license: tool.license,
     author: {
       "@type": "Organization",
       name: tool.developer,
     },
-    offers: {
-      "@type": "Offer",
-      price: tool.is_free ? "0" : "3",
-      priceCurrency: "USD",
-      availability: "https://schema.org/InStock",
-    },
+    ...(tool.is_free
+      ? {
+          offers: {
+            "@type": "Offer",
+            price: "0",
+            priceCurrency: "USD",
+            availability: "https://schema.org/InStock",
+          },
+        }
+      : {}),
+    ...(tool.last_updated
+      ? {
+          dateModified: tool.last_updated,
+        }
+      : {}),
   };
 
   const jsonLdBreadcrumb = {
@@ -142,23 +155,25 @@ export default async function ToolDetailPage({
     ],
   };
 
-  const jsonLdFaq = tool.faq.length
-    ? {
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: tool.faq.map((f) => ({
-          "@type": "Question",
-          name: f.question,
-          acceptedAnswer: {
-            "@type": "Answer",
-            text: stripMarkdown(f.answer),
-          },
-        })),
-      }
-    : null;
+  const jsonLdFaq =
+    faq.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: faq.map((f: { question: string; answer: string }) => ({
+            "@type": "Question",
+            name: f.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: stripMarkdown(f.answer),
+            },
+          })),
+        }
+      : null;
 
   return (
     <main className="min-h-screen bg-black text-white">
+      {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSoftware) }}
@@ -174,6 +189,7 @@ export default async function ToolDetailPage({
         />
       )}
 
+      {/* UNCLAIMED bar */}
       <div className="border-b border-zinc-800/60 bg-zinc-950/50">
         <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
           <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
@@ -187,6 +203,7 @@ export default async function ToolDetailPage({
       </div>
 
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">
+        {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
           <Link href="/" className="hover:text-white transition-colors">
             MCPIndex
@@ -199,6 +216,7 @@ export default async function ToolDetailPage({
           <span className="text-zinc-300">{tool.name}</span>
         </nav>
 
+        {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-3 flex-wrap">
             <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
@@ -247,17 +265,21 @@ export default async function ToolDetailPage({
               </span>
             )}
 
-            <span className="text-xs text-zinc-600 font-mono">
-              {tool.installs} installs
-            </span>
+            {tool.installs && (
+              <span className="text-xs text-zinc-600 font-mono">
+                {tool.installs} installs
+              </span>
+            )}
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
             {tool.name}
           </h1>
-          <p className="text-lg text-zinc-400 leading-relaxed">
-            {tool.short_description}
-          </p>
+          {tool.short_description && (
+            <p className="text-lg text-zinc-400 leading-relaxed">
+              {tool.short_description}
+            </p>
+          )}
 
           <div className="flex items-center gap-4 text-sm text-zinc-500 flex-wrap">
             <span>
@@ -265,8 +287,12 @@ export default async function ToolDetailPage({
             </span>
             <span className="text-zinc-700">|</span>
             <span>{tool.license} License</span>
-            <span className="text-zinc-700">|</span>
-            <span>Updated {tool.last_updated}</span>
+            {tool.last_updated && (
+              <>
+                <span className="text-zinc-700">|</span>
+                <span>Updated {tool.last_updated}</span>
+              </>
+            )}
             {tool.last_github_check_at && (
               <>
                 <span className="text-zinc-700">|</span>
@@ -276,13 +302,17 @@ export default async function ToolDetailPage({
           </div>
         </div>
 
-        <div className="relative border-l-2 border-purple-500 bg-purple-500/5 rounded-r-xl p-6">
-          <div className="absolute -left-[5px] top-6 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
-          <p className="text-zinc-300 leading-relaxed text-[15px]">
-            {tool.answer_first_summary}
-          </p>
-        </div>
+        {/* Answer-first summary */}
+        {tool.answer_first_summary && (
+          <div className="relative border-l-2 border-purple-500 bg-purple-500/5 rounded-r-xl p-6">
+            <div className="absolute -left-[5px] top-6 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
+            <p className="text-zinc-300 leading-relaxed text-[15px]">
+              {tool.answer_first_summary}
+            </p>
+          </div>
+        )}
 
+        {/* Config JSON */}
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">{tool.name} Configuration</h2>
           <div className="relative bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
@@ -301,101 +331,128 @@ export default async function ToolDetailPage({
           </div>
         </section>
 
+        {/* Ad slot */}
         <div className="flex items-center justify-center py-6">
           <div className="w-full max-w-[728px] h-[90px] border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
             Ad Space
           </div>
         </div>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">How to set up {tool.name}</h2>
-          <ol className="space-y-3">
-            {tool.setup_steps.map((step, i) => (
-              <li key={i} className="flex gap-4">
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-mono text-zinc-400">
-                  {i + 1}
-                </span>
-                <p className="text-zinc-400 leading-relaxed pt-0.5 text-[15px]">
-                  {step}
-                </p>
-              </li>
-            ))}
-          </ol>
-        </section>
+        {/* Setup steps */}
+        {setupSteps.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">How to set up {tool.name}</h2>
+            <ol className="space-y-3">
+              {setupSteps.map((step: string, i: number) => (
+                <li key={i} className="flex gap-4">
+                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-mono text-zinc-400">
+                    {i + 1}
+                  </span>
+                  <p className="text-zinc-400 leading-relaxed pt-0.5 text-[15px]">
+                    {step}
+                  </p>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
 
-        <section className="space-y-6">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              Common questions, setup guidance, and compatibility notes for{" "}
-              {tool.name}.
-            </p>
-          </div>
-
-          {tool.faq.map((item, i) => (
-            <div key={i} className="space-y-2">
-              <h3 className="text-xl font-semibold">{item.question}</h3>
-              <p className="text-zinc-400 leading-relaxed text-[15px]">
-                {item.answer}
+        {/* FAQ */}
+        {faq.length > 0 && (
+          <section className="space-y-6">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                Common questions, setup guidance, and compatibility notes for {tool.name}.
               </p>
             </div>
-          ))}
-        </section>
 
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">{tool.name} vs Competitors</h2>
-          <div className="overflow-x-auto rounded-xl border border-zinc-800">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="bg-zinc-900/80">
-                  <th className="text-left px-5 py-3.5 font-semibold text-zinc-300 border-b border-zinc-800">
-                    Feature
-                  </th>
-                  <th className="text-center px-5 py-3.5 font-semibold text-purple-400 border-b border-zinc-800">
-                    {tool.name}
-                  </th>
-                  <th className="text-center px-5 py-3.5 font-semibold text-zinc-400 border-b border-zinc-800">
-                    Competitor
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {tool.comparisons.map((row, i) => (
-                  <tr
-                    key={i}
-                    className="border-b border-zinc-800/50 last:border-0 hover:bg-zinc-900/30 transition-colors"
-                  >
-                    <td className="px-5 py-3 text-zinc-400">{row.feature}</td>
-                    <td className="px-5 py-3 text-center">
-                      <span
-                        className={row.thisOk ? "text-emerald-400" : "text-red-400"}
-                      >
-                        {row.thisOk ? "✅" : "❌"} {row.thisTool}
-                      </span>
-                    </td>
-                    <td className="px-5 py-3 text-center">
-                      <span
-                        className={
-                          row.competitorOk ? "text-emerald-400" : "text-red-400"
-                        }
-                      >
-                        {row.competitorOk ? "✅" : "❌"} {row.competitor}
-                      </span>
-                    </td>
+            {faq.map(
+              (
+                item: { question: string; answer: string },
+                i: number
+              ) => (
+                <div key={i} className="space-y-2">
+                  <h3 className="text-xl font-semibold">{item.question}</h3>
+                  <p className="text-zinc-400 leading-relaxed text-[15px]">
+                    {item.answer}
+                  </p>
+                </div>
+              )
+            )}
+          </section>
+        )}
+
+        {/* Comparisons */}
+        {comparisons.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">{tool.name} vs Competitors</h2>
+            <div className="overflow-x-auto rounded-xl border border-zinc-800">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="bg-zinc-900/80">
+                    <th className="text-left px-5 py-3.5 font-semibold text-zinc-300 border-b border-zinc-800">
+                      Feature
+                    </th>
+                    <th className="text-center px-5 py-3.5 font-semibold text-purple-400 border-b border-zinc-800">
+                      {tool.name}
+                    </th>
+                    <th className="text-center px-5 py-3.5 font-semibold text-zinc-400 border-b border-zinc-800">
+                      Competitor
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        </section>
+                </thead>
+                <tbody>
+                  {comparisons.map(
+                    (
+                      row: {
+                        feature: string;
+                        thisOk: boolean;
+                        thisTool: string;
+                        competitorOk: boolean;
+                        competitor: string;
+                      },
+                      i: number
+                    ) => (
+                      <tr
+                        key={i}
+                        className="border-b border-zinc-800/50 last:border-0 hover:bg-zinc-900/30 transition-colors"
+                      >
+                        <td className="px-5 py-3 text-zinc-400">{row.feature}</td>
+                        <td className="px-5 py-3 text-center">
+                          <span
+                            className={
+                              row.thisOk ? "text-emerald-400" : "text-red-400"
+                            }
+                          >
+                            {row.thisOk ? "✅" : "❌"} {row.thisTool}
+                          </span>
+                        </td>
+                        <td className="px-5 py-3 text-center">
+                          <span
+                            className={
+                              row.competitorOk ? "text-emerald-400" : "text-red-400"
+                            }
+                          >
+                            {row.competitorOk ? "✅" : "❌"} {row.competitor}
+                          </span>
+                        </td>
+                      </tr>
+                    )
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
 
+        {/* Related tools */}
         {relatedTools.length > 0 && (
           <section className="space-y-4">
             <div className="space-y-2">
               <h2 className="text-2xl font-semibold">Related tools</h2>
               <p className="text-zinc-500 text-sm leading-relaxed">
-                Explore similar MCP servers in the same category or with
-                overlapping capabilities.
+                Explore similar MCP servers in the same category or with overlapping capabilities.
               </p>
             </div>
 
@@ -435,26 +492,31 @@ export default async function ToolDetailPage({
           </section>
         )}
 
-        <section className="space-y-3">
-          <h2 className="text-lg font-semibold text-zinc-400">Tags</h2>
-          <div className="flex flex-wrap gap-2">
-            {tool.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-500 border border-zinc-800"
-              >
-                {tag}
-              </span>
-            ))}
-          </div>
-        </section>
+        {/* Tags */}
+        {tags.length > 0 && (
+          <section className="space-y-3">
+            <h2 className="text-lg font-semibold text-zinc-400">Tags</h2>
+            <div className="flex flex-wrap gap-2">
+              {tags.map((tag: string) => (
+                <span
+                  key={tag}
+                  className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-500 border border-zinc-800"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </section>
+        )}
 
+        {/* Ad slot 2 */}
         <div className="flex items-center justify-center py-6">
           <div className="w-full max-w-[728px] h-[90px] border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
             Ad Space
           </div>
         </div>
 
+        {/* Claim CTA */}
         <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 p-8 md:p-10">
           <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1),transparent_60%)]" />
           <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -473,6 +535,7 @@ export default async function ToolDetailPage({
           </div>
         </div>
 
+        {/* External links */}
         <section className="flex flex-wrap gap-4 pb-8">
           <a
             href={tool.github_url}
@@ -486,20 +549,23 @@ export default async function ToolDetailPage({
             GitHub
           </a>
 
-          <a
-            href={`https://www.npmjs.com/package/${tool.npm_package}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
-          >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.071-.747.49-5.538H5.879l1.41 15.97 5.691 1.577 5.726-1.577.779-8.748h-7.454z" />
-            </svg>
-            NPM
-          </a>
+          {tool.npm_package && (
+            <a
+              href={`https://www.npmjs.com/package/${tool.npm_package}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.071-.747.49-5.538H5.879l1.41 15.97 5.691 1.577 5.726-1.577.779-8.748h-7.454z" />
+              </svg>
+              NPM
+            </a>
+          )}
         </section>
       </div>
 
+      {/* Footer */}
       <footer className="border-t border-zinc-800/60 mt-8">
         <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
           <span>© 2026 MCPIndex. All rights reserved.</span>
