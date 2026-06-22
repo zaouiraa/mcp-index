@@ -25,7 +25,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Secure file system access for AI agents with configurable permissions",
     answerFirstSummary: "Filesystem MCP Server by Anthropic lets AI models read, write, and search files on your local machine through a controlled permission system. It supports directory listing, file creation, and glob-based search patterns, making it essential for coding assistants that need to explore and modify project files safely.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem", // active repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
     npmPackage: "@modelcontextprotocol/server-filesystem",
     license: "MIT",
     isFree: true,
@@ -71,7 +71,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Full GitHub API integration for repositories, issues, and pull requests",
     answerFirstSummary: "GitHub MCP Server enables AI assistants to interact directly with GitHub repositories, create and manage issues, review pull requests, search code, and manage repository settings. It requires a GitHub Personal Access Token and supports both public and private repositories for streamlined development workflows.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github", // moved to archived repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github",
     npmPackage: "@modelcontextprotocol/server-github",
     license: "MIT",
     isFree: true,
@@ -90,15 +90,15 @@ export const tools: MCPTool[] = [
 }`,
     setupSteps: [
       "Go to GitHub Settings > Developer settings > Personal access tokens > Tokens (classic).",
-      "Generate a new token with 'repo', 'read:org', and 'read:user' scopes.",
-      "Copy the token and replace 'your_github_token_here' in the config above.",
+      "Generate a new token with repo, read:org, and read:user scopes.",
+      "Copy the token and replace your_github_token_here in the config above.",
       "Add the configuration to your Claude Desktop config file.",
       "Restart Claude Desktop and test by asking it to list your repositories or create an issue."
     ],
     faq: [
       { question: "Is GitHub MCP Server free to use?", answer: "Yes, the server itself is free and open-source. You need a GitHub account (free tier works) and a Personal Access Token to authenticate API requests." },
       { question: "How to setup GitHub MCP Server?", answer: "Generate a GitHub Personal Access Token with repo permissions, add it to the environment variables in your Claude Desktop config, and restart. The server handles all GitHub API communication automatically." },
-      { question: "Can GitHub MCP Server access private repositories?", answer: "Yes, as long as your Personal Access Token has the 'repo' scope, it can access all repositories your GitHub account has permission to view, including private repos." }
+      { question: "Can GitHub MCP Server access private repositories?", answer: "Yes, as long as your Personal Access Token has the repo scope, it can access all repositories your GitHub account has permission to view, including private repos." }
     ],
     comparisons: [
       { feature: "Issue Management", thisTool: "Yes", competitor: "No", thisOk: true, competitorOk: false },
@@ -116,7 +116,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Read-only PostgreSQL database query interface for AI assistants",
     answerFirstSummary: "PostgreSQL MCP Server lets AI models run read-only SQL queries against your PostgreSQL database. It provides safe schema inspection, data exploration, and analytical queries without risking data modification. Perfect for debugging database issues, generating reports, or understanding complex schema relationships through natural language.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/postgres", // moved to archived repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/postgres",
     npmPackage: "@modelcontextprotocol/server-postgres",
     license: "MIT",
     isFree: true,
@@ -137,7 +137,7 @@ export const tools: MCPTool[] = [
     setupSteps: [
       "Ensure you have a running PostgreSQL database instance (local or remote).",
       "Get your database connection string in postgresql:// format.",
-      "For security, create a read-only database user: CREATE ROLE mcp_readonly WITH LOGIN PASSWORD 'your_password'; GRANT CONNECT ON DATABASE mydb TO mcp_readonly; GRANT USAGE ON SCHEMA public TO mcp_readonly; GRANT SELECT ON ALL TABLES IN SCHEMA public TO mcp_readonly;",
+      "For security, create a read-only database user and grant SELECT permissions only.",
       "Add the configuration with your connection string to Claude Desktop config.",
       "Restart Claude Desktop and test by asking it to list tables or describe a schema."
     ],
@@ -162,7 +162,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Browser automation for web scraping, screenshots, and PDF generation",
     answerFirstSummary: "Puppeteer MCP Server gives AI agents the ability to control a headless Chrome browser for web scraping, taking screenshots, generating PDFs, clicking elements, filling forms, and navigating pages. It bridges the gap between AI reasoning and real-time web interaction, enabling tasks like automated testing and data extraction from dynamic websites.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/puppeteer", // moved to archived repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/puppeteer",
     npmPackage: "@modelcontextprotocol/server-puppeteer",
     license: "MIT",
     isFree: true,
@@ -204,7 +204,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Web search powered by Brave Search API for real-time information retrieval",
     answerFirstSummary: "Brave Search MCP Server connects AI assistants to the Brave Search API, enabling real-time web search, news queries, and summarized answers. Unlike generic fetch-based approaches, it returns structured search results with titles, descriptions, and URLs, giving AI models up-to-date information from the indexed web without relying on training data cutoffs.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/brave-search", // moved to archived repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/brave-search",
     npmPackage: "@modelcontextprotocol/server-brave-search",
     license: "MIT",
     isFree: false,
@@ -225,13 +225,13 @@ export const tools: MCPTool[] = [
       "Go to https://brave.com/search/api/ and sign up for a Brave Search API account.",
       "Choose a plan (Free tier includes 2,000 queries/month).",
       "Copy your API key from the dashboard.",
-      "Replace 'your_brave_api_key_here' in the config above with your actual key.",
+      "Replace your_brave_api_key_here in the config above with your actual key.",
       "Add to Claude Desktop config, restart, and test by asking a current-events question."
     ],
     faq: [
-      { question: "Is Brave Search MCP Server free?", answer: "The server itself is free, but the Brave Search API requires an API key. The free tier provides 2,000 queries per month, which is sufficient for personal use. Paid plans start at $3/month for 2,000 additional queries." },
+      { question: "Is Brave Search MCP Server free?", answer: "The server itself is free, but the Brave Search API requires an API key. The free tier provides 2,000 queries per month, which is sufficient for personal use. Paid plans start at $3/month for additional queries." },
       { question: "How to setup Brave Search MCP Server?", answer: "Sign up at brave.com/search/api, get your API key, add it to the environment variables in your Claude Desktop config, and restart. Setup takes under 2 minutes." },
-      { question: "How is Brave Search different from regular web browsing?", answer: "Brave Search returns structured JSON results with relevance scores, making it easier for AI to process. It also has an independent index (not reliant on Google), provides built-in summarization, and respects user privacy by default." }
+      { question: "How is Brave Search different from regular web browsing?", answer: "Brave Search returns structured JSON results with relevance scores, making it easier for AI to process. It also has an independent index not reliant on Google, provides built-in summarization, and respects user privacy by default." }
     ],
     comparisons: [
       { feature: "Independent Index", thisTool: "Yes", competitor: "No", thisOk: true, competitorOk: false },
@@ -249,7 +249,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Read and post messages, manage channels, and search Slack workspaces",
     answerFirstSummary: "Slack MCP Server allows AI assistants to interact with your Slack workspace: reading channels, posting messages, searching message history, managing channel members, and retrieving thread conversations. It uses a Slack Bot Token with configurable scopes, making it useful for automated status updates, team coordination, and knowledge retrieval from Slack archives.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/slack", // moved to archived repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/slack",
     npmPackage: "@modelcontextprotocol/server-slack",
     license: "MIT",
     isFree: true,
@@ -268,7 +268,7 @@ export const tools: MCPTool[] = [
   }
 }`,
     setupSteps: [
-      "Go to https://api.slack.com/apps and click 'Create New App'.",
+      "Go to https://api.slack.com/apps and click Create New App.",
       "Assign bot token scopes: channels:read, channels:history, chat:write, search:read, users:read.",
       "Install the app to your workspace and copy the Bot User OAuth Token (xoxb-...).",
       "Find your Team ID from the Slack URL or API call.",
@@ -277,7 +277,7 @@ export const tools: MCPTool[] = [
     faq: [
       { question: "Is Slack MCP Server free?", answer: "Yes, the server is free and open-source. It works with any Slack workspace, including free Slack plans. No additional costs beyond your existing Slack subscription." },
       { question: "How to setup Slack MCP Server?", answer: "Create a Slack App at api.slack.com/apps, assign the required bot token scopes, install it to your workspace, copy the bot token and team ID into your Claude Desktop config, and restart." },
-      { question: "Can Slack MCP Server read private channels?", answer: "Yes, but only if the bot has been explicitly invited to those private channels. The bot cannot access private channels it hasn't been added to, regardless of its token scopes." }
+      { question: "Can Slack MCP Server read private channels?", answer: "Yes, but only if the bot has been explicitly invited to those private channels. The bot cannot access private channels it has not been added to, regardless of its token scopes." }
     ],
     comparisons: [
       { feature: "Message Posting", thisTool: "Yes", competitor: "No", thisOk: true, competitorOk: false },
@@ -295,7 +295,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Persistent knowledge graph memory for AI conversations across sessions",
     answerFirstSummary: "Memory MCP Server provides AI assistants with a persistent knowledge graph that survives across conversations. It stores entities, relationships, and observations in a local JSON file, allowing the AI to remember facts about you, your projects, and preferences over time. Think of it as long-term memory that turns a stateless chat into a continuously learning assistant.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/memory", // active repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
     npmPackage: "@modelcontextprotocol/server-memory",
     license: "MIT",
     isFree: true,
@@ -312,14 +312,14 @@ export const tools: MCPTool[] = [
     setupSteps: [
       "Add the configuration JSON above to your Claude Desktop config file.",
       "Restart Claude Desktop. The memory server creates a local memory graph file automatically.",
-      "Start telling Claude things you want it to remember: 'Remember that I prefer TypeScript over JavaScript.'",
+      "Start telling Claude things you want it to remember: Remember that I prefer TypeScript over JavaScript.",
       "In a new conversation, ask Claude to recall what it knows about you.",
       "The memory file is stored locally and persists across all Claude Desktop sessions."
     ],
     faq: [
       { question: "Is Memory MCP Server free?", answer: "Yes, it is completely free and open-source. All data is stored locally in a JSON file on your machine — no cloud services or paid APIs involved." },
       { question: "How to setup Memory MCP Server?", answer: "Add the npx command to your Claude Desktop config and restart. No API keys, no database setup, no accounts needed. It works out of the box with zero configuration." },
-      { question: "Where is the memory data stored?", answer: "In a local JSON file on your machine. By default, it creates a knowledge graph file in the server's working directory. Your data never leaves your computer, ensuring full privacy." }
+      { question: "Where is the memory data stored?", answer: "In a local JSON file on your machine. By default, it creates a knowledge graph file in the server working directory. Your data never leaves your computer, ensuring full privacy." }
     ],
     comparisons: [
       { feature: "Knowledge Graph", thisTool: "Yes", competitor: "No", thisOk: true, competitorOk: false },
@@ -335,10 +335,10 @@ export const tools: MCPTool[] = [
     slug: "fetch-mcp",
     name: "Fetch MCP Server",
     shortDescription: "HTTP request tool for fetching and parsing web content and APIs",
-    answerFirstSummary: "Fetch MCP Server provides AI assistants with the ability to make HTTP requests to any URL or API endpoint. It handles GET and POST requests, follows redirects, parses HTML to extract readable text (stripping navigation and footers), and returns structured content. It is the simplest way to give AI access to web content without running a full browser.",
+    answerFirstSummary: "Fetch MCP Server provides AI assistants with the ability to make HTTP requests to any URL or API endpoint. It handles GET and POST requests, follows redirects, parses HTML to extract readable text, and returns structured content. It is the simplest way to give AI access to web content without running a full browser.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch", // active repo ✅
-    npmPackage: "mcp-server-fetch", // Python package on PyPI — uses uvx, not npx ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch",
+    npmPackage: "mcp-server-fetch",
     license: "MIT",
     isFree: true,
     category: "HTTP Client",
@@ -352,7 +352,7 @@ export const tools: MCPTool[] = [
   }
 }`,
     setupSteps: [
-      "Install Python 3.10+ and the uv package manager: pip install uv",
+      "Install Python 3.10+ and the uv package manager: pip install uv.",
       "Add the configuration JSON above to your Claude Desktop config file.",
       "Restart Claude Desktop to load the fetch server.",
       "Test by asking Claude to fetch a specific URL and summarize its content.",
@@ -360,7 +360,7 @@ export const tools: MCPTool[] = [
     ],
     faq: [
       { question: "Is Fetch MCP Server free?", answer: "Yes, it is free and open-source. It makes direct HTTP requests from your machine — no intermediary services, no API keys needed, no usage limits." },
-      { question: "How to setup Fetch MCP Server?", answer: "Install Python and uv (pip install uv), add the uvx configuration to Claude Desktop config and restart. Zero API keys required." },
+      { question: "How to setup Fetch MCP Server?", answer: "Install Python and uv, then add the uvx configuration to Claude Desktop config and restart. No API keys or accounts required." },
       { question: "What is the difference between Fetch and Puppeteer MCP?", answer: "Fetch is lightweight and fast but only gets the raw HTML — it cannot execute JavaScript. Puppeteer runs a full Chrome browser that renders JavaScript, but is heavier and slower. Use Fetch for APIs and static sites, Puppeteer for SPAs and dynamic content." }
     ],
     comparisons: [
@@ -379,7 +379,7 @@ export const tools: MCPTool[] = [
     shortDescription: "Location search, directions, and place details via Google Maps API",
     answerFirstSummary: "Google Maps MCP Server connects AI assistants to the Google Maps Platform, enabling place searches, route planning, distance calculations, geocoding, and reverse geocoding. It requires a Google Cloud API key with Maps and Places APIs enabled, making it ideal for travel planning, logistics, location-aware applications, and answering geographical questions with precise data.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/google-maps", // moved to archived repo ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/google-maps",
     npmPackage: "@modelcontextprotocol/server-google-maps",
     license: "MIT",
     isFree: false,
@@ -397,16 +397,16 @@ export const tools: MCPTool[] = [
   }
 }`,
     setupSteps: [
-      "Go to Google Cloud Console (console.cloud.google.com) and create a project or select existing one.",
-      "Enable 'Maps JavaScript API' and 'Places API' from the API Library.",
+      "Go to Google Cloud Console at console.cloud.google.com and create or select a project.",
+      "Enable Maps JavaScript API and Places API from the API Library.",
       "Go to Credentials > Create Credentials > API Key, and restrict it to Maps and Places APIs.",
       "Copy the API key and replace the placeholder in the config above.",
       "Add to Claude Desktop config, restart, and test by asking for directions or nearby places."
     ],
     faq: [
-      { question: "Is Google Maps MCP Server free?", answer: "The server is free, but Google Maps API has a free tier of $200/month credit. This covers approximately 28,000 map loads or 40,000 place searches per month. Beyond that, usage is billed at Google's standard rates." },
+      { question: "Is Google Maps MCP Server free?", answer: "The server is free, but Google Maps API has a free tier of $200/month credit. This covers approximately 28,000 map loads or 40,000 place searches per month. Beyond that, usage is billed at Google standard rates." },
       { question: "How to setup Google Maps MCP Server?", answer: "Create a Google Cloud project, enable Maps and Places APIs, generate a restricted API key, add it to the environment variables in your Claude Desktop config, and restart." },
-      { question: "Can Google Maps MCP Server calculate driving time?", answer: "Yes, it supports route planning with distance and duration estimates for driving, walking, cycling, and transit directions between any two points using Google's routing engine." }
+      { question: "Can Google Maps MCP Server calculate driving time?", answer: "Yes, it supports route planning with distance and duration estimates for driving, walking, cycling, and transit directions between any two points using Google routing engine." }
     ],
     comparisons: [
       { feature: "Place Search", thisTool: "Yes", competitor: "Yes", thisOk: true, competitorOk: true },
@@ -424,8 +424,8 @@ export const tools: MCPTool[] = [
     shortDescription: "Lightweight SQLite database interface for local data analysis and querying",
     answerFirstSummary: "SQLite MCP Server provides AI assistants with a direct interface to SQLite database files on your local machine. It supports schema inspection, running SELECT queries, and exploring data without any server setup — just point it at a .db file. Ideal for analyzing local datasets, inspecting app databases, and rapid prototyping with zero infrastructure overhead.",
     developer: "Anthropic",
-    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite", // moved to archived repo ✅
-    npmPackage: "mcp-server-sqlite", // Python package on PyPI — uses uvx, not npx ✅
+    githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite",
+    npmPackage: "mcp-server-sqlite",
     license: "MIT",
     isFree: true,
     category: "Database",
@@ -443,7 +443,7 @@ export const tools: MCPTool[] = [
   }
 }`,
     setupSteps: [
-      "Install Python 3.10+ and the uv package manager: pip install uv",
+      "Install Python 3.10+ and the uv package manager: pip install uv.",
       "Locate or create a SQLite database file (.db or .sqlite extension) on your machine.",
       "Add the configuration JSON above, replacing the path with your actual database file path.",
       "Add the configuration to your Claude Desktop config file.",
@@ -451,8 +451,8 @@ export const tools: MCPTool[] = [
     ],
     faq: [
       { question: "Is SQLite MCP Server free?", answer: "Yes, completely free and open-source. SQLite itself is public domain, and this MCP server is MIT-licensed. No costs whatsoever." },
-      { question: "How to setup SQLite MCP Server?", answer: "Install Python and uv (pip install uv), point the uvx command argument to your .db file path in the Claude Desktop config and restart. No server process, no credentials, no network." },
-      { question: "Can SQLite MCP Server modify data?", answer: "The official implementation supports read operations (SELECT) for safety. If you need write access for development, you can fork the server and remove the read-only restriction, but this is not recommended for production use with AI." }
+      { question: "How to setup SQLite MCP Server?", answer: "Install Python and uv, then point the uvx command argument to your .db file path in the Claude Desktop config and restart. No server process, no credentials, no network required." },
+      { question: "Can SQLite MCP Server modify data?", answer: "The official implementation supports read operations for safety. If you need write access for development, you can fork the server and remove the read-only restriction, but this is not recommended for production use with AI." }
     ],
     comparisons: [
       { feature: "Zero Setup", thisTool: "Yes", competitor: "No", thisOk: true, competitorOk: false },
@@ -462,10 +462,9 @@ export const tools: MCPTool[] = [
       { feature: "Client-Server Architecture", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-11",
-        installs: "29K+"
+    installs: "29K+"
   }
 ];
-}
 
 export function getToolBySlug(slug: string): MCPTool | undefined {
   return tools.find(tool => tool.slug === slug);
