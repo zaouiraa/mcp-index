@@ -1,3 +1,6 @@
+export type MCPToolStatus = "active" | "archived" | "deprecated" | "experimental";
+export type GitHubStatus = "ok" | "redirected" | "not_found" | "unknown";
+
 export interface MCPTool {
   slug: string;
   name: string;
@@ -5,6 +8,8 @@ export interface MCPTool {
   answerFirstSummary: string;
   developer: string;
   githubUrl: string;
+  githubStatus: GitHubStatus;
+  lastGithubCheckAt: string | null;
   npmPackage: string;
   license: string;
   isFree: boolean;
@@ -16,6 +21,7 @@ export interface MCPTool {
   comparisons: { feature: string; thisTool: string; competitor: string; thisOk: boolean; competitorOk: boolean }[];
   lastUpdated: string;
   installs: string;
+  status: MCPToolStatus;
 }
 
 export const tools: MCPTool[] = [
@@ -26,6 +32,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "Filesystem MCP Server by Anthropic lets AI models read, write, and search files on your local machine through a controlled permission system. It supports directory listing, file creation, and glob-based search patterns, making it essential for coding assistants that need to explore and modify project files safely.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/filesystem",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-filesystem",
     license: "MIT",
     isFree: true,
@@ -63,7 +71,8 @@ export const tools: MCPTool[] = [
       { feature: "Windows Compatible", thisTool: "Yes", competitor: "Partial", thisOk: true, competitorOk: false }
     ],
     lastUpdated: "2025-01-15",
-    installs: "48K+"
+    installs: "48K+",
+    status: "active"
   },
   {
     slug: "github-mcp",
@@ -72,6 +81,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "GitHub MCP Server enables AI assistants to interact directly with GitHub repositories, create and manage issues, review pull requests, search code, and manage repository settings. It requires a GitHub Personal Access Token and supports both public and private repositories for streamlined development workflows.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/github",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-github",
     license: "MIT",
     isFree: true,
@@ -108,7 +119,8 @@ export const tools: MCPTool[] = [
       { feature: "Branch Operations", thisTool: "Yes", competitor: "No", thisOk: true, competitorOk: false }
     ],
     lastUpdated: "2025-01-20",
-    installs: "52K+"
+    installs: "52K+",
+    status: "archived"
   },
   {
     slug: "postgres-mcp",
@@ -117,6 +129,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "PostgreSQL MCP Server lets AI models run read-only SQL queries against your PostgreSQL database. It provides safe schema inspection, data exploration, and analytical queries without risking data modification. Perfect for debugging database issues, generating reports, or understanding complex schema relationships through natural language.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/postgres",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-postgres",
     license: "MIT",
     isFree: true,
@@ -154,7 +168,8 @@ export const tools: MCPTool[] = [
       { feature: "Multiple Databases", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-18",
-    installs: "31K+"
+    installs: "31K+",
+    status: "archived"
   },
   {
     slug: "puppeteer-mcp",
@@ -163,6 +178,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "Puppeteer MCP Server gives AI agents the ability to control a headless Chrome browser for web scraping, taking screenshots, generating PDFs, clicking elements, filling forms, and navigating pages. It bridges the gap between AI reasoning and real-time web interaction, enabling tasks like automated testing and data extraction from dynamic websites.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/puppeteer",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-puppeteer",
     license: "MIT",
     isFree: true,
@@ -196,7 +213,8 @@ export const tools: MCPTool[] = [
       { feature: "Lightweight", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-12",
-    installs: "38K+"
+    installs: "38K+",
+    status: "archived"
   },
   {
     slug: "brave-search-mcp",
@@ -205,6 +223,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "Brave Search MCP Server connects AI assistants to the Brave Search API, enabling real-time web search, news queries, and summarized answers. Unlike generic fetch-based approaches, it returns structured search results with titles, descriptions, and URLs, giving AI models up-to-date information from the indexed web without relying on training data cutoffs.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/brave-search",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-brave-search",
     license: "MIT",
     isFree: false,
@@ -241,7 +261,8 @@ export const tools: MCPTool[] = [
       { feature: "No Rate Limit (Free)", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-22",
-    installs: "25K+"
+    installs: "25K+",
+    status: "archived"
   },
   {
     slug: "slack-mcp",
@@ -250,6 +271,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "Slack MCP Server allows AI assistants to interact with your Slack workspace: reading channels, posting messages, searching message history, managing channel members, and retrieving thread conversations. It uses a Slack Bot Token with configurable scopes, making it useful for automated status updates, team coordination, and knowledge retrieval from Slack archives.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/slack",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-slack",
     license: "MIT",
     isFree: true,
@@ -287,7 +310,8 @@ export const tools: MCPTool[] = [
       { feature: "File Upload", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-10",
-    installs: "18K+"
+    installs: "18K+",
+    status: "archived"
   },
   {
     slug: "memory-mcp",
@@ -296,6 +320,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "Memory MCP Server provides AI assistants with a persistent knowledge graph that survives across conversations. It stores entities, relationships, and observations in a local JSON file, allowing the AI to remember facts about you, your projects, and preferences over time. Think of it as long-term memory that turns a stateless chat into a continuously learning assistant.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/memory",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-memory",
     license: "MIT",
     isFree: true,
@@ -329,7 +355,8 @@ export const tools: MCPTool[] = [
       { feature: "Cloud Sync", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-08",
-    installs: "42K+"
+    installs: "42K+",
+    status: "active"
   },
   {
     slug: "fetch-mcp",
@@ -338,6 +365,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "Fetch MCP Server provides AI assistants with the ability to make HTTP requests to any URL or API endpoint. It handles GET and POST requests, follows redirects, parses HTML to extract readable text, and returns structured content. It is the simplest way to give AI access to web content without running a full browser.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers/tree/main/src/fetch",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "mcp-server-fetch",
     license: "MIT",
     isFree: true,
@@ -371,7 +400,8 @@ export const tools: MCPTool[] = [
       { feature: "Lightweight", thisTool: "Yes", competitor: "No", thisOk: true, competitorOk: false }
     ],
     lastUpdated: "2025-01-05",
-    installs: "55K+"
+    installs: "55K+",
+    status: "active"
   },
   {
     slug: "google-maps-mcp",
@@ -380,6 +410,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "Google Maps MCP Server connects AI assistants to the Google Maps Platform, enabling place searches, route planning, distance calculations, geocoding, and reverse geocoding. It requires a Google Cloud API key with Maps and Places APIs enabled, making it ideal for travel planning, logistics, location-aware applications, and answering geographical questions with precise data.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/google-maps",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "@modelcontextprotocol/server-google-maps",
     license: "MIT",
     isFree: false,
@@ -416,7 +448,8 @@ export const tools: MCPTool[] = [
       { feature: "No API Key Needed", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-14",
-    installs: "15K+"
+    installs: "15K+",
+    status: "archived"
   },
   {
     slug: "sqlite-mcp",
@@ -425,6 +458,8 @@ export const tools: MCPTool[] = [
     answerFirstSummary: "SQLite MCP Server provides AI assistants with a direct interface to SQLite database files on your local machine. It supports schema inspection, running SELECT queries, and exploring data without any server setup — just point it at a .db file. Ideal for analyzing local datasets, inspecting app databases, and rapid prototyping with zero infrastructure overhead.",
     developer: "Anthropic",
     githubUrl: "https://github.com/modelcontextprotocol/servers-archived/tree/main/src/sqlite",
+    githubStatus: "ok",
+    lastGithubCheckAt: "2026-06-22",
     npmPackage: "mcp-server-sqlite",
     license: "MIT",
     isFree: true,
@@ -462,7 +497,8 @@ export const tools: MCPTool[] = [
       { feature: "Client-Server Architecture", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-11",
-    installs: "29K+"
+    installs: "29K+",
+    status: "archived"
   }
 ];
 
