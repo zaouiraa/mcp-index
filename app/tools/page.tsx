@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { BadgeCheck } from "lucide-react"
-import { getAllSlugs, getToolBySlug } from "@/lib/tools-data"
+import { getAllTools } from "@/lib/supabase"
 import type { Metadata } from "next"
 
 export const metadata: Metadata = {
@@ -9,8 +9,7 @@ export const metadata: Metadata = {
 }
 
 export default async function ToolsPage() {
-  const slugs = getAllSlugs()
-  const tools = slugs.map(slug => getToolBySlug(slug)).filter(Boolean)
+  const tools = await getAllTools()
 
   return (
     <main className="min-h-screen bg-background">
@@ -44,13 +43,13 @@ export default async function ToolsPage() {
                     <BadgeCheck className="h-4 w-4 text-emerald-500 flex-shrink-0" />
                   </div>
                   <p className="text-sm text-muted-foreground leading-relaxed line-clamp-2">
-                    {tool.shortDescription}
+                    {tool.short_description}
                   </p>
                   <div className="flex items-center gap-3 flex-wrap">
                     <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
                       {tool.category}
                     </span>
-                    {tool.isFree ? (
+                    {tool.is_free ? (
                       <span className="px-2 py-0.5 text-xs font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
                         Free
                       </span>
