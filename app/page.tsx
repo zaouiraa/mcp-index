@@ -1,17 +1,68 @@
 import Link from "next/link";
 import { getAllTools } from "@/lib/supabase";
+import ToolsSearchClient from "@/components/tools-search-client";
 
 export default async function HomePage() {
   const tools = await getAllTools();
-  const latestTools = tools.slice(0, 6);
   const totalTools = tools.length;
   const freeTools = tools.filter((tool) => tool.is_free).length;
-  const categories = new Set(tools.map((tool) => tool.category)).size;
+  const categories = new Set(tools.map((tool) => tool.category).filter(Boolean)).size;
+  const latestTools = tools.slice(0, 6);
 
   return (
     <main className="min-h-screen bg-black text-white">
+      <header className="border-b border-zinc-800/60 sticky top-0 z-50 bg-black/85 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
+          <Link href="/" className="flex items-center gap-3 group">
+            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-300 group-hover:bg-purple-600/30 transition-colors">
+              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M4 7h16M4 12h16M4 17h10" strokeLinecap="round" />
+              </svg>
+            </div>
+            <div>
+              <p className="text-white font-semibold tracking-tight">MCPIndex</p>
+              <p className="text-[11px] text-zinc-500 font-mono">Supabase-powered directory</p>
+            </div>
+          </Link>
+
+          <nav className="flex items-center gap-2 md:gap-3">
+            <Link
+              href="/"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M3 10.5 12 3l9 7.5" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M5.25 9.75V21h13.5V9.75" strokeLinecap="round" strokeLinejoin="round" />
+              </svg>
+              Home
+            </Link>
+
+            <Link
+              href="/tools"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
+              </svg>
+              Tools
+            </Link>
+
+            <Link
+              href="/tools/search"
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-purple-600 hover:bg-purple-500 text-white transition-colors"
+            >
+              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" strokeLinecap="round" />
+              </svg>
+              Search
+            </Link>
+          </nav>
+        </div>
+      </header>
+
       <section className="border-b border-zinc-800/60 bg-zinc-950/40">
-        <div className="max-w-6xl mx-auto px-6 py-20 md:py-28">
+        <div className="max-w-6xl mx-auto px-6 py-16 md:py-20 space-y-8">
           <div className="max-w-4xl space-y-6">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-purple-500/10 text-purple-300 border border-purple-500/20">
               <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
@@ -36,12 +87,16 @@ export default async function HomePage() {
                 Browse tools
               </Link>
               <Link
-                href="/tools"
+                href="/tools/search"
                 className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 font-semibold rounded-xl transition-colors text-sm"
               >
-                Explore directory
+                Open search
               </Link>
             </div>
+          </div>
+
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-6">
+            <ToolsSearchClient tools={tools} compact />
           </div>
         </div>
       </section>
