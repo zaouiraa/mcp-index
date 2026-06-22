@@ -1,4 +1,3 @@
-$ cat << 'ENDOFFILE' > /tmp/tools-data-fixed.ts
 export interface MCPTool {
   slug: string;
   name: string;
