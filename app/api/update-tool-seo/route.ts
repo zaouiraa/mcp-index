@@ -1,10 +1,16 @@
 import { createClient } from "@supabase/supabase-js"
 import { NextResponse } from "next/server"
 
-const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!url || !serviceRoleKey) {
+    throw new Error("Missing Supabase env vars")
+  }
+
+  return createClient(url, serviceRoleKey)
+}
 
 export async function POST(req: Request) {
   try {
@@ -15,7 +21,9 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: "slug is required" }, { status: 400 })
     }
 
-    const { error } = await supabase
+    const supabase = getSupabaseAdmin()
+
+    const { data, error } = await supabase
       .from("tools")
       .update({
         short_description,
@@ -24,13 +32,34 @@ export async function POST(req: Request) {
         faq,
       })
       .eq("slug", slug)
+      .select()
 
     if (error) {
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json(
+        {
+          error: error.message,
+          details: error,
+        },
+        { status: 500 }
+      )
     }
 
-    return NextResponse.json({ success: true }, { status: 200 })
+    return NextResponse.json(
+      {
+        success: true,
+        updated: data,
+      },
+      { status: 200 }
+    )
   } catch (err) {
-    return NextResponse.json({ error: "Unexpected error" }, { status: 500 })
+    const message =
+      err instanceof Error ? err.message : "Unexpected error"
+
+    return NextResponse.json(
+      {
+        error: message,
+      },
+      { status: 500 }
+    )
   }
 }
