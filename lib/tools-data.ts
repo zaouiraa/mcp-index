@@ -462,8 +462,9 @@ export const tools: MCPTool[] = [
       { feature: "Client-Server Architecture", thisTool: "No", competitor: "Yes", thisOk: false, competitorOk: true }
     ],
     lastUpdated: "2025-01-11",
-    installs: "29K+"
-    ];
+        installs: "29K+"
+  }
+];
 }
 
 export function getToolBySlug(slug: string): MCPTool | undefined {
