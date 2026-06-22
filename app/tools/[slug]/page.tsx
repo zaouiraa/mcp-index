@@ -18,6 +18,107 @@ function truncate(value: string, max = 160) {
   return `${value.slice(0, max - 1).trim()}…`;
 }
 
+function sentenceCase(value: string) {
+  return value
+    .split("-")
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(" ");
+}
+
+function buildUseCases(tool: {
+  category?: string | null;
+  tags?: string[] | null;
+  name: string;
+}) {
+  const category = tool.category?.toLowerCase() || "";
+  const tags = tool.tags || [];
+
+  if (category.includes("version control")) {
+    return [
+      `Managing repositories, branches, and commits through an AI workflow with ${tool.name}.`,
+      "Reviewing issues, pull requests, or merge requests without leaving your MCP client.",
+      "Supporting Git-based team workflows for code review, collaboration, and automation.",
+    ];
+  }
+
+  if (category.includes("browser")) {
+    return [
+      `Automating websites, testing flows, and extracting page data using ${tool.name}.`,
+      "Running browser tasks like clicking, filling forms, and scraping structured content.",
+      "Supporting QA, research, and workflow automation for modern web apps.",
+    ];
+  }
+
+  if (category.includes("database")) {
+    return [
+      `Querying and inspecting data directly from your AI assistant with ${tool.name}.`,
+      "Debugging records, reviewing schemas, or validating application data quickly.",
+      "Supporting developer workflows that need fast database access without context switching.",
+    ];
+  }
+
+  if (category.includes("productivity")) {
+    return [
+      `Connecting knowledge, notes, and team content with ${tool.name}.`,
+      "Searching documents, updating workspace content, and organizing information through AI.",
+      "Helping teams centralize planning, documentation, and operational workflows.",
+    ];
+  }
+
+  if (category.includes("cloud") || category.includes("infrastructure")) {
+    return [
+      `Managing infrastructure and operational workflows with ${tool.name}.`,
+      "Inspecting environments, services, and cluster resources directly from an MCP client.",
+      "Helping DevOps teams reduce context switching during debugging and deployment tasks.",
+    ];
+  }
+
+  if (tags.includes("search") || tags.includes("web")) {
+    return [
+      `Giving AI assistants live web access and retrieval capabilities through ${tool.name}.`,
+      "Finding current information, research sources, and web results beyond static model knowledge.",
+      "Supporting research-heavy workflows that need fresh data from the open web.",
+    ];
+  }
+
+  return [
+    `${tool.name} is useful when you want to extend an AI assistant with real tools and live system access.`,
+    "It helps move from chat-only answers to real actions such as reading data, managing systems, or retrieving current information.",
+    "It is best for developer and technical workflows where AI needs controlled access to external tools or services.",
+  ];
+}
+
+function buildWhenToChoose(tool: {
+  name: string;
+  category?: string | null;
+  tags?: string[] | null;
+}) {
+  const category = tool.category?.toLowerCase() || "";
+  const tags = tool.tags || [];
+
+  if (tool.name.toLowerCase().includes("gitlab")) {
+    return `Choose ${tool.name} when your team works in GitLab.com or a self-hosted GitLab instance and needs AI help with repositories, issues, merge requests, or CI/CD workflows.`;
+  }
+
+  if (tool.name.toLowerCase().includes("github")) {
+    return `Choose ${tool.name} when your repositories, pull requests, and issues already live in GitHub and you want direct AI-assisted repository operations.`;
+  }
+
+  if (category.includes("browser")) {
+    return `Choose ${tool.name} when you need browser automation, testing, scraping, or page interaction rather than API-only access.`;
+  }
+
+  if (category.includes("database")) {
+    return `Choose ${tool.name} when your workflow depends on inspecting or querying structured data directly from an MCP-compatible AI assistant.`;
+  }
+
+  if (tags.includes("search") || tags.includes("research")) {
+    return `Choose ${tool.name} when fresh, real-time information matters and your AI assistant needs live search or research capabilities.`;
+  }
+
+  return `Choose ${tool.name} when you want an MCP server focused on ${tool.category || "technical workflows"} and need tighter integration with your existing tools.`;
+}
+
 export async function generateStaticParams() {
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -101,6 +202,12 @@ export default async function ToolDetailPage({ params }: PageProps) {
     tool.answer_first_summary || tool.short_description || ""
   );
 
+  const useCases = buildUseCases(tool);
+  const whenToChoose = buildWhenToChoose(tool);
+  const categorySlug = tool.category
+    ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
+    : null;
+
   const jsonLdSoftware = {
     "@context": "https://schema.org",
     "@type": "SoftwareApplication",
@@ -174,7 +281,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      {/* JSON-LD */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSoftware) }}
@@ -190,21 +296,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
         />
       )}
 
-      {/* UNCLAIMED bar */}
-      <div className="border-b border-zinc-800/60 bg-zinc-950/50">
-        <div className="max-w-4xl mx-auto px-6 py-3 flex items-center justify-between gap-4 flex-wrap">
-          <span className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold bg-yellow-500/10 text-yellow-400 border border-yellow-500/20">
-            <span className="w-2 h-2 rounded-full bg-yellow-400 animate-pulse" />
-            UNCLAIMED PROFILE
-          </span>
-          <button className="px-4 py-1.5 text-sm font-semibold bg-purple-600 hover:bg-purple-500 text-white rounded-lg transition-colors cursor-pointer">
-            Claim This Tool — $9.99/mo
-          </button>
-        </div>
-      </div>
-
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">
-        {/* Breadcrumbs */}
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
           <Link href="/" className="hover:text-white transition-colors">
             MCPIndex
@@ -217,7 +309,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
           <span className="text-zinc-300">{tool.name}</span>
         </nav>
 
-        {/* Header */}
         <div className="space-y-4">
           <div className="flex items-center gap-3 flex-wrap">
             <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
@@ -276,6 +367,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
             {tool.name}
           </h1>
+
           {tool.short_description && (
             <p className="text-lg text-zinc-400 leading-relaxed">
               {tool.short_description}
@@ -301,21 +393,83 @@ export default async function ToolDetailPage({ params }: PageProps) {
               </>
             )}
           </div>
+
+          <p className="text-sm text-zinc-500 leading-relaxed">
+            Looking for more MCP servers? Browse the full{" "}
+            <Link href="/tools" className="text-zinc-300 underline underline-offset-4 hover:text-white">
+              MCP tools directory
+            </Link>
+            {categorySlug && (
+              <>
+                {" "}or explore more tools in{" "}
+                <Link
+                  href={`/categories/${categorySlug}`}
+                  className="text-zinc-300 underline underline-offset-4 hover:text-white"
+                >
+                  {tool.category}
+                </Link>
+              </>
+            )}
+            .
+          </p>
         </div>
 
-        {/* Answer-first summary */}
         {tool.answer_first_summary && (
-          <div className="relative border-l-2 border-purple-500 bg-purple-500/5 rounded-r-xl p-6">
+          <section className="relative border-l-2 border-purple-500 bg-purple-500/5 rounded-r-xl p-6 space-y-3">
             <div className="absolute -left-[5px] top-6 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
+            <h2 className="text-xl font-semibold text-white">Quick overview</h2>
             <p className="text-zinc-300 leading-relaxed text-[15px]">
               {tool.answer_first_summary}
             </p>
-          </div>
+          </section>
         )}
 
-        {/* Config JSON */}
+        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-white">
+              What this MCP server is best for
+            </h2>
+            <ul className="space-y-3 text-sm text-zinc-400 leading-relaxed">
+              {useCases.map((item, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
+            <h2 className="text-xl font-semibold text-white">
+              When to choose it
+            </h2>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              {whenToChoose}
+            </p>
+
+            <div className="pt-2 space-y-2">
+              <p className="text-xs uppercase tracking-[0.18em] text-zinc-600">
+                Good fit
+              </p>
+              <div className="flex flex-wrap gap-2">
+                {tags.slice(0, 6).map((tag: string) => (
+                  <span
+                    key={tag}
+                    className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800"
+                  >
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">{tool.name} Configuration</h2>
+          <p className="text-sm text-zinc-500 leading-relaxed">
+            Use the following configuration as a starting point for Claude Desktop or any compatible MCP client, then replace placeholder credentials with your own values.
+          </p>
           <div className="relative bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/50">
               <span className="w-3 h-3 rounded-full bg-red-500/70" />
@@ -332,17 +486,20 @@ export default async function ToolDetailPage({ params }: PageProps) {
           </div>
         </section>
 
-        {/* Ad slot */}
-        <div className="flex items-center justify-center py-6">
-          <div className="w-full max-w-[728px] h-[90px] border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
+        <div className="flex items-center justify-center py-2">
+          <div className="w-full max-w-[728px] min-h-[90px] border border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
             Ad Space
           </div>
         </div>
 
-        {/* Setup steps */}
         {setupSteps.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">How to set up {tool.name}</h2>
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold">How to set up {tool.name}</h2>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                These setup steps cover the typical installation flow for this MCP server. Double-check permissions, tokens, and environment variables before connecting it to your AI client.
+              </p>
+            </div>
             <ol className="space-y-3">
               {setupSteps.map((step: string, i: number) => (
                 <li key={i} className="flex gap-4">
@@ -358,7 +515,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* FAQ */}
         {faq.length > 0 && (
           <section className="space-y-6">
             <div className="space-y-2">
@@ -368,23 +524,24 @@ export default async function ToolDetailPage({ params }: PageProps) {
               </p>
             </div>
 
-            {faq.map(
-              (
-                item: { question: string; answer: string },
-                i: number
-              ) => (
-                <div key={i} className="space-y-2">
-                  <h3 className="text-xl font-semibold">{item.question}</h3>
-                  <p className="text-zinc-400 leading-relaxed text-[15px]">
-                    {item.answer}
-                  </p>
-                </div>
-              )
-            )}
+            <div className="space-y-5">
+              {faq.map(
+                (
+                  item: { question: string; answer: string },
+                  i: number
+                ) => (
+                  <article key={i} className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                    <h3 className="text-lg font-semibold">{item.question}</h3>
+                    <p className="text-zinc-400 leading-relaxed text-[15px]">
+                      {item.answer}
+                    </p>
+                  </article>
+                )
+              )}
+            </div>
           </section>
         )}
 
-        {/* Comparisons */}
         {comparisons.length > 0 && (
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">{tool.name} vs Competitors</h2>
@@ -421,20 +578,12 @@ export default async function ToolDetailPage({ params }: PageProps) {
                       >
                         <td className="px-5 py-3 text-zinc-400">{row.feature}</td>
                         <td className="px-5 py-3 text-center">
-                          <span
-                            className={
-                              row.thisOk ? "text-emerald-400" : "text-red-400"
-                            }
-                          >
+                          <span className={row.thisOk ? "text-emerald-400" : "text-red-400"}>
                             {row.thisOk ? "✅" : "❌"} {row.thisTool}
                           </span>
                         </td>
                         <td className="px-5 py-3 text-center">
-                          <span
-                            className={
-                              row.competitorOk ? "text-emerald-400" : "text-red-400"
-                            }
-                          >
+                          <span className={row.competitorOk ? "text-emerald-400" : "text-red-400"}>
                             {row.competitorOk ? "✅" : "❌"} {row.competitor}
                           </span>
                         </td>
@@ -447,7 +596,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* Related tools */}
         {relatedTools.length > 0 && (
           <section className="space-y-4">
             <div className="space-y-2">
@@ -493,7 +641,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
           </section>
         )}
 
-        {/* Tags */}
         {tags.length > 0 && (
           <section className="space-y-3">
             <h2 className="text-lg font-semibold text-zinc-400">Tags</h2>
@@ -501,42 +648,21 @@ export default async function ToolDetailPage({ params }: PageProps) {
               {tags.map((tag: string) => (
                 <span
                   key={tag}
-                  className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-500 border border-zinc-800"
+                  className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800"
                 >
-                  {tag}
+                  {sentenceCase(tag)}
                 </span>
               ))}
             </div>
           </section>
         )}
 
-        {/* Ad slot 2 */}
-        <div className="flex items-center justify-center py-6">
-          <div className="w-full max-w-[728px] h-[90px] border-2 border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
+        <div className="flex items-center justify-center py-2">
+          <div className="w-full max-w-[728px] min-h-[90px] border border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
             Ad Space
           </div>
         </div>
 
-        {/* Claim CTA */}
-        <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-purple-600 to-blue-600 p-8 md:p-10">
-          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(255,255,255,0.1),transparent_60%)]" />
-          <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="space-y-2">
-              <h3 className="text-xl font-bold text-white">
-                Are you the developer?
-              </h3>
-              <p className="text-purple-100/80 text-sm leading-relaxed max-w-lg">
-                Claim this profile to update data, add documentation, view lead
-                analytics, and control your tool&apos;s listing on MCPIndex.
-              </p>
-            </div>
-            <button className="flex-shrink-0 px-6 py-3 bg-white text-purple-700 font-semibold rounded-xl hover:bg-purple-50 transition-colors cursor-pointer text-sm">
-              Claim Profile — $9.99/mo
-            </button>
-          </div>
-        </div>
-
-        {/* External links */}
         <section className="flex flex-wrap gap-4 pb-8">
           <a
             href={tool.github_url}
@@ -566,7 +692,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
         </section>
       </div>
 
-      {/* Footer */}
       <footer className="border-t border-zinc-800/60 mt-8">
         <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
           <span>© 2026 MCPIndex. All rights reserved.</span>
