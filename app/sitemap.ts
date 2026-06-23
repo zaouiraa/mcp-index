@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getAllTools } from "@/lib/supabase";
+import { GUIDE_CATALOG } from "@/lib/content/related-guides";
 
 export const revalidate = 3600;
 
@@ -88,5 +89,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.7,
   }));
 
-  return [...staticPages, ...categoryPages, ...toolPages];
+  const guidePages: MetadataRoute.Sitemap = GUIDE_CATALOG.map((guide) => ({
+    url: `${baseUrl}${guide.href}`,
+    lastModified: now,
+    changeFrequency: "weekly",
+    priority: 0.7,
+  }));
+
+  return [...staticPages, ...categoryPages, ...toolPages, ...guidePages];
 }
