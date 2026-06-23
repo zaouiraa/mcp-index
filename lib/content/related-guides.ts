@@ -97,11 +97,11 @@ const GUIDE_CATALOG: GuideItem[] = [
 ];
 
 function normalize(value?: string | null) {
-  return (value || "").trim().toLowerCase();
+  return (value || "").normalize("NFKC").trim().toLowerCase();
 }
 
 function normalizeList(values?: string[] | null) {
-  return (values || []).map((value) => value.trim().toLowerCase());
+  return (values || []).map((value) => normalize(value)).filter(Boolean);
 }
 
 function scoreGuide(tool: ToolLike, guide: GuideItem) {
@@ -133,6 +133,8 @@ export function getRelatedGuidesForTool(
   tool: ToolLike,
   limit = 3
 ): GuideItem[] {
+  const seen = new Set<string>();
+
   return GUIDE_CATALOG
     .map((guide) => ({
       guide,
@@ -140,8 +142,14 @@ export function getRelatedGuidesForTool(
     }))
     .filter((item) => item.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((item) => item.guide);
+    .map((item) => item.guide)
+    .filter((guide) => {
+      const key = guide.href || guide.id;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    })
+    .slice(0, limit);
 }
 
-export { GUIDE_CATALOG };
+export { GUIDE_CATALOG, scoreGuide };
