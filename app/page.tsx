@@ -3,45 +3,77 @@ import { getAllTools } from "@/lib/supabase";
 import ToolsSearchClient from "@/components/tools-search-client";
 
 export default async function HomePage() {
-  const tools = await getAllTools();
+  const tools = (await getAllTools()) ?? [];
+
   const totalTools = tools.length;
-  const freeTools = tools.filter((tool) => tool.is_free).length;
-  const categories = new Set(tools.map((tool) => tool.category).filter(Boolean)).size;
+  const freeTools = tools.filter((tool) => Boolean(tool?.is_free)).length;
+  const categories = new Set(
+    tools.map((tool) => tool?.category).filter(Boolean)
+  ).size;
   const latestTools = tools.slice(0, 6);
 
   return (
     <main className="min-h-screen bg-black text-white">
-      <header className="border-b border-zinc-800/60 sticky top-0 z-50 bg-black/85 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between gap-4">
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 rounded-xl bg-purple-600/20 border border-purple-500/30 flex items-center justify-center text-purple-300 group-hover:bg-purple-600/30 transition-colors">
-              <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+      <header className="sticky top-0 z-50 border-b border-zinc-800/60 bg-black/85 backdrop-blur-md">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-6 py-4">
+          <Link href="/" className="group flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl border border-purple-500/30 bg-purple-600/20 text-purple-300 transition-colors group-hover:bg-purple-600/30">
+              <svg
+                className="h-5 w-5"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
                 <path d="M4 7h16M4 12h16M4 17h10" strokeLinecap="round" />
               </svg>
             </div>
+
             <div>
-              <p className="text-white font-semibold tracking-tight">MCPIndex</p>
-              <p className="text-[11px] text-zinc-500 font-mono">Supabase-powered directory</p>
+              <p className="font-semibold tracking-tight text-white">MCPIndex</p>
+              <p className="font-mono text-[11px] text-zinc-500">
+                Supabase-powered directory
+              </p>
             </div>
           </Link>
 
           <nav className="flex items-center gap-2 md:gap-3">
             <Link
               href="/"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
-                <path d="M3 10.5 12 3l9 7.5" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M5.25 9.75V21h13.5V9.75" strokeLinecap="round" strokeLinejoin="round" />
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
+                <path
+                  d="M3 10.5 12 3l9 7.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
+                <path
+                  d="M5.25 9.75V21h13.5V9.75"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                />
               </svg>
               Home
             </Link>
 
             <Link
               href="/tools"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm font-medium text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-white"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
                 <path d="M4 6h16M4 12h16M4 18h16" strokeLinecap="round" />
               </svg>
               Tools
@@ -49,9 +81,15 @@ export default async function HomePage() {
 
             <Link
               href="/tools/search"
-              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg bg-purple-600 hover:bg-purple-500 text-white transition-colors"
+              className="inline-flex items-center gap-2 rounded-lg bg-purple-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-purple-500"
             >
-              <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
+              <svg
+                className="h-4 w-4"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="1.8"
+              >
                 <circle cx="11" cy="11" r="7" />
                 <path d="m20 20-3.5-3.5" strokeLinecap="round" />
               </svg>
@@ -62,33 +100,36 @@ export default async function HomePage() {
       </header>
 
       <section className="border-b border-zinc-800/60 bg-zinc-950/40">
-        <div className="max-w-6xl mx-auto px-6 py-16 md:py-20 space-y-8">
+        <div className="mx-auto max-w-6xl space-y-8 px-6 py-16 md:py-20">
           <div className="max-w-4xl space-y-6">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-mono bg-purple-500/10 text-purple-300 border border-purple-500/20">
-              <span className="w-2 h-2 rounded-full bg-purple-400 animate-pulse" />
+            <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1 text-xs font-mono text-purple-300">
+              <span className="h-2 w-2 rounded-full bg-purple-400" />
               MCPINDEX DIRECTORY
             </div>
 
-            <h1 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-              Find MCP servers, setup guides, and configuration examples in one place
+            <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
+              Find MCP servers, setup guides, and configuration examples in one
+              place
             </h1>
 
-            <p className="text-zinc-400 text-lg md:text-xl leading-relaxed max-w-3xl">
-              MCPIndex helps developers discover Model Context Protocol tools for Claude,
-              Cursor, VS Code, and AI agents, with config snippets, setup steps, FAQs,
-              GitHub links, npm packages, and implementation-ready details.
+            <p className="max-w-3xl text-lg leading-relaxed text-zinc-400 md:text-xl">
+              MCPIndex helps developers discover Model Context Protocol tools for
+              Claude, Cursor, VS Code, and AI agents, with config snippets, setup
+              steps, FAQs, GitHub links, npm packages, and implementation-ready
+              details.
             </p>
 
             <div className="flex flex-wrap gap-4 pt-2">
               <Link
                 href="/tools"
-                className="px-6 py-3 bg-purple-600 hover:bg-purple-500 text-white font-semibold rounded-xl transition-colors text-sm"
+                className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-purple-500"
               >
                 Browse tools
               </Link>
+
               <Link
                 href="/tools/search"
-                className="px-6 py-3 bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-200 font-semibold rounded-xl transition-colors text-sm"
+                className="rounded-xl border border-zinc-800 bg-zinc-900 px-6 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:bg-zinc-800"
               >
                 Open search
               </Link>
@@ -102,18 +143,20 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <div className="max-w-6xl mx-auto px-6 py-10 md:py-12">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="text-xs font-mono text-zinc-500 mb-2">TOTAL TOOLS</p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">TOTAL TOOLS</p>
               <p className="text-3xl font-bold text-white">{totalTools}</p>
             </div>
+
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="text-xs font-mono text-zinc-500 mb-2">FREE TOOLS</p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">FREE TOOLS</p>
               <p className="text-3xl font-bold text-white">{freeTools}</p>
             </div>
+
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="text-xs font-mono text-zinc-500 mb-2">CATEGORIES</p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">CATEGORIES</p>
               <p className="text-3xl font-bold text-white">{categories}</p>
             </div>
           </div>
@@ -121,66 +164,78 @@ export default async function HomePage() {
       </section>
 
       <section>
-        <div className="max-w-6xl mx-auto px-6 pb-16 md:pb-20 space-y-8">
+        <div className="mx-auto max-w-6xl space-y-8 px-6 pb-16 md:pb-20">
           <div className="flex items-center justify-between gap-4">
             <div>
               <p className="text-sm font-mono text-zinc-500">Featured</p>
-              <h2 className="text-2xl md:text-3xl font-semibold text-white">Latest tools</h2>
+              <h2 className="text-2xl font-semibold text-white md:text-3xl">
+                Latest tools
+              </h2>
             </div>
-            <Link href="/tools" className="text-sm text-purple-300 hover:text-purple-200 transition-colors">
+
+            <Link
+              href="/tools"
+              className="text-sm text-purple-300 transition-colors hover:text-purple-200"
+            >
               View all tools →
             </Link>
           </div>
 
           {latestTools.length === 0 ? (
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-10 text-center">
-              <h3 className="text-xl font-semibold text-white mb-2">No tools found</h3>
-              <p className="text-zinc-500 max-w-xl mx-auto leading-relaxed">
-                Add rows to your Supabase tools table to populate the homepage and the tools directory.
+              <h3 className="mb-2 text-xl font-semibold text-white">
+                No tools found
+              </h3>
+              <p className="mx-auto max-w-xl leading-relaxed text-zinc-500">
+                Add rows to your Supabase tools table to populate the homepage and
+                the tools directory.
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
               {latestTools.map((tool) => (
                 <Link
                   key={tool.slug}
                   href={`/tools/${tool.slug}`}
-                  className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 hover:bg-zinc-900/80 hover:border-zinc-700 transition-colors p-6 flex flex-col gap-5"
+                  className="group flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 transition-colors hover:border-zinc-700 hover:bg-zinc-900/80"
                 >
                   <div className="space-y-3">
                     <div className="flex flex-wrap items-center gap-2">
-                      <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800">
-                        {tool.category}
-                      </span>
+                      {tool.category && (
+                        <span className="rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-[11px] font-mono text-zinc-400">
+                          {tool.category}
+                        </span>
+                      )}
+
                       {tool.is_free ? (
-                        <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                        <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-mono text-emerald-400">
                           Free
                         </span>
                       ) : (
-                        <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                        <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[11px] font-mono text-amber-400">
                           Freemium
                         </span>
                       )}
                     </div>
 
-                    <h3 className="text-xl font-semibold text-white group-hover:text-purple-300 transition-colors">
-                      {tool.name}
+                    <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
+                      {tool.name ?? "Untitled tool"}
                     </h3>
 
-                    <p className="text-sm text-zinc-400 leading-relaxed line-clamp-3">
-                      {tool.short_description}
+                    <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">
+                      {tool.short_description ?? "No description available."}
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-zinc-800 bg-black/30 p-4">
-                    <p className="text-sm text-zinc-300 leading-relaxed line-clamp-4">
-                      {tool.answer_first_summary}
+                    <p className="line-clamp-4 text-sm leading-relaxed text-zinc-300">
+                      {tool.answer_first_summary ?? "No summary available."}
                     </p>
                   </div>
 
-                  <div className="mt-auto flex items-center justify-between gap-3 text-xs text-zinc-500 font-mono">
-                    <span>by {tool.developer}</span>
-                    <span>{tool.installs} installs</span>
+                  <div className="mt-auto flex items-center justify-between gap-3 text-xs font-mono text-zinc-500">
+                    <span>by {tool.developer ?? "Unknown"}</span>
+                    <span>{tool.installs ?? 0} installs</span>
                   </div>
                 </Link>
               ))}
