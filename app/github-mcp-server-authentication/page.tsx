@@ -1,3 +1,4 @@
+import RelatedGuides from "@/components/content/RelatedGuides";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -119,9 +120,10 @@ export default function GitHubMcpServerAuthenticationPage() {
       />
 
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
-
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
-          <Link href="/" className="hover:text-white transition-colors">MCPIndex</Link>
+          <Link href="/" className="hover:text-white transition-colors">
+            MCPIndex
+          </Link>
           <span>/</span>
           <span className="text-zinc-300">GitHub MCP Server Authentication</span>
         </nav>
@@ -208,14 +210,20 @@ export default function GitHubMcpServerAuthenticationPage() {
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-b border-zinc-800 bg-zinc-950/80">
-                    <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Scope</th>
-                    <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Why it matters</th>
+                    <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
+                      Scope
+                    </th>
+                    <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
+                      Why it matters
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className="border-b border-zinc-900">
                     <td className="px-4 py-3">
-                      <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">repo</code>
+                      <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                        repo
+                      </code>
                     </td>
                     <td className="px-4 py-3 text-zinc-400">
                       Grants access to private repositories and many repo-level operations.
@@ -223,7 +231,9 @@ export default function GitHubMcpServerAuthenticationPage() {
                   </tr>
                   <tr className="border-b border-zinc-900">
                     <td className="px-4 py-3">
-                      <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">read:org</code>
+                      <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                        read:org
+                      </code>
                     </td>
                     <td className="px-4 py-3 text-zinc-400">
                       Helps the server read organization membership and org-level visibility.
@@ -231,7 +241,9 @@ export default function GitHubMcpServerAuthenticationPage() {
                   </tr>
                   <tr>
                     <td className="px-4 py-3">
-                      <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">read:user</code>
+                      <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                        read:user
+                      </code>
                     </td>
                     <td className="px-4 py-3 text-zinc-400">
                       Provides basic user account information needed for account-aware operations.
@@ -244,11 +256,17 @@ export default function GitHubMcpServerAuthenticationPage() {
             <p className="text-zinc-400 text-sm leading-relaxed">
               According to GitHub MCP Server's scope filtering documentation, some
               scopes imply others. For example,{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">repo</code>{" "}
+              <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                repo
+              </code>{" "}
               implicitly includes{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">public_repo</code>{" "}
+              <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                public_repo
+              </code>{" "}
               and{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">security_events</code>.
+              <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                security_events
+              </code>.
             </p>
           </div>
         </section>
@@ -260,9 +278,13 @@ export default function GitHubMcpServerAuthenticationPage() {
               <h3 className="text-lg font-semibold">Classic PAT</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
                 Classic personal access tokens use broad scopes like{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">repo</code>{" "}
+                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                  repo
+                </code>{" "}
                 and{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">read:org</code>.
+                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+                  read:org
+                </code>.
                 They are easier to configure and remain the simplest choice for most
                 GitHub MCP Server tutorials.
               </p>
@@ -405,37 +427,25 @@ https://api.github.com/user | grep -i x-oauth-scopes`}
           </div>
         </section>
 
-        <section className="space-y-5">
-          <h2 className="text-2xl font-semibold">Related guides</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              {
-                title: "GitHub MCP Server Setup",
-                body: "Full install walkthrough for Claude Desktop.",
-                href: "/github-mcp-server-setup",
-              },
-              {
-                title: "How to Install MCP Servers",
-                body: "Cross-client setup guide for Claude Desktop, Cursor, and VS Code.",
-                href: "/how-to-install-mcp-servers",
-              },
-              {
-                title: "Best MCP Servers for Claude",
-                body: "Broader ranking and recommendations by use case.",
-                href: "/best-mcp-servers-for-claude",
-              },
-            ].map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:bg-zinc-900/70 transition-colors block"
-              >
-                <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <RelatedGuides
+          items={[
+            {
+              title: "GitHub MCP Server Setup",
+              body: "Full install walkthrough for Claude Desktop.",
+              href: "/github-mcp-server-setup",
+            },
+            {
+              title: "How to Install MCP Servers",
+              body: "Cross-client setup guide for Claude Desktop, Cursor, and VS Code.",
+              href: "/how-to-install-mcp-servers",
+            },
+            {
+              title: "Best MCP Servers for Claude",
+              body: "Broader ranking and recommendations by use case.",
+              href: "/best-mcp-servers-for-claude",
+            },
+          ]}
+        />
 
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
@@ -480,7 +490,6 @@ https://api.github.com/user | grep -i x-oauth-scopes`}
             </Link>
           </div>
         </section>
-
       </div>
     </main>
   );
