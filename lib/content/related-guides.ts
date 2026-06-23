@@ -24,7 +24,7 @@ const GUIDE_CATALOG: GuideItem[] = [
     href: "/github-mcp-server-setup",
     slugs: ["github-mcp"],
     categories: ["Version Control"],
-    tags: ["github", "repos", "pull-requests"],
+    tags: ["github", "repos", "pull-requests", "setup"],
     priority: 100,
   },
   {
@@ -43,8 +43,8 @@ const GUIDE_CATALOG: GuideItem[] = [
     body: "Compare the best MCP stack for pull requests, docs, and security.",
     href: "/best-mcp-tools-for-github-workflows",
     slugs: ["github-mcp", "context7-mcp", "desktop-commander-mcp", "semgrep-mcp"],
-    categories: ["Version Control", "Security", "Developer Tools"],
-    tags: ["github", "pull-requests", "security", "docs"],
+    categories: ["Version Control", "Developer Tools", "Security"],
+    tags: ["github", "pull-requests", "security", "docs", "workflow"],
     priority: 90,
   },
   {
@@ -52,17 +52,31 @@ const GUIDE_CATALOG: GuideItem[] = [
     title: "How to Install MCP Servers",
     body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
     href: "/how-to-install-mcp-servers",
-    categories: ["Developer Tools", "Productivity", "Cloud", "Infrastructure", "Database", "Security"],
+    categories: [
+      "Developer Tools",
+      "Productivity",
+      "Cloud",
+      "Infrastructure",
+      "Database",
+      "Security",
+      "Version Control",
+    ],
     tags: ["install", "setup", "mcp"],
     priority: 80,
   },
   {
-    id: "claude-setup",
+    id: "claude-desktop-setup",
     title: "Claude Desktop MCP Setup",
     body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
     href: "/claude-desktop-mcp-setup",
-    categories: ["Developer Tools", "Productivity", "Cloud", "Infrastructure", "Database"],
-    tags: ["claude", "desktop", "setup"],
+    categories: [
+      "Developer Tools",
+      "Productivity",
+      "Cloud",
+      "Infrastructure",
+      "Database",
+    ],
+    tags: ["claude", "desktop", "setup", "mcp"],
     priority: 75,
   },
   {
@@ -70,7 +84,13 @@ const GUIDE_CATALOG: GuideItem[] = [
     title: "Best Open Source MCP Tools on GitHub",
     body: "Compare popular open source MCP tools by use case and setup difficulty.",
     href: "/best-open-source-mcp-tools-on-github",
-    categories: ["Developer Tools", "Security", "Productivity", "Cloud", "Infrastructure"],
+    categories: [
+      "Developer Tools",
+      "Security",
+      "Productivity",
+      "Cloud",
+      "Infrastructure",
+    ],
     tags: ["open-source", "github", "comparison"],
     priority: 70,
   },
@@ -81,7 +101,7 @@ function normalize(value?: string | null) {
 }
 
 function normalizeList(values?: string[] | null) {
-  return (values || []).map((v) => v.trim().toLowerCase());
+  return (values || []).map((value) => value.trim().toLowerCase());
 }
 
 function scoreGuide(tool: ToolLike, guide: GuideItem) {
@@ -89,14 +109,19 @@ function scoreGuide(tool: ToolLike, guide: GuideItem) {
   const toolCategory = normalize(tool.category);
   const toolTags = normalizeList(tool.tags);
 
-  let score = guide.priority || 0;
-
   const guideSlugs = normalizeList(guide.slugs);
   const guideCategories = normalizeList(guide.categories);
   const guideTags = normalizeList(guide.tags);
 
-  if (guideSlugs.includes(toolSlug)) score += 100;
-  if (toolCategory && guideCategories.includes(toolCategory)) score += 40;
+  let score = guide.priority || 0;
+
+  if (guideSlugs.includes(toolSlug)) {
+    score += 100;
+  }
+
+  if (toolCategory && guideCategories.includes(toolCategory)) {
+    score += 40;
+  }
 
   const sharedTags = toolTags.filter((tag) => guideTags.includes(tag)).length;
   score += sharedTags * 15;
@@ -104,14 +129,19 @@ function scoreGuide(tool: ToolLike, guide: GuideItem) {
   return score;
 }
 
-export function getRelatedGuidesForTool(tool: ToolLike, limit = 3) {
+export function getRelatedGuidesForTool(
+  tool: ToolLike,
+  limit = 3
+): GuideItem[] {
   return GUIDE_CATALOG
     .map((guide) => ({
-      ...guide,
-      _score: scoreGuide(tool, guide),
+      guide,
+      score: scoreGuide(tool, guide),
     }))
-    .filter((guide) => guide._score > 0)
-    .sort((a, b) => b._score - a._score)
+    .filter((item) => item.score > 0)
+    .sort((a, b) => b.score - a.score)
     .slice(0, limit)
-    .map(({ _score, ...guide }) => guide);
+    .map((item) => item.guide);
 }
+
+export { GUIDE_CATALOG };
