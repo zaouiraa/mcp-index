@@ -1,3 +1,4 @@
+import RelatedGuides from "@/components/content/RelatedGuides";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -457,6 +458,25 @@ export default function BestOpenSourceMcpToolsOnGitHubPage() {
           </p>
         </section>
 
+        <RelatedGuides
+  items={[
+    {
+      title: "Best MCP Tools for GitHub Workflows",
+      body: "Find the strongest MCP stack for pull requests, docs, and security.",
+      href: "/best-mcp-tools-for-github-workflows",
+    },
+    {
+      title: "GitHub MCP Server Setup",
+      body: "Step-by-step setup guide for the most important GitHub MCP tool.",
+      href: "/github-mcp-server-setup",
+    },
+    {
+      title: "GitHub MCP Authentication",
+      body: "Troubleshoot GitHub token scopes and private repository access.",
+      href: "/github-mcp-server-authentication",
+    },
+  ]}
+/>
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
           <div className="space-y-3">
