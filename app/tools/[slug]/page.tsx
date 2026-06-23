@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getToolBySlug, getAllSlugs, getAllTools } from "@/lib/supabase";
-import { getRelatedGuidesForTool } from "@/lib/content/related-guides";
 import { CopyButton } from "@/components/copy-button";
 import type { Metadata } from "next";
 
@@ -24,6 +23,282 @@ function sentenceCase(value: string) {
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
+}
+
+type GuideItem = {
+  title: string;
+  body: string;
+  href: string;
+};
+
+function getRelatedGuidesForTool(tool: {
+  slug: string;
+  category?: string | null;
+  tags?: string[] | null;
+}): GuideItem[] {
+  const slug = tool.slug;
+  const category = tool.category?.toLowerCase() || "";
+  const tags = tool.tags?.map((t) => t.toLowerCase()) || [];
+
+  if (slug === "github-mcp") {
+    return [
+      {
+        title: "GitHub MCP Server Setup",
+        body: "Install and configure GitHub MCP Server step by step.",
+        href: "/github-mcp-server-setup",
+      },
+      {
+        title: "GitHub MCP Authentication",
+        body: "Fix token scopes, PAT issues, and private repo access problems.",
+        href: "/github-mcp-server-authentication",
+      },
+      {
+        title: "Best MCP Tools for GitHub Workflows",
+        body: "Compare the best MCP stack for pull requests, docs, and security.",
+        href: "/best-mcp-tools-for-github-workflows",
+      },
+    ];
+  }
+
+  if (slug === "context7-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best MCP Tools for GitHub Workflows",
+        body: "See why Context7 is a strong companion for GitHub-based coding workflows.",
+        href: "/best-mcp-tools-for-github-workflows",
+      },
+    ];
+  }
+
+  if (slug === "desktop-commander-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client guide for installing MCP tools across major clients.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Set up Claude Desktop before adding local-access tools.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best MCP Tools for GitHub Workflows",
+        body: "See how Desktop Commander fits GitHub-heavy local repo workflows.",
+        href: "/best-mcp-tools-for-github-workflows",
+      },
+    ];
+  }
+
+  if (slug === "semgrep-mcp") {
+    return [
+      {
+        title: "Best MCP Tools for GitHub Workflows",
+        body: "See how Semgrep fits security-aware PR and code review workflows.",
+        href: "/best-mcp-tools-for-github-workflows",
+      },
+      {
+        title: "How to Install MCP Servers",
+        body: "General installation guide for MCP clients and setup flows.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "Broader comparison of top open source MCP tools and where Semgrep fits.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  if (slug === "supabase-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "Compare popular open source MCP tools by use case and maintenance quality.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  if (slug === "figma-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "Compare popular open source MCP tools including Figma Context MCP.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  if (slug === "aws-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "See how AWS MCP compares to other top open source MCP tools.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  if (slug === "grafana-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "Compare Grafana MCP with other top open source monitoring and DevOps tools.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  if (slug === "atlassian-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "Compare Atlassian MCP with other top open source productivity tools.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  if (slug === "google-workspace-mcp") {
+    return [
+      {
+        title: "How to Install MCP Servers",
+        body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Claude Desktop MCP Setup",
+        body: "Beginner-friendly guide to connect MCP servers in Claude Desktop.",
+        href: "/claude-desktop-mcp-setup",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "See how Google Workspace MCP fits among top open source productivity tools.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  // Category-level fallbacks
+  if (tags.includes("github") || category.includes("version control")) {
+    return [
+      {
+        title: "GitHub MCP Server Setup",
+        body: "Step-by-step GitHub MCP install guide.",
+        href: "/github-mcp-server-setup",
+      },
+      {
+        title: "GitHub MCP Authentication",
+        body: "Troubleshoot token scopes and private repository access.",
+        href: "/github-mcp-server-authentication",
+      },
+      {
+        title: "Best MCP Tools for GitHub Workflows",
+        body: "Compare the best GitHub-focused MCP stack.",
+        href: "/best-mcp-tools-for-github-workflows",
+      },
+    ];
+  }
+
+  if (category.includes("security")) {
+    return [
+      {
+        title: "Best MCP Tools for GitHub Workflows",
+        body: "See how security tools like Semgrep fit GitHub-heavy workflows.",
+        href: "/best-mcp-tools-for-github-workflows",
+      },
+      {
+        title: "How to Install MCP Servers",
+        body: "General installation guide for MCP clients and setup flows.",
+        href: "/how-to-install-mcp-servers",
+      },
+      {
+        title: "Best Open Source MCP Tools on GitHub",
+        body: "Broader comparison of open source MCP tools including security tools.",
+        href: "/best-open-source-mcp-tools-on-github",
+      },
+    ];
+  }
+
+  // Default fallback
+  return [
+    {
+      title: "How to Install MCP Servers",
+      body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+      href: "/how-to-install-mcp-servers",
+    },
+    {
+      title: "Claude Desktop MCP Setup",
+      body: "Beginner-friendly setup guide for Claude Desktop MCP.",
+      href: "/claude-desktop-mcp-setup",
+    },
+    {
+      title: "Best Open Source MCP Tools on GitHub",
+      body: "Compare popular open source MCP tools by use case and setup difficulty.",
+      href: "/best-open-source-mcp-tools-on-github",
+    },
+  ];
 }
 
 function buildUseCases(tool: {
