@@ -1,3 +1,4 @@
+import RelatedGuides from "@/components/content/RelatedGuides";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -444,6 +445,25 @@ npx -v`}
           </div>
         </section>
 
+        <RelatedGuides
+  items={[
+    {
+      title: "How to Install MCP Servers",
+      body: "Cross-client installation guide for Claude Desktop, Cursor, and VS Code.",
+      href: "/how-to-install-mcp-servers",
+    },
+    {
+      title: "GitHub MCP Server Setup",
+      body: "Step-by-step guide to install GitHub MCP in Claude Desktop.",
+      href: "/github-mcp-server-setup",
+    },
+    {
+      title: "Best MCP Servers for Claude",
+      body: "Compare the best MCP servers for Claude by use case and workflow.",
+      href: "/best-mcp-servers-for-claude",
+    },
+  ]}
+/>
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
           <div className="space-y-3">
