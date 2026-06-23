@@ -3,6 +3,7 @@ import type { Metadata, Viewport } from 'next'
 import { Inter, JetBrains_Mono } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
+import { Navbar } from '@/components/navbar'
 
 const inter = Inter({ variable: '--font-geist-sans', subsets: ['latin'] })
 const jetbrainsMono = JetBrains_Mono({
@@ -60,6 +61,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+        <Navbar />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
