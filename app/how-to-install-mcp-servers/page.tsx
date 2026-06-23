@@ -1,3 +1,4 @@
+import RelatedGuides from "@/components/content/RelatedGuides";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -489,6 +490,25 @@ export default function HowToInstallMcpServersPage() {
           </div>
         </section>
 
+        <RelatedGuides
+  items={[
+    {
+      title: "Claude Desktop MCP Setup",
+      body: "Beginner-friendly setup guide focused on Claude Desktop.",
+      href: "/claude-desktop-mcp-setup",
+    },
+    {
+      title: "GitHub MCP Server Setup",
+      body: "Concrete example of installing an MCP server with real config.",
+      href: "/github-mcp-server-setup",
+    },
+    {
+      title: "Best MCP Servers for Claude",
+      body: "Find the best servers to install after your first MCP setup.",
+      href: "/best-mcp-servers-for-claude",
+    },
+  ]}
+/>
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
           <div className="space-y-3">
