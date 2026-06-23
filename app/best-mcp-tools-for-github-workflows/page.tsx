@@ -1,3 +1,4 @@
+import RelatedGuides from "@/components/content/RelatedGuides";
 import Link from "next/link";
 import type { Metadata } from "next";
 
@@ -149,9 +150,10 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
       />
 
       <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
-
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
-          <Link href="/" className="hover:text-white transition-colors">MCPIndex</Link>
+          <Link href="/" className="hover:text-white transition-colors">
+            MCPIndex
+          </Link>
           <span>/</span>
           <span className="text-zinc-300">Best MCP Tools for GitHub Workflows</span>
         </nav>
@@ -227,10 +229,18 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
             <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-zinc-800 bg-zinc-950/80">
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Tool</th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Best for</th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Setup</th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Why it matters</th>
+                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
+                    Tool
+                  </th>
+                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
+                    Best for
+                  </th>
+                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
+                    Setup
+                  </th>
+                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
+                    Why it matters
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -427,37 +437,25 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section className="space-y-5">
-          <h2 className="text-2xl font-semibold">Related guides</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              {
-                title: "GitHub MCP Server Setup",
-                body: "Install and configure GitHub MCP Server step by step.",
-                href: "/github-mcp-server-setup",
-              },
-              {
-                title: "GitHub MCP Authentication",
-                body: "Fix token scopes, PAT issues, and private repo access problems.",
-                href: "/github-mcp-server-authentication",
-              },
-              {
-                title: "Best Open Source MCP Tools on GitHub",
-                body: "Broader ranking for popular open source MCP tools.",
-                href: "/best-open-source-mcp-tools-on-github",
-              },
-            ].map((item) => (
-              <Link
-                key={item.title}
-                href={item.href}
-                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:bg-zinc-900/70 transition-colors block"
-              >
-                <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
+        <RelatedGuides
+          items={[
+            {
+              title: "GitHub MCP Server Setup",
+              body: "Install and configure GitHub MCP Server step by step.",
+              href: "/github-mcp-server-setup",
+            },
+            {
+              title: "GitHub MCP Authentication",
+              body: "Fix token scopes, PAT issues, and private repo access problems.",
+              href: "/github-mcp-server-authentication",
+            },
+            {
+              title: "Best Open Source MCP Tools on GitHub",
+              body: "Broader ranking for popular open source MCP tools.",
+              href: "/best-open-source-mcp-tools-on-github",
+            },
+          ]}
+        />
 
         <section className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
@@ -502,7 +500,6 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
             </Link>
           </div>
         </section>
-
       </div>
     </main>
   );
