@@ -4,6 +4,7 @@ import { getToolBySlug, getAllSlugs, getAllTools } from "@/lib/supabase";
 import { CopyButton } from "@/components/copy-button";
 import type { Metadata } from "next";
 
+export const dynamic = "force-dynamic";
 export const dynamicParams = true;
 
 const baseUrl = "https://www.mcpindex.dev";
@@ -240,7 +241,6 @@ function getRelatedGuidesForTool(tool: {
     ];
   }
 
-  // Category-level fallbacks
   if (tags.includes("github") || category.includes("version control")) {
     return [
       {
@@ -281,7 +281,6 @@ function getRelatedGuidesForTool(tool: {
     ];
   }
 
-  // Default fallback
   return [
     {
       title: "How to Install MCP Servers",
