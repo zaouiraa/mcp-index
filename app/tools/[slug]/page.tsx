@@ -389,39 +389,38 @@ function buildUseCases(tool: {
       "Best for teams that use Google Workspace as their central hub for planning and documentation.",
     ];
   }
-
+  
   if (slug === "google-drive-mcp" || slug === "gdrive-mcp") {
     return [
-      `Searching Google Drive folders, reading files, and locating shared documents through ${tool.name}.`,
-      "Retrieving the latest project files, reports, and reference docs without leaving your AI workflow.",
-      "Supporting knowledge retrieval workflows where the AI needs secure access to team documents.",
+      `Finding the right Google Drive files, folders, and shared documents through ${tool.name} without manually searching across team storage.`,
+      "Useful for pulling project briefs, client deliverables, meeting notes, and the latest version of internal docs directly into an AI workflow.",
+      "Best for knowledge retrieval tasks where the assistant needs to locate, open, and reason over documents stored across shared drives.",
     ];
   }
 
   if (slug === "kubernetes-mcp" || slug === "k8s-mcp") {
     return [
-      `Inspecting pods, deployments, namespaces, and cluster resources through ${tool.name}.`,
-      "Troubleshooting failed rollouts, restart loops, resource limits, and service exposure issues from a conversational interface.",
-      "Helping DevOps teams diagnose Kubernetes environments faster without switching between CLI and dashboards.",
+      `Monitoring pods, deployments, services, and namespaces through ${tool.name} when you need quick visibility into a live Kubernetes cluster.`,
+      "Useful for debugging failed rollouts, CrashLoopBackOff errors, image pull failures, unhealthy services, and resource limit issues without jumping between kubectl commands.",
+      "Best for platform and DevOps teams that want faster incident response, cluster inspection, and day-to-day operational troubleshooting from an AI assistant.",
     ];
   }
 
   if (slug === "linear-mcp") {
     return [
-      `Reviewing issues, project cycles, and team priorities directly inside ${tool.name}.`,
-      "Finding ticket context, checking blocked work, and updating issue status from an AI assistant.",
-      "Best for product and engineering teams that use Linear as their primary planning and execution tool.",
+      `Reviewing Linear issues, cycles, team backlogs, and project status through ${tool.name} without leaving your planning workflow.`,
+      "Useful for checking blocked tickets, summarizing active work, finding ownership gaps, and updating issue context during sprint planning or standups.",
+      "Best for product and engineering teams that run execution in Linear and want the assistant to help with prioritization, triage, and work tracking.",
     ];
   }
 
   if (slug === "sentry-mcp") {
     return [
-      `Investigating production exceptions, tracing stack errors, and reviewing release health via ${tool.name}.`,
-      "Pulling recent errors by project, filtering by environment, and checking issue frequency during incidents.",
-      "Ideal for engineers who want to move from error triage to root cause faster without leaving their AI client.",
+      `Investigating production errors, stack traces, and release regressions through ${tool.name} when something breaks in a live application.`,
+      "Useful for reviewing high-volume exceptions, identifying affected environments, tracing recent regressions, and understanding which issues need immediate attention.",
+      "Best for engineering teams that use Sentry for monitoring and want AI-assisted error triage, faster debugging, and clearer incident context.",
     ];
   }
-
   if (category.includes("version control")) {
     return [
       `Managing repositories, branches, and commits through an AI workflow with ${tool.name}.`,
