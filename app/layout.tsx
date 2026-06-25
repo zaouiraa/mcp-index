@@ -16,7 +16,7 @@ export const metadata: Metadata = {
   description:
     'The definitive index for Model Context Protocol (MCP) servers. Verified, standardized, and ready to deploy.',
   verification: {
-    google: "ZZYk3uQ9OQJg6UiLev3bLx--k5uH-UBHC8T6-1UGmuE",
+    google: 'ZZYk3uQ9OQJg6UiLev3bLx--k5uH-UBHC8T6-1UGmuE',
   },
   metadataBase: new URL('https://mcpindex.dev'),
   generator: 'v0.app',
@@ -56,11 +56,25 @@ export default function RootLayout({
     >
       <body className="bg-background font-sans antialiased">
         <Script
+          src="https://www.googletagmanager.com/gtag/js?id=G-3KVPFH2R3M"
+          strategy="afterInteractive"
+        />
+        <Script id="google-analytics" strategy="afterInteractive">
+          {`
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-3KVPFH2R3M');
+          `}
+        </Script>
+
+        <Script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-0000000000000000"
           crossOrigin="anonymous"
           strategy="afterInteractive"
         />
+
         <Navbar />
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
