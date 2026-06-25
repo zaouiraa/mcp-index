@@ -16,7 +16,7 @@ function stripMarkdown(value: string) {
 function truncate(value: string, max = 160) {
   if (!value) return "";
   if (value.length <= max) return value;
-  return `${value.slice(0, max - 1).trim()}…`;
+  return `${value.slice(0, max - 1).trim()}â€¦`;
 }
 
 function sentenceCase(value: string) {
@@ -24,10 +24,6 @@ function sentenceCase(value: string) {
     .split("-")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");
-}
-
-function safeJsonLd(value: unknown) {
-  return JSON.stringify(value).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
 }
 
 type GuideItem = {
@@ -599,9 +595,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
   const useCases = buildUseCases(tool);
   const whenToChoose = buildWhenToChoose(tool);
-  const primaryCompetitorName =
-    comparisons.length > 0 ? comparisons[0]?.competitor || "Competitor" : "Competitor";
-
   const categorySlug = tool.category
     ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
     : null;
@@ -681,16 +674,16 @@ export default async function ToolDetailPage({ params }: PageProps) {
     <main className="min-h-screen bg-black text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLdSoftware) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSoftware) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLdBreadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
       />
       {jsonLdFaq && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLdFaq) }}
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
         />
       )}
 
@@ -947,9 +940,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
         {comparisons.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">
-              {tool.name} vs {primaryCompetitorName}
-            </h2>
+            <h2 className="text-2xl font-semibold">{tool.name} vs Competitors</h2>
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-sm">
                 <thead>
@@ -961,7 +952,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
                       {tool.name}
                     </th>
                     <th className="text-center px-5 py-3.5 font-semibold text-zinc-400 border-b border-zinc-800">
-                      {primaryCompetitorName}
+                      Competitor
                     </th>
                   </tr>
                 </thead>
@@ -988,7 +979,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
                               row.thisOk ? "text-emerald-400" : "text-red-400"
                             }
                           >
-                            {row.thisOk ? "✅" : "❌"} {row.thisTool}
+                            {row.thisOk ? "âœ…" : "âŒ"} {row.thisTool}
                           </span>
                         </td>
                         <td className="px-5 py-3 text-center">
@@ -999,7 +990,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
                                 : "text-red-400"
                             }
                           >
-                            {row.competitorOk ? "✅" : "❌"} {row.competitor}
+                            {row.competitorOk ? "âœ…" : "âŒ"} {row.competitor}
                           </span>
                         </td>
                       </tr>
@@ -1139,7 +1130,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
       <footer className="border-t border-zinc-800/60 mt-8">
         <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
-          <span>© 2026 MCPIndex. All rights reserved.</span>
+          <span>Â© 2026 MCPIndex. All rights reserved.</span>
           <div className="flex items-center gap-6">
             <Link
               href="/privacy-policy"
