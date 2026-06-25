@@ -57,7 +57,6 @@ function getCategoryDescription(categoryName: string, count: number) {
   return `${count} MCP servers in the ${categoryName} category.`;
 }
 
-// تأمين JSON-LD ضد إدخال أي قيم تحتوي على "</script"
 function safeJsonLd(data: unknown) {
   return JSON.stringify(data).replace(/</g, "\\u003c");
 }
