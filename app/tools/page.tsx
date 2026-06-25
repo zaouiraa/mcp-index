@@ -1,4 +1,3 @@
-// app/tools/page.tsx
 import Link from "next/link";
 import { getAllTools } from "@/lib/supabase";
 
