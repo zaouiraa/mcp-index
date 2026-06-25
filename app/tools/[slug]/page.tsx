@@ -1085,13 +1085,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
             </div>
           </section>
         )}
-
-        <div className="flex items-center justify-center py-2">
-          <div className="w-full max-w-[728px] min-h-[90px] border border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
-            Ad Space
-          </div>
-        </div>
-
+        
         <section className="flex flex-wrap gap-4 pb-8">
           <a
             href={tool.github_url}
