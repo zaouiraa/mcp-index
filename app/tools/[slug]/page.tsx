@@ -1130,26 +1130,32 @@ export default async function ToolDetailPage({ params }: PageProps) {
       <footer className="border-t border-zinc-800/60 mt-8">
         <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
           <span>Â© 2026 MCPIndex. All rights reserved.</span>
-          <div className="flex items-center gap-6">
-            <Link
-              href="/privacy-policy"
-              className="hover:text-zinc-400 transition-colors"
-            >
-              Privacy Policy
-            </Link>
-            <Link
-              href="/terms-of-service"
-              className="hover:text-zinc-400 transition-colors"
-            >
-              Terms of Service
-            </Link>
-            <Link
-              href="/contact"
-              className="hover:text-zinc-400 transition-colors"
-            >
-              Contact
-            </Link>
-          </div>
+          <div className="flex items-center gap-6 flex-wrap justify-center">
+  <Link
+    href="/privacy-policy"
+    className="hover:text-zinc-400 transition-colors"
+  >
+    Privacy Policy
+  </Link>
+  <Link
+    href="/terms-of-service"
+    className="hover:text-zinc-400 transition-colors"
+  >
+    Terms of Service
+  </Link>
+  <Link
+    href="/submit"
+    className="hover:text-zinc-400 transition-colors"
+  >
+    Submit Server
+  </Link>
+  <Link
+    href="/contact"
+    className="hover:text-zinc-400 transition-colors"
+  >
+    Contact
+  </Link>
+</div>
         </div>
       </footer>
     </main>
