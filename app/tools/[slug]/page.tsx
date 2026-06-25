@@ -301,12 +301,126 @@ function getRelatedGuidesForTool(tool: {
 }
 
 function buildUseCases(tool: {
+  slug: string;
   category?: string | null;
   tags?: string[] | null;
   name: string;
 }) {
   const category = tool.category?.toLowerCase() || "";
-  const tags = tool.tags || [];
+  const tags = tool.tags?.map((tag) => tag.toLowerCase()) || [];
+  const slug = tool.slug;
+
+  if (slug === "github-mcp") {
+    return [
+      `Managing repositories, pull requests, issues, and branches directly through ${tool.name}.`,
+      "Reviewing code changes, checking CI status, and commenting on PRs without leaving your AI client.",
+      "Supporting GitHub-heavy development teams that want AI-assisted repository operations end to end.",
+    ];
+  }
+
+  if (slug === "context7-mcp") {
+    return [
+      `Indexing repositories and surfacing code-aware context for AI assistants using ${tool.name}.`,
+      "Answering questions about large codebases, tracing dependencies, and reviewing module relationships.",
+      "Ideal for projects where accurate code context is critical to AI-assisted development.",
+    ];
+  }
+
+  if (slug === "desktop-commander-mcp") {
+    return [
+      `Giving your AI assistant read access to local files, folders, and desktop workflows via ${tool.name}.`,
+      "Navigating project directories, reading config files, and triggering local scripts through natural language.",
+      "Best for power users and developers who want controlled AI access to their local environment.",
+    ];
+  }
+
+  if (slug === "semgrep-mcp") {
+    return [
+      `Running static analysis and security scans on code from within your AI workflow using ${tool.name}.`,
+      "Catching vulnerabilities, misconfigurations, and code quality issues during pull request reviews.",
+      "Supporting security-conscious teams that want automated scanning without leaving the MCP client.",
+    ];
+  }
+
+  if (slug === "supabase-mcp") {
+    return [
+      `Querying tables, inspecting schemas, and exploring Supabase project data through ${tool.name}.`,
+      "Debugging record anomalies, validating migrations, and reviewing RLS policies from an AI assistant.",
+      "Useful for backend developers who need fast database insight without context switching.",
+    ];
+  }
+
+  if (slug === "figma-mcp") {
+    return [
+      `Searching Figma components, inspecting frames, and referencing design tokens via ${tool.name}.`,
+      "Helping engineers and PMs understand design decisions and match implementation to the source file.",
+      "Best for product teams where design-to-code handoff relies on Figma as the single source of truth.",
+    ];
+  }
+
+  if (slug === "aws-mcp") {
+    return [
+      `Inspecting AWS resources, environments, and service configurations through ${tool.name}.`,
+      "Reviewing EC2 instances, S3 buckets, IAM scoping, and cloud setup details during debugging workflows.",
+      "Helping cloud and DevOps teams reduce context switching when managing AWS infrastructure.",
+    ];
+  }
+
+  if (slug === "grafana-mcp") {
+    return [
+      `Querying Grafana dashboards, metrics, and alert states directly from ${tool.name}.`,
+      "Investigating spikes, tracing latency trends, and reviewing panel data during live incidents.",
+      "Best for platform and SRE teams that monitor systems in Grafana and want AI-assisted triage.",
+    ];
+  }
+
+  if (slug === "atlassian-mcp") {
+    return [
+      `Accessing Jira issues, Confluence pages, and sprint context through ${tool.name}.`,
+      "Triaging bug reports, pulling documentation context, and reviewing planning workflows from an AI client.",
+      "Supporting engineering and product teams that run day-to-day execution inside Atlassian tools.",
+    ];
+  }
+
+  if (slug === "google-workspace-mcp") {
+    return [
+      `Reading Google Docs, querying Sheets, and checking Calendar events via ${tool.name}.`,
+      "Pulling meeting notes, summarizing spreadsheet data, and drafting documents from an AI assistant.",
+      "Best for teams that use Google Workspace as their central hub for planning and documentation.",
+    ];
+  }
+
+  if (slug === "google-drive-mcp" || slug === "gdrive-mcp") {
+    return [
+      `Searching Google Drive folders, reading files, and locating shared documents through ${tool.name}.`,
+      "Retrieving the latest project files, reports, and reference docs without leaving your AI workflow.",
+      "Supporting knowledge retrieval workflows where the AI needs secure access to team documents.",
+    ];
+  }
+
+  if (slug === "kubernetes-mcp" || slug === "k8s-mcp") {
+    return [
+      `Inspecting pods, deployments, namespaces, and cluster resources through ${tool.name}.`,
+      "Troubleshooting failed rollouts, restart loops, resource limits, and service exposure issues from a conversational interface.",
+      "Helping DevOps teams diagnose Kubernetes environments faster without switching between CLI and dashboards.",
+    ];
+  }
+
+  if (slug === "linear-mcp") {
+    return [
+      `Reviewing issues, project cycles, and team priorities directly inside ${tool.name}.`,
+      "Finding ticket context, checking blocked work, and updating issue status from an AI assistant.",
+      "Best for product and engineering teams that use Linear as their primary planning and execution tool.",
+    ];
+  }
+
+  if (slug === "sentry-mcp") {
+    return [
+      `Investigating production exceptions, tracing stack errors, and reviewing release health via ${tool.name}.`,
+      "Pulling recent errors by project, filtering by environment, and checking issue frequency during incidents.",
+      "Ideal for engineers who want to move from error triage to root cause faster without leaving their AI client.",
+    ];
+  }
 
   if (category.includes("version control")) {
     return [
