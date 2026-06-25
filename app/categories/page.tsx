@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { getAllTools } from "@/lib/supabase";
 
 const baseUrl = "https://www.mcpindex.dev";
+const ogImage = `${baseUrl}/og/categories.png`;
 
 type Tool = {
   slug: string;
@@ -56,10 +57,15 @@ function getCategoryDescription(categoryName: string, count: number) {
   return `${count} MCP servers in the ${categoryName} category.`;
 }
 
+// تأمين JSON-LD ضد إدخال أي قيم تحتوي على "</script"
+function safeJsonLd(data: unknown) {
+  return JSON.stringify(data).replace(/</g, "\\u003c");
+}
+
 export const metadata: Metadata = {
-  title: "MCP Categories: Browse Tools by Use Case | MCPIndex",
+  title: "Browse MCP Tool Categories by Use Case | MCPIndex",
   description:
-    "Browse MCP tools by category, including search, version control, databases, developer tools, productivity, cloud infrastructure, monitoring, and security.",
+    "Browse MCP tool categories including search, version control, databases, developer tools, productivity, cloud infrastructure, monitoring, and security.",
   alternates: {
     canonical: `${baseUrl}/categories`,
   },
@@ -70,12 +76,21 @@ export const metadata: Metadata = {
     url: `${baseUrl}/categories`,
     siteName: "MCPIndex",
     type: "website",
+    images: [
+      {
+        url: ogImage,
+        width: 1200,
+        height: 630,
+        alt: "MCPIndex categories overview",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "MCP Categories | MCPIndex",
     description:
       "Explore MCP servers grouped by use case and workflow category on MCPIndex.",
+    images: [ogImage],
   },
   robots: {
     index: true,
@@ -116,7 +131,9 @@ export default async function CategoriesIndexPage() {
       ...category,
       tools: category.tools.sort((a, b) => a.name.localeCompare(b.name)),
     }))
-    .sort((a, b) => b.tools.length - a.tools.length || a.name.localeCompare(b.name));
+    .sort(
+      (a, b) => b.tools.length - a.tools.length || a.name.localeCompare(b.name)
+    );
 
   const jsonLdBreadcrumb = {
     "@context": "https://schema.org",
@@ -141,14 +158,17 @@ export default async function CategoriesIndexPage() {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: "MCP Categories",
-    description:
-      "Browse MCP tools by category and use case on MCPIndex.",
+    description: "Browse MCP tools by category and use case on MCPIndex.",
     url: `${baseUrl}/categories`,
-    mainEntity: categories.map((category) => ({
-      "@type": "ItemList",
+    hasPart: categories.map((category, index) => ({
+      "@type": "CollectionPage",
+      position: index + 1,
       name: category.name,
       url: `${baseUrl}/categories/${category.slug}`,
-      numberOfItems: category.tools.length,
+      description: getCategoryDescription(
+        category.name,
+        category.tools.length
+      ),
     })),
   };
 
@@ -156,11 +176,15 @@ export default async function CategoriesIndexPage() {
     <main className="min-h-screen bg-black text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd(jsonLdBreadcrumb),
+        }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdCollection) }}
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd(jsonLdCollection),
+        }}
       />
 
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
@@ -184,7 +208,9 @@ export default async function CategoriesIndexPage() {
           </p>
           <p className="text-sm text-zinc-500">
             Browse{" "}
-            <span className="text-zinc-300 font-mono">{categories.length}</span>{" "}
+            <span className="text-zinc-300 font-mono">
+              {categories.length}
+            </span>{" "}
             categories covering{" "}
             <span className="text-zinc-300 font-mono">{tools.length}</span>{" "}
             indexed MCP tools.
@@ -192,24 +218,29 @@ export default async function CategoriesIndexPage() {
         </header>
 
         <section className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
-          <h2 className="text-xl font-semibold">How to use these category pages</h2>
+          <h2 className="text-xl font-semibold">
+            How to use these category pages
+          </h2>
           <ul className="space-y-3 text-sm text-zinc-400 leading-relaxed">
             <li className="flex gap-3">
               <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
               <span>
-                Start with a broad category to see which MCP servers serve the same workflow.
+                Start with a broad category to see which MCP servers serve the
+                same workflow.
               </span>
             </li>
             <li className="flex gap-3">
               <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
               <span>
-                Open individual tool pages to review configuration, setup steps, and FAQs.
+                Open individual tool pages to review configuration, setup steps,
+                and FAQs.
               </span>
             </li>
             <li className="flex gap-3">
               <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
               <span>
-                Use category hubs as your main navigation layer before comparing similar tools in depth.
+                Use category hubs as your main navigation layer before comparing
+                similar tools in depth.
               </span>
             </li>
           </ul>
@@ -243,7 +274,10 @@ export default async function CategoriesIndexPage() {
                 </div>
 
                 <p className="text-sm text-zinc-400 leading-relaxed">
-                  {getCategoryDescription(category.name, category.tools.length)}
+                  {getCategoryDescription(
+                    category.name,
+                    category.tools.length
+                  )}
                 </p>
 
                 <div className="flex flex-wrap gap-2">
@@ -266,7 +300,7 @@ export default async function CategoriesIndexPage() {
           </div>
         </section>
 
-        <section className="flex items-center justify-center py-2">
+        <section className="flex items-center justifycenter py-2">
           <div className="w-full max-w-[728px] min-h-[90px] border border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono text-center px-4">
             Ad Space
           </div>
@@ -276,7 +310,8 @@ export default async function CategoriesIndexPage() {
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">Why category hubs matter</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
-              Category pages make your directory easier to browse and help connect broad topics with tool-specific pages.
+              Category pages make your directory easier to browse and help
+              connect broad topics with tool-specific pages.
             </p>
           </div>
 
@@ -284,21 +319,24 @@ export default async function CategoriesIndexPage() {
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
               <h3 className="text-lg font-semibold">Faster discovery</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Users can jump into the right topic cluster before comparing individual MCP servers.
+                Users can jump into the right topic cluster before comparing
+                individual MCP servers.
               </p>
             </div>
 
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
               <h3 className="text-lg font-semibold">Stronger structure</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Hub pages help distribute internal links more clearly across related tools and subtopics.
+                Hub pages help distribute internal links more clearly across
+                related tools and subtopics.
               </p>
             </div>
 
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
               <h3 className="text-lg font-semibold">Better comparisons</h3>
               <p className="text-zinc-400 text-sm leading-relaxed">
-                Similar tools appear close together, which makes setup and workflow differences easier to evaluate.
+                Similar tools appear close together, which makes setup and
+                workflow differences easier to evaluate.
               </p>
             </div>
           </div>
