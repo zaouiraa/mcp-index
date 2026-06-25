@@ -877,13 +877,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
             </pre>
           </div>
         </section>
-
-        <div className="flex items-center justify-center py-2">
-          <div className="w-full max-w-[728px] min-h-[90px] border border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono">
-            Ad Space
-          </div>
-        </div>
-
+        
         {setupSteps.length > 0 && (
           <section className="space-y-4">
             <div className="space-y-2">
