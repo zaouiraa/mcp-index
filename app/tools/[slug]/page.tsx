@@ -26,6 +26,10 @@ function sentenceCase(value: string) {
     .join(" ");
 }
 
+function safeJsonLd(value: unknown) {
+  return JSON.stringify(value).replace(/</g, "\\u003c").replace(/>/g, "\\u003e");
+}
+
 type GuideItem = {
   title: string;
   body: string;
@@ -595,6 +599,9 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
   const useCases = buildUseCases(tool);
   const whenToChoose = buildWhenToChoose(tool);
+  const primaryCompetitorName =
+    comparisons.length > 0 ? comparisons[0]?.competitor || "Competitor" : "Competitor";
+
   const categorySlug = tool.category
     ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
     : null;
@@ -674,16 +681,16 @@ export default async function ToolDetailPage({ params }: PageProps) {
     <main className="min-h-screen bg-black text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdSoftware) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLdSoftware) }}
       />
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
+        dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLdBreadcrumb) }}
       />
       {jsonLdFaq && (
         <script
           type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
+          dangerouslySetInnerHTML={{ __html: safeJsonLd(jsonLdFaq) }}
         />
       )}
 
@@ -940,7 +947,9 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
         {comparisons.length > 0 && (
           <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">{tool.name} vs Competitors</h2>
+            <h2 className="text-2xl font-semibold">
+              {tool.name} vs {primaryCompetitorName}
+            </h2>
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
               <table className="w-full text-sm">
                 <thead>
@@ -952,7 +961,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
                       {tool.name}
                     </th>
                     <th className="text-center px-5 py-3.5 font-semibold text-zinc-400 border-b border-zinc-800">
-                      Competitor
+                      {primaryCompetitorName}
                     </th>
                   </tr>
                 </thead>
