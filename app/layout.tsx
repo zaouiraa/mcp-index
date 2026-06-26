@@ -4,9 +4,9 @@ import { Inter, JetBrains_Mono } from 'next/font/google'
 import Script from 'next/script'
 import './globals.css'
 
-const inter = Inter({ variable: '--font-geist-sans', subsets: ['latin'] })
+const inter = Inter({ variable: '--font-sans', subsets: ['latin'] })
 const jetbrainsMono = JetBrains_Mono({
-  variable: '--font-geist-mono',
+  variable: '--font-mono',
   subsets: ['latin'],
 })
 
