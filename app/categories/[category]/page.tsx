@@ -2,10 +2,15 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import type { Metadata } from "next";
 import { getAllTools } from "@/lib/supabase";
+import { cache } from "react";
 
+export const dynamic = "force-dynamic";
 export const dynamicParams = true;
 
 const baseUrl = "https://www.mcpindex.dev";
+
+// React cache — يمنع تكرار استدعاء Supabase في نفس الـ request
+const getAllToolsCached = cache(getAllTools);
 
 type Tool = {
   slug: string;
@@ -35,27 +40,21 @@ function getCategoryIntro(categoryName: string, count: number) {
   if (lower.includes("search")) {
     return `Browse ${count} MCP search tools that help AI assistants retrieve live web results, research sources, and current information beyond static training data.`;
   }
-
   if (lower.includes("version control")) {
     return `Browse ${count} version control MCP servers for Git, GitHub, GitLab, repositories, branches, pull requests, merge requests, and code collaboration workflows.`;
   }
-
   if (lower.includes("developer tools")) {
     return `Browse ${count} developer-focused MCP servers for coding, docs, desktop automation, local workflows, and AI-assisted engineering tasks.`;
   }
-
   if (lower.includes("database")) {
     return `Browse ${count} database MCP servers for querying data, managing schemas, inspecting records, and connecting AI tools to structured backends.`;
   }
-
   if (lower.includes("cloud") || lower.includes("infrastructure")) {
     return `Browse ${count} cloud and infrastructure MCP servers for AWS, Kubernetes, DevOps workflows, cluster operations, and environment management.`;
   }
-
   if (lower.includes("productivity")) {
     return `Browse ${count} productivity MCP servers for docs, calendar, email, drive, workspace automation, and AI-assisted team operations.`;
   }
-
   if (lower.includes("security")) {
     return `Browse ${count} security MCP servers for vulnerability scanning, code analysis, and safer AI-assisted development workflows.`;
   }
@@ -85,23 +84,27 @@ type PageProps = {
 };
 
 export async function generateStaticParams() {
-  const tools = (await getAllTools()) as Tool[];
+  try {
+    const tools = (await getAllTools()) as Tool[];
 
-  const categorySlugs = Array.from(
-    new Set(
-      tools
-        .map((tool) => tool.category)
-        .filter((category): category is string => Boolean(category))
-        .map((category) => slugifyCategory(category))
-    )
-  );
+    const categorySlugs = Array.from(
+      new Set(
+        tools
+          .map((tool) => tool.category)
+          .filter((category): category is string => Boolean(category))
+          .map((category) => slugifyCategory(category))
+      )
+    );
 
-  return categorySlugs.map((category) => ({ category }));
+    return categorySlugs.map((category) => ({ category }));
+  } catch {
+    return [];
+  }
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { category } = await params;
-  const tools = (await getAllTools()) as Tool[];
+  const tools = (await getAllToolsCached()) as Tool[];
 
   const matchingTools = tools.filter(
     (tool) => tool.category && slugifyCategory(tool.category) === category
@@ -111,13 +114,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     return {
       title: "Category Not Found | MCPIndex",
       description: "The requested MCP category page could not be found.",
-      alternates: {
-        canonical: `${baseUrl}/categories/${category}`,
-      },
-      robots: {
-        index: false,
-        follow: false,
-      },
+      alternates: { canonical: `${baseUrl}/categories/${category}` },
+      robots: { index: false, follow: false },
     };
   }
 
@@ -128,9 +126,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   return {
     title: `${categoryName} MCP Servers: Best Tools, Setup & Directory | MCPIndex`,
     description,
-    alternates: {
-      canonical,
-    },
+    alternates: { canonical },
     openGraph: {
       title: `${categoryName} MCP Servers | MCPIndex`,
       description,
@@ -143,16 +139,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: `${categoryName} MCP Servers | MCPIndex`,
       description,
     },
-    robots: {
-      index: true,
-      follow: true,
-    },
+    robots: { index: true, follow: true },
   };
 }
 
 export default async function CategoryPage({ params }: PageProps) {
   const { category } = await params;
-  const tools = (await getAllTools()) as Tool[];
+  const tools = (await getAllToolsCached()) as Tool[];
 
   const matchingTools = tools
     .filter((tool) => tool.category && slugifyCategory(tool.category) === category)
@@ -180,24 +173,9 @@ export default async function CategoryPage({ params }: PageProps) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     itemListElement: [
-      {
-        "@type": "ListItem",
-        position: 1,
-        name: "Home",
-        item: baseUrl,
-      },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Categories",
-        item: `${baseUrl}/categories`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: categoryName,
-        item: `${baseUrl}/categories/${category}`,
-      },
+      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
+      { "@type": "ListItem", position: 2, name: "Categories", item: `${baseUrl}/categories` },
+      { "@type": "ListItem", position: 3, name: categoryName, item: `${baseUrl}/categories/${category}` },
     ],
   };
 
@@ -222,10 +200,7 @@ export default async function CategoryPage({ params }: PageProps) {
     mainEntity: faq.map((item) => ({
       "@type": "Question",
       name: item.q,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: item.a,
-      },
+      acceptedAnswer: { "@type": "Answer", text: item.a },
     })),
   };
 
@@ -245,13 +220,15 @@ export default async function CategoryPage({ params }: PageProps) {
       />
 
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
+
+        {/* Breadcrumb — مُصحح ليشير إلى /categories */}
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
           <Link href="/" className="hover:text-white transition-colors">
             MCPIndex
           </Link>
           <span>/</span>
-          <Link href="/tools" className="hover:text-white transition-colors">
-            Tools
+          <Link href="/categories" className="hover:text-white transition-colors">
+            Categories
           </Link>
           <span>/</span>
           <span className="text-zinc-300">{categoryName}</span>
@@ -292,21 +269,15 @@ export default async function CategoryPage({ params }: PageProps) {
           <ul className="space-y-3 text-sm text-zinc-400 leading-relaxed">
             <li className="flex gap-3">
               <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
-              <span>
-                Tools grouped by a shared workflow focus so you can compare similar MCP servers faster.
-              </span>
+              <span>Tools grouped by a shared workflow focus so you can compare similar MCP servers faster.</span>
             </li>
             <li className="flex gap-3">
               <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
-              <span>
-                Direct links to individual tool pages with configuration snippets, setup steps, and FAQs.
-              </span>
+              <span>Direct links to individual tool pages with configuration snippets, setup steps, and FAQs.</span>
             </li>
             <li className="flex gap-3">
               <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
-              <span>
-                Internal links that help you move from broad category research to tool-specific decisions.
-              </span>
+              <span>Internal links that help you move from broad category research to tool-specific decisions.</span>
             </li>
           </ul>
         </section>
@@ -382,12 +353,6 @@ export default async function CategoryPage({ params }: PageProps) {
           </div>
         </section>
 
-        <section className="flex items-center justify-center py-2">
-          <div className="w-full max-w-[728px] min-h-[90px] border border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono text-center px-4">
-            Ad Space
-          </div>
-        </section>
-
         {siblingCategories.length > 0 && (
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">Related categories</h2>
@@ -420,13 +385,29 @@ export default async function CategoryPage({ params }: PageProps) {
                 className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
               >
                 <h3 className="text-lg font-semibold">{item.q}</h3>
-                <p className="text-zinc-400 leading-relaxed text-[15px]">
-                  {item.a}
-                </p>
+                <p className="text-zinc-400 leading-relaxed text-[15px]">{item.a}</p>
               </article>
             ))}
           </div>
         </section>
+
+        {/* Footer */}
+        <footer className="border-t border-zinc-800/60 pt-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
+            <span>© 2026 MCPIndex. All rights reserved.</span>
+            <div className="flex items-center gap-6">
+              <Link href="/privacy-policy" className="hover:text-zinc-400 transition-colors">
+                Privacy Policy
+              </Link>
+              <Link href="/terms-of-service" className="hover:text-zinc-400 transition-colors">
+                Terms of Service
+              </Link>
+              <Link href="/contact" className="hover:text-zinc-400 transition-colors">
+                Contact
+              </Link>
+            </div>
+          </div>
+        </footer>
       </div>
     </main>
   );
