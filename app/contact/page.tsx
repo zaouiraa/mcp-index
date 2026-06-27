@@ -4,18 +4,42 @@ import { useState } from 'react';
 
 export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setError(null);
     setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name'),
+      email: formData.get('email'),
+      message: formData.get('message'),
+    };
+
     try {
-      // Form submission would go here
-      // For now, just show a success message
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to send message');
+      }
+
       setSubmitted(true);
+      e.currentTarget.reset();
       setTimeout(() => setSubmitted(false), 5000);
-    } catch (error) {
-      console.error('Form submission error:', error);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'An error occurred';
+      setError(message);
+      console.error('Form submission error:', err);
     } finally {
       setLoading(false);
     }
@@ -42,6 +66,12 @@ export default function ContactPage() {
         {submitted && (
           <div className="p-4 bg-emerald-500/10 border border-emerald-500/30 rounded-lg">
             <p className="text-emerald-400 text-sm">✓ Thank you for your message. We'll get back to you soon!</p>
+          </div>
+        )}
+
+        {error && (
+          <div className="p-4 bg-red-500/10 border border-red-500/30 rounded-lg">
+            <p className="text-red-400 text-sm">✗ {error}</p>
           </div>
         )}
 
