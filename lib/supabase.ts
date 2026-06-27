@@ -1,8 +1,8 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error("Missing Supabase environment variables.");
@@ -101,16 +101,32 @@ export async function getToolBySlug(slug: string): Promise<ToolRow | null> {
 }
 
 export async function getAllSlugs(): Promise<string[]> {
-  const { data, error } = await supabase.from("tools").select("slug");
+  const { data, error } = await supabase
+    .from("tools")
+    .select("slug")
+    .not("slug", "is", null);
 
   if (error) {
     console.error("[supabase] getAllSlugs error:", error.message);
     return [];
   }
 
-  return (data ?? [])
-    .map((item) => item.slug)
-    .filter((slug): slug is string => Boolean(slug));
+  return (data ?? []).map((item) => item.slug as string);
+}
+
+export async function getToolsByCategory(category: string): Promise<ToolRow[]> {
+  const { data, error } = await supabase
+    .from("tools")
+    .select("*")
+    .ilike("category", category)
+    .order("name", { ascending: true });
+
+  if (error) {
+    console.error("[supabase] getToolsByCategory error:", error.message);
+    return [];
+  }
+
+  return (data ?? []).map(normalizeTool);
 }
 
 export async function addTool(tool: ToolRow) {
@@ -123,14 +139,33 @@ export async function addTool(tool: ToolRow) {
     .single();
 
   if (error) {
-    return {
-      data: null,
-      error: error.message,
-    };
+    return { data: null, error: error.message };
   }
 
-  return {
-    data: normalizeTool(data),
-    error: null,
-  };
+  return { data: normalizeTool(data), error: null };
+}
+
+export async function upsertTool(tool: ToolRow) {
+  const payload = normalizeTool(tool);
+
+  const { data, error } = await supabase
+    .from("tools")
+    .upsert(payload, { onConflict: "slug" })
+    .select()
+    .single();
+
+  if (error) {
+    return { data: null, error: error.message };
+  }
+
+  return { data: normalizeTool(data), error: null };
+}
+
+export async function deleteTool(slug: string) {
+  const { error } = await supabase
+    .from("tools")
+    .delete()
+    .eq("slug", slug);
+
+  return { error: error?.message ?? null };
 }
