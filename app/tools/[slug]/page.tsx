@@ -1,6 +1,11 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getToolBySlug, getAllSlugs, getAllTools } from "@/lib/supabase";
+import {
+  getToolBySlug,
+  getAllSlugs,
+  getAllTools,
+  getToolsBySlugs,
+} from "@/lib/supabase";
 import { CopyButton } from "@/components/copy-button";
 import type { Metadata } from "next";
 
@@ -16,7 +21,7 @@ function stripMarkdown(value: string) {
 function truncate(value: string, max = 160) {
   if (!value) return "";
   if (value.length <= max) return value;
-  return `${value.slice(0, max - 1).trim()}â€¦`;
+  return `${value.slice(0, max - 1).trim()}…`;
 }
 
 function sentenceCase(value: string) {
@@ -389,7 +394,7 @@ function buildUseCases(tool: {
       "Best for teams that use Google Workspace as their central hub for planning and documentation.",
     ];
   }
-  
+
   if (slug === "google-drive-mcp" || slug === "gdrive-mcp") {
     return [
       `Finding the right Google Drive files, folders, and shared documents through ${tool.name} without manually searching across team storage.`,
@@ -421,6 +426,7 @@ function buildUseCases(tool: {
       "Best for engineering teams that use Sentry for monitoring and want AI-assisted error triage, faster debugging, and clearer incident context.",
     ];
   }
+
   if (category.includes("version control")) {
     return [
       `Managing repositories, branches, and commits through an AI workflow with ${tool.name}.`,
@@ -482,7 +488,7 @@ function buildWhenToChoose(tool: {
   tags?: string[] | null;
 }) {
   const category = tool.category?.toLowerCase() || "";
-  const tags = tool.tags || [];
+  const tags = tool.tags?.map((tag) => tag.toLowerCase()) || [];
 
   if (tool.name.toLowerCase().includes("gitlab")) {
     return `Choose ${tool.name} when your team works in GitLab.com or a self-hosted GitLab instance and needs AI help with repositories, issues, merge requests, or CI/CD workflows.`;
@@ -504,7 +510,9 @@ function buildWhenToChoose(tool: {
     return `Choose ${tool.name} when fresh, real-time information matters and your AI assistant needs live search or research capabilities.`;
   }
 
-  return `Choose ${tool.name} when you want an MCP server focused on ${tool.category || "technical workflows"} and need tighter integration with your existing tools.`;
+  return `Choose ${tool.name} when you want an MCP server focused on ${
+    tool.category || "technical workflows"
+  } and need tighter integration with your existing tools.`;
 }
 
 export async function generateStaticParams() {
@@ -516,7 +524,9 @@ type PageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const tool = await getToolBySlug(slug);
 
@@ -535,7 +545,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 
   const description = truncate(
-    stripMarkdown(tool.answer_first_summary || tool.short_description || "")
+    stripMarkdown(
+      tool.editor_assessment ||
+        tool.answer_first_summary ||
+        tool.short_description ||
+        ""
+    )
   );
   const canonical = `${baseUrl}/tools/${tool.slug}`;
 
@@ -575,21 +590,41 @@ export default async function ToolDetailPage({ params }: PageProps) {
   const tags = tool.tags ?? [];
   const comparisons = tool.comparisons ?? [];
 
-  const allTools = await getAllTools();
-  const relatedTools = allTools
-    .filter((item) => item.slug !== tool.slug)
-    .filter(
-      (item) =>
-        item.category === tool.category ||
-        (item.tags && tags.length && item.tags.some((tag) => tags.includes(tag)))
-    )
-    .slice(0, 3);
+  const editorAssessment = tool.editor_assessment?.trim() ?? "";
+  const bestFor = tool.best_for ?? [];
+  const limitations = tool.limitations ?? [];
+  const compatibility = tool.compatibility ?? null;
+  const contentBlocks = tool.content_blocks ?? [];
+  const relatedToolSlugs = tool.related_tool_slugs ?? [];
+
+  let relatedTools = [];
+
+  if (relatedToolSlugs.length > 0) {
+    relatedTools = (await getToolsBySlugs(relatedToolSlugs))
+      .filter((item) => item.slug !== tool.slug)
+      .slice(0, 3);
+  } else {
+    const allTools = await getAllTools();
+    relatedTools = allTools
+      .filter((item) => item.slug !== tool.slug)
+      .filter(
+        (item) =>
+          item.category === tool.category ||
+          (item.tags &&
+            tags.length > 0 &&
+            item.tags.some((tag) => tags.includes(tag)))
+      )
+      .slice(0, 3);
+  }
 
   const relatedGuides = getRelatedGuidesForTool(tool);
 
   const pageUrl = `${baseUrl}/tools/${tool.slug}`;
   const cleanSummary = stripMarkdown(
-    tool.answer_first_summary || tool.short_description || ""
+    editorAssessment ||
+      tool.answer_first_summary ||
+      tool.short_description ||
+      ""
   );
 
   const useCases = buildUseCases(tool);
@@ -731,6 +766,12 @@ export default async function ToolDetailPage({ params }: PageProps) {
               </span>
             )}
 
+            {tool.review_status === "reviewed" && (
+              <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                Reviewed by MCPIndex
+              </span>
+            )}
+
             {tool.github_status && (
               <span
                 className={`px-2.5 py-1 text-xs font-mono rounded-md border ${
@@ -782,6 +823,12 @@ export default async function ToolDetailPage({ params }: PageProps) {
                 <span>GitHub checked {tool.last_github_check_at}</span>
               </>
             )}
+            {tool.reviewed_at && (
+              <>
+                <span className="text-zinc-700">|</span>
+                <span>Reviewed {tool.reviewed_at}</span>
+              </>
+            )}
           </div>
 
           <p className="text-sm text-zinc-500 leading-relaxed">
@@ -808,6 +855,22 @@ export default async function ToolDetailPage({ params }: PageProps) {
           </p>
         </div>
 
+        {editorAssessment && (
+          <section className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-3">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex px-2.5 py-1 text-xs font-mono rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                Reviewed by MCPIndex
+              </span>
+            </div>
+            <h2 className="text-2xl font-semibold text-white">
+              MCPIndex assessment
+            </h2>
+            <p className="text-zinc-300 leading-relaxed text-[15px]">
+              {editorAssessment}
+            </p>
+          </section>
+        )}
+
         {tool.answer_first_summary && (
           <section className="relative border-l-2 border-purple-500 bg-purple-500/5 rounded-r-xl p-6 space-y-3">
             <div className="absolute -left-[5px] top-6 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
@@ -815,6 +878,24 @@ export default async function ToolDetailPage({ params }: PageProps) {
             <p className="text-zinc-300 leading-relaxed text-[15px]">
               {tool.answer_first_summary}
             </p>
+          </section>
+        )}
+
+        {bestFor.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold text-white">Best for</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {bestFor.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5"
+                >
+                  <p className="text-zinc-300 leading-relaxed text-[15px]">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
           </section>
         )}
 
@@ -835,7 +916,9 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
             <h2 className="text-xl font-semibold text-white">When to choose it</h2>
-            <p className="text-sm text-zinc-400 leading-relaxed">{whenToChoose}</p>
+            <p className="text-sm text-zinc-400 leading-relaxed">
+              {whenToChoose}
+            </p>
 
             <div className="pt-2 space-y-2">
               <p className="text-xs uppercase tracking-[0.18em] text-zinc-600">
@@ -854,6 +937,24 @@ export default async function ToolDetailPage({ params }: PageProps) {
             </div>
           </div>
         </section>
+
+        {limitations.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold text-white">Limitations</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {limitations.map((item) => (
+                <div
+                  key={item}
+                  className="rounded-2xl border border-red-500/10 bg-red-500/5 p-5"
+                >
+                  <p className="text-zinc-300 leading-relaxed text-[15px]">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="space-y-3">
           <h2 className="text-xl font-semibold">{tool.name} Configuration</h2>
@@ -877,7 +978,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
             </pre>
           </div>
         </section>
-        
+
         {setupSteps.length > 0 && (
           <section className="space-y-4">
             <div className="space-y-2">
@@ -900,6 +1001,48 @@ export default async function ToolDetailPage({ params }: PageProps) {
                 </li>
               ))}
             </ol>
+          </section>
+        )}
+
+        {compatibility && (
+          <section className="space-y-4">
+            <div className="space-y-2">
+              <h2 className="text-2xl font-semibold">Compatibility</h2>
+              <p className="text-zinc-500 text-sm leading-relaxed">
+                Supported environments and integration notes for {tool.name}.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                <p className="text-sm text-zinc-500">Claude Desktop</p>
+                <p className="text-base font-medium text-white">
+                  {compatibility.claude_desktop ? "Yes" : "No"}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                <p className="text-sm text-zinc-500">Cursor</p>
+                <p className="text-base font-medium text-white">
+                  {compatibility.cursor ? "Yes" : "No"}
+                </p>
+              </div>
+
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                <p className="text-sm text-zinc-500">VS Code</p>
+                <p className="text-base font-medium text-white">
+                  {compatibility.vscode ? "Yes" : "No"}
+                </p>
+              </div>
+            </div>
+
+            {compatibility.notes && (
+              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+                <p className="text-zinc-400 leading-relaxed text-[15px]">
+                  {compatibility.notes}
+                </p>
+              </div>
+            )}
           </section>
         )}
 
@@ -972,7 +1115,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
                               row.thisOk ? "text-emerald-400" : "text-red-400"
                             }
                           >
-                            {row.thisOk ? "âœ…" : "âŒ"} {row.thisTool}
+                            {row.thisOk ? "✅" : "❌"} {row.thisTool}
                           </span>
                         </td>
                         <td className="px-5 py-3 text-center">
@@ -983,7 +1126,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
                                 : "text-red-400"
                             }
                           >
-                            {row.competitorOk ? "âœ…" : "âŒ"} {row.competitor}
+                            {row.competitorOk ? "✅" : "❌"} {row.competitor}
                           </span>
                         </td>
                       </tr>
@@ -994,6 +1137,69 @@ export default async function ToolDetailPage({ params }: PageProps) {
             </div>
           </section>
         )}
+
+        {contentBlocks.length > 0 &&
+          contentBlocks.map((block, index) => {
+            if (block.type === "pros_cons") {
+              return (
+                <section key={index} className="space-y-4">
+                  <h2 className="text-2xl font-semibold">{block.title}</h2>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {block.items.map((item, idx) => (
+                      <div
+                        key={idx}
+                        className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-4"
+                      >
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.18em] text-emerald-400 mb-2">
+                            Strength
+                          </p>
+                          <p className="text-zinc-300 leading-relaxed text-[15px]">
+                            {item.strength}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="text-xs uppercase tracking-[0.18em] text-red-400 mb-2">
+                            Limitation
+                          </p>
+                          <p className="text-zinc-400 leading-relaxed text-[15px]">
+                            {item.limitation}
+                          </p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </section>
+              );
+            }
+
+            if (block.type === "faq") {
+              return (
+                <section key={index} className="space-y-4">
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold">{block.title}</h2>
+                  </div>
+                  <div className="space-y-5">
+                    {block.items.map((item, idx) => (
+                      <article
+                        key={idx}
+                        className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
+                      >
+                        <h3 className="text-lg font-semibold text-white">
+                          {item.question}
+                        </h3>
+                        <p className="text-zinc-400 leading-relaxed text-[15px]">
+                          {item.answer}
+                        </p>
+                      </article>
+                    ))}
+                  </div>
+                </section>
+              );
+            }
+
+            return null;
+          })}
 
         {relatedGuides.length > 0 && (
           <section className="space-y-5">
@@ -1085,7 +1291,7 @@ export default async function ToolDetailPage({ params }: PageProps) {
             </div>
           </section>
         )}
-        
+
         <section className="flex flex-wrap gap-4 pb-8">
           <a
             href={tool.github_url}
@@ -1117,33 +1323,27 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
       <footer className="border-t border-zinc-800/60 mt-8">
         <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
-          <span>Â© 2026 MCPIndex. All rights reserved.</span>
+          <span>© 2026 MCPIndex. All rights reserved.</span>
           <div className="flex items-center gap-6 flex-wrap justify-center">
-  <Link
-    href="/privacy-policy"
-    className="hover:text-zinc-400 transition-colors"
-  >
-    Privacy Policy
-  </Link>
-  <Link
-    href="/terms-of-service"
-    className="hover:text-zinc-400 transition-colors"
-  >
-    Terms of Service
-  </Link>
-  <Link
-    href="/submit"
-    className="hover:text-zinc-400 transition-colors"
-  >
-    Submit Server
-  </Link>
-  <Link
-    href="/contact"
-    className="hover:text-zinc-400 transition-colors"
-  >
-    Contact
-  </Link>
-</div>
+            <Link
+              href="/privacy-policy"
+              className="hover:text-zinc-400 transition-colors"
+            >
+              Privacy Policy
+            </Link>
+            <Link
+              href="/terms-of-service"
+              className="hover:text-zinc-400 transition-colors"
+            >
+              Terms of Service
+            </Link>
+            <Link href="/submit" className="hover:text-zinc-400 transition-colors">
+              Submit Server
+            </Link>
+            <Link href="/contact" className="hover:text-zinc-400 transition-colors">
+              Contact
+            </Link>
+          </div>
         </div>
       </footer>
     </main>
