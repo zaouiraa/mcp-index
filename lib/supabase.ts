@@ -1,8 +1,11 @@
 import "server-only";
 import { createClient } from "@supabase/supabase-js";
 
-const supabaseUrl = process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseKey = process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabaseUrl =
+  process.env.SUPABASE_URL ?? process.env.NEXT_PUBLIC_SUPABASE_URL;
+
+const supabaseKey =
+  process.env.SUPABASE_ANON_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
 if (!supabaseUrl || !supabaseKey) {
   throw new Error("Missing Supabase environment variables.");
@@ -23,6 +26,33 @@ export type ToolComparisonItem = {
   competitorOk: boolean;
 };
 
+export type ToolCompatibility = {
+  claude_desktop?: boolean;
+  cursor?: boolean;
+  vscode?: boolean;
+  notes?: string;
+};
+
+export type ToolProsConsBlock = {
+  type: "pros_cons";
+  title: string;
+  items: {
+    strength: string;
+    limitation: string;
+  }[];
+};
+
+export type ToolFaqBlock = {
+  type: "faq";
+  title: string;
+  items: {
+    question: string;
+    answer: string;
+  }[];
+};
+
+export type ToolContentBlock = ToolProsConsBlock | ToolFaqBlock;
+
 export type ToolRow = {
   slug: string;
   name: string;
@@ -40,6 +70,16 @@ export type ToolRow = {
   faq: ToolFaqItem[];
   comparisons: ToolComparisonItem[];
   installs: string;
+
+  editor_assessment?: string | null;
+  best_for?: string[] | null;
+  limitations?: string[] | null;
+  related_tool_slugs?: string[] | null;
+  compatibility?: ToolCompatibility | null;
+  content_blocks?: ToolContentBlock[] | null;
+  review_status?: string | null;
+  reviewed_at?: string | null;
+
   status?: string | null;
   github_status?: string | null;
   last_updated?: string | null;
@@ -64,6 +104,20 @@ function normalizeTool(tool: Partial<ToolRow>): ToolRow {
     faq: Array.isArray(tool.faq) ? tool.faq : [],
     comparisons: Array.isArray(tool.comparisons) ? tool.comparisons : [],
     installs: tool.installs || "0",
+
+    editor_assessment: tool.editor_assessment || "",
+    best_for: Array.isArray(tool.best_for) ? tool.best_for : [],
+    limitations: Array.isArray(tool.limitations) ? tool.limitations : [],
+    related_tool_slugs: Array.isArray(tool.related_tool_slugs)
+      ? tool.related_tool_slugs
+      : [],
+    compatibility: tool.compatibility ?? null,
+    content_blocks: Array.isArray(tool.content_blocks)
+      ? tool.content_blocks
+      : [],
+    review_status: tool.review_status ?? "draft",
+    reviewed_at: tool.reviewed_at ?? null,
+
     status: tool.status ?? "active",
     github_status: tool.github_status ?? null,
     last_updated: tool.last_updated ?? null,
@@ -129,6 +183,22 @@ export async function getToolsByCategory(category: string): Promise<ToolRow[]> {
   return (data ?? []).map(normalizeTool);
 }
 
+export async function getToolsBySlugs(slugs: string[]): Promise<ToolRow[]> {
+  if (!slugs.length) return [];
+
+  const { data, error } = await supabase
+    .from("tools")
+    .select("*")
+    .in("slug", slugs);
+
+  if (error) {
+    console.error("[supabase] getToolsBySlugs error:", error.message);
+    return [];
+  }
+
+  return (data ?? []).map(normalizeTool);
+}
+
 export async function addTool(tool: ToolRow) {
   const payload = normalizeTool(tool);
 
@@ -162,10 +232,7 @@ export async function upsertTool(tool: ToolRow) {
 }
 
 export async function deleteTool(slug: string) {
-  const { error } = await supabase
-    .from("tools")
-    .delete()
-    .eq("slug", slug);
+  const { error } = await supabase.from("tools").delete().eq("slug", slug);
 
   return { error: error?.message ?? null };
 }
