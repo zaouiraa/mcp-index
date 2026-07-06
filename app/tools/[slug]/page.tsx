@@ -555,6 +555,41 @@ export async function generateMetadata({
   const canonical = `${baseUrl}/tools/${tool.slug}`;
 
   return {
+    title: `${tool.name} — Config, Setup Guide & Review | MCPIndex`,
+    description,
+    alternates: {
+      canonical,
+    },
+    openGraph: {
+      title: `${tool.name} — Config, Setup Guide & Review`,
+      description,
+      url: canonical,
+      siteName: "MCPIndex",
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${tool.name} — Config, Setup Guide & Review`,
+      description,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
+
+  const description = truncate(
+    stripMarkdown(
+      tool.editor_assessment ||
+        tool.answer_first_summary ||
+        tool.short_description ||
+        ""
+    )
+  );
+  const canonical = `${baseUrl}/tools/${tool.slug}`;
+
+  return {
     title: `${tool.name} MCP Server Config, Setup Guide & Review | MCPIndex`,
     description,
     alternates: {
@@ -627,11 +662,20 @@ export default async function ToolDetailPage({ params }: PageProps) {
       ""
   );
 
-  const useCases = buildUseCases(tool);
-  const whenToChoose = buildWhenToChoose(tool);
-  const categorySlug = tool.category
-    ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
-    : null;
+const useCases = buildUseCases(tool);
+const whenToChoose = buildWhenToChoose(tool);
+
+const reviewedDate = tool.reviewed_at
+  ? new Date(tool.reviewed_at).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
+  : null;
+
+const categorySlug = tool.category
+  ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
+  : null;
 
   const jsonLdSoftware = {
     "@context": "https://schema.org",
@@ -823,12 +867,12 @@ export default async function ToolDetailPage({ params }: PageProps) {
                 <span>GitHub checked {tool.last_github_check_at}</span>
               </>
             )}
-            {tool.reviewed_at && (
-              <>
-                <span className="text-zinc-700">|</span>
-                <span>Reviewed {tool.reviewed_at}</span>
-              </>
-            )}
+            {reviewedDate && (
+  <>
+    <span className="text-zinc-700">|</span>
+    <span>Reviewed {reviewedDate}</span>
+  </>
+)}
           </div>
 
           <p className="text-sm text-zinc-500 leading-relaxed">
