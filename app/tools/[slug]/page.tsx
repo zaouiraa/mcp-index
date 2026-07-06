@@ -31,6 +31,30 @@ function sentenceCase(value: string) {
     .join(" ");
 }
 
+function formatDate(value?: string | null) {
+  if (!value) return null;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return value;
+  return date.toLocaleDateString("en-US", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+}
+
+function statusTone(status?: string | null) {
+  if (status === "active" || status === "ok") {
+    return "bg-emerald-500/10 text-emerald-400 border-emerald-500/20";
+  }
+  if (status === "archived" || status === "redirected") {
+    return "bg-amber-500/10 text-amber-400 border-amber-500/20";
+  }
+  if (status === "deprecated" || status === "not_found") {
+    return "bg-red-500/10 text-red-400 border-red-500/20";
+  }
+  return "bg-zinc-800 text-zinc-400 border-zinc-700";
+}
+
 type GuideItem = {
   title: string;
   body: string;
@@ -515,6 +539,25 @@ function buildWhenToChoose(tool: {
   } and need tighter integration with your existing tools.`;
 }
 
+function MetaCard({
+  label,
+  value,
+}: {
+  label: string;
+  value?: string | null;
+}) {
+  if (!value) return null;
+
+  return (
+    <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 px-4 py-4">
+      <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+        {label}
+      </p>
+      <p className="mt-2 text-sm text-zinc-200">{value}</p>
+    </div>
+  );
+}
+
 export async function generateStaticParams() {
   const slugs = await getAllSlugs();
   return slugs.map((slug) => ({ slug }));
@@ -589,7 +632,6 @@ export default async function ToolDetailPage({ params }: PageProps) {
   const setupSteps = tool.setup_steps ?? [];
   const tags = tool.tags ?? [];
   const comparisons = tool.comparisons ?? [];
-
   const editorAssessment = tool.editor_assessment?.trim() ?? "";
   const bestFor = tool.best_for ?? [];
   const limitations = tool.limitations ?? [];
@@ -629,14 +671,9 @@ export default async function ToolDetailPage({ params }: PageProps) {
 
   const useCases = buildUseCases(tool);
   const whenToChoose = buildWhenToChoose(tool);
-
-  const reviewedDate = tool.reviewed_at
-    ? new Date(tool.reviewed_at).toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : null;
+  const reviewedDate = formatDate(tool.reviewed_at);
+  const updatedDate = formatDate(tool.last_updated);
+  const githubCheckedDate = formatDate(tool.last_github_check_at);
 
   const categorySlug = tool.category
     ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
@@ -730,8 +767,8 @@ export default async function ToolDetailPage({ params }: PageProps) {
         />
       )}
 
-      <div className="max-w-4xl mx-auto px-6 py-12 space-y-12">
-        <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
+      <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6 lg:px-8">
+        <nav className="mb-6 flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
           <Link href="/" className="hover:text-white transition-colors">
             MCPIndex
           </Link>
@@ -743,598 +780,661 @@ export default async function ToolDetailPage({ params }: PageProps) {
           <span className="text-zinc-300">{tool.name}</span>
         </nav>
 
-        <div className="space-y-4">
-          <div className="flex items-center gap-3 flex-wrap">
-            <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
-              {tool.category}
-            </span>
+        <section className="rounded-[28px] border border-zinc-800 bg-gradient-to-b from-zinc-950 via-zinc-950 to-zinc-900/80 p-6 sm:p-8">
+          <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_360px]">
+            <div className="space-y-6">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="px-3 py-1.5 text-xs font-mono rounded-full bg-zinc-800 text-zinc-300 border border-zinc-700">
+                  {tool.category}
+                </span>
 
-            {tool.is_free ? (
-              <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                Free
-              </span>
-            ) : (
-              <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                Freemium
-              </span>
-            )}
+                {tool.is_free ? (
+                  <span className="px-3 py-1.5 text-xs font-mono rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    Free
+                  </span>
+                ) : (
+                  <span className="px-3 py-1.5 text-xs font-mono rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                    Freemium
+                  </span>
+                )}
 
-            {tool.status && (
-              <span
-                className={`px-2.5 py-1 text-xs font-mono rounded-md border ${
-                  tool.status === "active"
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                    : tool.status === "archived"
-                    ? "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                    : tool.status === "deprecated"
-                    ? "bg-red-500/10 text-red-400 border-red-500/20"
-                    : "bg-blue-500/10 text-blue-400 border-blue-500/20"
-                }`}
-              >
-                {tool.status}
-              </span>
-            )}
+                {tool.status && (
+                  <span
+                    className={`px-3 py-1.5 text-xs font-mono rounded-full border ${statusTone(
+                      tool.status
+                    )}`}
+                  >
+                    {tool.status}
+                  </span>
+                )}
 
-            {tool.review_status === "reviewed" && (
-              <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                Reviewed by MCPIndex
-              </span>
-            )}
+                {tool.review_status === "reviewed" && (
+                  <span className="px-3 py-1.5 text-xs font-mono rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                    Reviewed by MCPIndex
+                  </span>
+                )}
+              </div>
 
-            {tool.github_status && (
-              <span
-                className={`px-2.5 py-1 text-xs font-mono rounded-md border ${
-                  tool.github_status === "ok"
-                    ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                    : tool.github_status === "redirected"
-                    ? "bg-yellow-500/10 text-yellow-400 border-yellow-500/20"
-                    : tool.github_status === "not_found"
-                    ? "bg-red-500/10 text-red-400 border-red-500/20"
-                    : "bg-zinc-800 text-zinc-400 border-zinc-700"
-                }`}
-              >
-                github: {tool.github_status}
-              </span>
-            )}
+              <div className="space-y-4">
+                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white">
+                  {tool.name}
+                </h1>
 
-            {tool.installs && (
-              <span className="text-xs text-zinc-600 font-mono">
-                {tool.installs} installs
-              </span>
-            )}
-          </div>
+                {tool.short_description && (
+                  <p className="max-w-3xl text-base sm:text-lg text-zinc-300 leading-relaxed">
+                    {tool.short_description}
+                  </p>
+                )}
+              </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
-            {tool.name}
-          </h1>
+              <div className="flex flex-wrap gap-3">
+                <a
+                  href={tool.github_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-white px-4 py-3 text-sm font-medium text-black transition hover:bg-zinc-200"
+                >
+                  <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                  </svg>
+                  View on GitHub
+                </a>
 
-          {tool.short_description && (
-            <p className="text-lg text-zinc-400 leading-relaxed">
-              {tool.short_description}
-            </p>
-          )}
+                {tool.npm_package && (
+                  <a
+                    href={`https://www.npmjs.com/package/${tool.npm_package}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-medium text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800 hover:text-white"
+                  >
+                    <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                      <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.071-.747.49-5.538H5.879l1.41 15.97 5.691 1.577 5.726-1.577.779-8.748h-7.454z" />
+                    </svg>
+                    View on NPM
+                  </a>
+                )}
 
-          <div className="flex items-center gap-4 text-sm text-zinc-500 flex-wrap">
-            <span>
-              by <span className="text-zinc-300">{tool.developer}</span>
-            </span>
-            <span className="text-zinc-700">|</span>
-            <span>{tool.license} License</span>
-
-            {tool.last_updated && (
-              <>
-                <span className="text-zinc-700">|</span>
-                <span>Updated {tool.last_updated}</span>
-              </>
-            )}
-
-            {tool.last_github_check_at && (
-              <>
-                <span className="text-zinc-700">|</span>
-                <span>GitHub checked {tool.last_github_check_at}</span>
-              </>
-            )}
-
-            {reviewedDate && (
-              <>
-                <span className="text-zinc-700">|</span>
-                <span>Reviewed {reviewedDate}</span>
-              </>
-            )}
-          </div>
-
-          <p className="text-sm text-zinc-500 leading-relaxed">
-            Looking for more MCP servers? Browse the full{" "}
-            <Link
-              href="/tools"
-              className="text-zinc-300 underline underline-offset-4 hover:text-white"
-            >
-              MCP tools directory
-            </Link>
-            {categorySlug && (
-              <>
-                {" "}
-                or explore more tools in{" "}
                 <Link
-                  href={`/categories/${categorySlug}`}
+                  href="/tools"
+                  className="inline-flex items-center gap-2 rounded-xl border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-medium text-zinc-200 transition hover:border-zinc-600 hover:bg-zinc-800 hover:text-white"
+                >
+                  Browse all tools
+                </Link>
+              </div>
+
+              <p className="text-sm text-zinc-500 leading-relaxed">
+                Looking for more MCP servers? Browse the full{" "}
+                <Link
+                  href="/tools"
                   className="text-zinc-300 underline underline-offset-4 hover:text-white"
                 >
-                  {tool.category}
+                  MCP tools directory
                 </Link>
-              </>
-            )}
-            .
-          </p>
+                {categorySlug && (
+                  <>
+                    {" "}
+                    or explore more tools in{" "}
+                    <Link
+                      href={`/categories/${categorySlug}`}
+                      className="text-zinc-300 underline underline-offset-4 hover:text-white"
+                    >
+                      {tool.category}
+                    </Link>
+                  </>
+                )}
+                .
+              </p>
+            </div>
+
+            <aside className="space-y-4">
+              <div className="rounded-[24px] border border-zinc-800 bg-black/30 p-4">
+                <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+                  Tool snapshot
+                </p>
+
+                <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-3">
+                  <MetaCard label="Developer" value={tool.developer} />
+                  <MetaCard label="License" value={tool.license} />
+                  <MetaCard label="Updated" value={updatedDate} />
+                  <MetaCard label="Reviewed" value={reviewedDate} />
+                  <MetaCard label="GitHub checked" value={githubCheckedDate} />
+                  <MetaCard
+                    label="GitHub status"
+                    value={tool.github_status ? String(tool.github_status) : null}
+                  />
+                </div>
+              </div>
+
+              {tool.installs && (
+                <div className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5">
+                  <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+                    Installs
+                  </p>
+                  <p className="mt-2 text-2xl font-semibold text-white">
+                    {tool.installs}
+                  </p>
+                </div>
+              )}
+            </aside>
+          </div>
+        </section>
+
+        <div className="sticky top-0 z-20 mt-6 border-y border-zinc-800 bg-black/80 backdrop-blur supports-[backdrop-filter]:bg-black/60">
+          <div className="flex gap-3 overflow-x-auto py-3 text-sm text-zinc-400">
+            <a href="#overview" className="whitespace-nowrap hover:text-white">
+              Overview
+            </a>
+            <a href="#config" className="whitespace-nowrap hover:text-white">
+              Config
+            </a>
+            <a href="#setup" className="whitespace-nowrap hover:text-white">
+              Setup
+            </a>
+            <a href="#faq" className="whitespace-nowrap hover:text-white">
+              FAQ
+            </a>
+            <a href="#related" className="whitespace-nowrap hover:text-white">
+              Related
+            </a>
+          </div>
         </div>
 
-        {editorAssessment && (
-          <section className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-3">
-            <div className="flex items-center gap-2">
-              <span className="inline-flex px-2.5 py-1 text-xs font-mono rounded-md bg-purple-500/10 text-purple-300 border border-purple-500/20">
-                Reviewed by MCPIndex
-              </span>
-            </div>
-            <h2 className="text-2xl font-semibold text-white">
-              MCPIndex assessment
-            </h2>
-            <p className="text-zinc-300 leading-relaxed text-[15px]">
-              {editorAssessment}
-            </p>
-          </section>
-        )}
-
-        {tool.answer_first_summary && (
-          <section className="relative border-l-2 border-purple-500 bg-purple-500/5 rounded-r-xl p-6 space-y-3">
-            <div className="absolute -left-[5px] top-6 w-2 h-2 rounded-full bg-purple-500 shadow-[0_0_8px_rgba(168,85,247,0.6)]" />
-            <h2 className="text-xl font-semibold text-white">Quick overview</h2>
-            <p className="text-zinc-300 leading-relaxed text-[15px]">
-              {tool.answer_first_summary}
-            </p>
-          </section>
-        )}
-
-        {bestFor.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-white">Best for</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {bestFor.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5"
-                >
-                  <p className="text-zinc-300 leading-relaxed text-[15px]">
-                    {item}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
-            <h2 className="text-xl font-semibold text-white">
-              What this MCP server is best for
-            </h2>
-            <ul className="space-y-3 text-sm text-zinc-400 leading-relaxed">
-              {useCases.map((item, i) => (
-                <li key={i} className="flex gap-3">
-                  <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
-            <h2 className="text-xl font-semibold text-white">When to choose it</h2>
-            <p className="text-sm text-zinc-400 leading-relaxed">
-              {whenToChoose}
-            </p>
-
-            <div className="pt-2 space-y-2">
-              <p className="text-xs uppercase tracking-[0.18em] text-zinc-600">
-                Good fit
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {tags.slice(0, 6).map((tag: string) => (
-                  <span
-                    key={tag}
-                    className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800"
-                  >
-                    {tag}
+        <div className="mt-8 grid gap-8 xl:grid-cols-[minmax(0,1fr)_300px]">
+          <div className="space-y-8">
+            {editorAssessment && (
+              <section
+                id="overview"
+                className="rounded-[28px] border border-purple-500/20 bg-gradient-to-br from-purple-500/10 to-zinc-950 p-6 sm:p-7"
+              >
+                <div className="flex items-center gap-2">
+                  <span className="inline-flex px-3 py-1.5 text-xs font-mono rounded-full bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                    Reviewed by MCPIndex
                   </span>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
-        {limitations.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold text-white">Limitations</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {limitations.map((item) => (
-                <div
-                  key={item}
-                  className="rounded-2xl border border-red-500/10 bg-red-500/5 p-5"
-                >
-                  <p className="text-zinc-300 leading-relaxed text-[15px]">
-                    {item}
-                  </p>
                 </div>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section className="space-y-3">
-          <h2 className="text-xl font-semibold">{tool.name} Configuration</h2>
-          <p className="text-sm text-zinc-500 leading-relaxed">
-            Use the following configuration as a starting point for Claude Desktop
-            or any compatible MCP client, then replace placeholder credentials with
-            your own values.
-          </p>
-          <div className="relative bg-zinc-950 border border-zinc-800 rounded-xl overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/50">
-              <span className="w-3 h-3 rounded-full bg-red-500/70" />
-              <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
-              <span className="w-3 h-3 rounded-full bg-green-500/70" />
-              <span className="ml-3 text-xs text-zinc-500 font-mono">
-                claude_desktop_config.json
-              </span>
-            </div>
-            <CopyButton text={tool.config_json} />
-            <pre className="p-5 overflow-x-auto text-sm font-mono leading-relaxed">
-              <code className="text-zinc-300">{tool.config_json}</code>
-            </pre>
-          </div>
-        </section>
-
-        {setupSteps.length > 0 && (
-          <section className="space-y-4">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold">How to set up {tool.name}</h2>
-              <p className="text-zinc-500 text-sm leading-relaxed">
-                These setup steps cover the typical installation flow for this MCP
-                server. Double-check permissions, tokens, and environment variables
-                before connecting it to your AI client.
-              </p>
-            </div>
-            <ol className="space-y-3">
-              {setupSteps.map((step: string, i: number) => (
-                <li key={i} className="flex gap-4">
-                  <span className="flex-shrink-0 w-7 h-7 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-mono text-zinc-400">
-                    {i + 1}
-                  </span>
-                  <p className="text-zinc-400 leading-relaxed pt-0.5 text-[15px]">
-                    {step}
-                  </p>
-                </li>
-              ))}
-            </ol>
-          </section>
-        )}
-
-        {compatibility && (
-          <section className="space-y-4">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold">Compatibility</h2>
-              <p className="text-zinc-500 text-sm leading-relaxed">
-                Supported environments and integration notes for {tool.name}.
-              </p>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
-                <p className="text-sm text-zinc-500">Claude Desktop</p>
-                <p className="text-base font-medium text-white">
-                  {compatibility.claude_desktop ? "Yes" : "No"}
+                <h2 className="mt-4 text-2xl font-semibold text-white">
+                  MCPIndex assessment
+                </h2>
+                <p className="mt-3 text-zinc-300 leading-relaxed text-[15px]">
+                  {editorAssessment}
                 </p>
-              </div>
-
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
-                <p className="text-sm text-zinc-500">Cursor</p>
-                <p className="text-base font-medium text-white">
-                  {compatibility.cursor ? "Yes" : "No"}
-                </p>
-              </div>
-
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
-                <p className="text-sm text-zinc-500">VS Code</p>
-                <p className="text-base font-medium text-white">
-                  {compatibility.vscode ? "Yes" : "No"}
-                </p>
-              </div>
-            </div>
-
-            {compatibility.notes && (
-              <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
-                <p className="text-zinc-400 leading-relaxed text-[15px]">
-                  {compatibility.notes}
-                </p>
-              </div>
+              </section>
             )}
-          </section>
-        )}
 
-        {faq.length > 0 && (
-          <section className="space-y-6">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
-              <p className="text-zinc-500 text-sm leading-relaxed">
-                Common questions, setup guidance, and compatibility notes for{" "}
-                {tool.name}.
-              </p>
-            </div>
+            {tool.answer_first_summary && (
+              <section className="rounded-[28px] border border-zinc-800 bg-zinc-950/70 p-6 sm:p-7">
+                <h2 className="text-xl font-semibold text-white">Quick overview</h2>
+                <p className="mt-3 text-zinc-300 leading-relaxed text-[15px]">
+                  {tool.answer_first_summary}
+                </p>
+              </section>
+            )}
 
-            <div className="space-y-5">
-              {faq.map(
-                (item: { question: string; answer: string }, i: number) => (
-                  <article
-                    key={i}
-                    className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
-                  >
-                    <h3 className="text-lg font-semibold">{item.question}</h3>
-                    <p className="text-zinc-400 leading-relaxed text-[15px]">
-                      {item.answer}
-                    </p>
-                  </article>
-                )
-              )}
-            </div>
-          </section>
-        )}
+            {bestFor.length > 0 && (
+              <section className="space-y-4">
+                <div className="space-y-1">
+                  <h2 className="text-2xl font-semibold text-white">Best for</h2>
+                  <p className="text-sm text-zinc-500">
+                    The teams and workflows that benefit most from this tool.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {bestFor.map((item) => (
+                    <div
+                      key={item}
+                      className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5"
+                    >
+                      <p className="text-zinc-300 leading-relaxed text-[15px]">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
 
-        {comparisons.length > 0 && (
-          <section className="space-y-4">
-            <h2 className="text-2xl font-semibold">{tool.name} vs Competitors</h2>
-            <div className="overflow-x-auto rounded-xl border border-zinc-800">
-              <table className="w-full text-sm">
-                <thead>
-                  <tr className="bg-zinc-900/80">
-                    <th className="text-left px-5 py-3.5 font-semibold text-zinc-300 border-b border-zinc-800">
-                      Feature
-                    </th>
-                    <th className="text-center px-5 py-3.5 font-semibold text-purple-400 border-b border-zinc-800">
-                      {tool.name}
-                    </th>
-                    <th className="text-center px-5 py-3.5 font-semibold text-zinc-400 border-b border-zinc-800">
-                      Competitor
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisons.map(
-                    (
-                      row: {
-                        feature: string;
-                        thisOk: boolean;
-                        thisTool: string;
-                        competitorOk: boolean;
-                        competitor: string;
-                      },
-                      i: number
-                    ) => (
-                      <tr
-                        key={i}
-                        className="border-b border-zinc-800/50 last:border-0 hover:bg-zinc-900/30 transition-colors"
+            <section className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="rounded-[24px] border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
+                <h2 className="text-xl font-semibold text-white">
+                  What this MCP server is best for
+                </h2>
+                <ul className="space-y-3 text-sm text-zinc-300 leading-relaxed">
+                  {useCases.map((item, i) => (
+                    <li key={i} className="flex gap-3">
+                      <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
+                      <span>{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div className="rounded-[24px] border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
+                <h2 className="text-xl font-semibold text-white">When to choose it</h2>
+                <p className="text-sm text-zinc-300 leading-relaxed">
+                  {whenToChoose}
+                </p>
+
+                <div className="pt-2 space-y-2">
+                  <p className="text-xs uppercase tracking-[0.18em] text-zinc-600">
+                    Good fit
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {tags.slice(0, 6).map((tag: string) => (
+                      <span
+                        key={tag}
+                        className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800"
                       >
-                        <td className="px-5 py-3 text-zinc-400">{row.feature}</td>
-                        <td className="px-5 py-3 text-center">
-                          <span
-                            className={
-                              row.thisOk ? "text-emerald-400" : "text-red-400"
-                            }
-                          >
-                            {row.thisOk ? "✅" : "❌"} {row.thisTool}
-                          </span>
-                        </td>
-                        <td className="px-5 py-3 text-center">
-                          <span
-                            className={
-                              row.competitorOk
-                                ? "text-emerald-400"
-                                : "text-red-400"
-                            }
-                          >
-                            {row.competitorOk ? "✅" : "❌"} {row.competitor}
-                          </span>
-                        </td>
-                      </tr>
-                    )
-                  )}
-                </tbody>
-              </table>
-            </div>
-          </section>
-        )}
-
-        {contentBlocks.length > 0 &&
-          contentBlocks.map((block, index) => {
-            if (block.type === "pros_cons") {
-              return (
-                <section key={index} className="space-y-4">
-                  <h2 className="text-2xl font-semibold">{block.title}</h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {block.items.map((item, idx) => (
-                      <div
-                        key={idx}
-                        className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-4"
-                      >
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.18em] text-emerald-400 mb-2">
-                            Strength
-                          </p>
-                          <p className="text-zinc-300 leading-relaxed text-[15px]">
-                            {item.strength}
-                          </p>
-                        </div>
-                        <div>
-                          <p className="text-xs uppercase tracking-[0.18em] text-red-400 mb-2">
-                            Limitation
-                          </p>
-                          <p className="text-zinc-400 leading-relaxed text-[15px]">
-                            {item.limitation}
-                          </p>
-                        </div>
-                      </div>
+                        {tag}
+                      </span>
                     ))}
                   </div>
-                </section>
-              );
-            }
+                </div>
+              </div>
+            </section>
 
-            if (block.type === "faq") {
-              return (
-                <section key={index} className="space-y-4">
-                  <div className="space-y-2">
-                    <h2 className="text-2xl font-semibold">{block.title}</h2>
+            {limitations.length > 0 && (
+              <section className="space-y-4">
+                <div className="space-y-1">
+                  <h2 className="text-2xl font-semibold text-white">Limitations</h2>
+                  <p className="text-sm text-zinc-500">
+                    Things to watch before choosing this tool.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {limitations.map((item) => (
+                    <div
+                      key={item}
+                      className="rounded-[24px] border border-red-500/10 bg-red-500/5 p-5"
+                    >
+                      <p className="text-zinc-300 leading-relaxed text-[15px]">
+                        {item}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              </section>
+            )}
+
+            <section
+              id="config"
+              className="rounded-[28px] border border-zinc-800 bg-zinc-950/80 p-6 sm:p-7"
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-semibold">{tool.name} Configuration</h2>
+                  <p className="text-sm text-zinc-500 leading-relaxed max-w-2xl">
+                    Use the following configuration as a starting point for Claude
+                    Desktop or any compatible MCP client, then replace placeholder
+                    credentials with your own values.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-5 relative overflow-hidden rounded-2xl border border-zinc-800 bg-black">
+                <div className="flex items-center gap-2 border-b border-zinc-800 bg-zinc-900/60 px-4 py-3">
+                  <span className="w-3 h-3 rounded-full bg-red-500/70" />
+                  <span className="w-3 h-3 rounded-full bg-yellow-500/70" />
+                  <span className="w-3 h-3 rounded-full bg-green-500/70" />
+                  <span className="ml-3 text-xs text-zinc-500 font-mono">
+                    claude_desktop_config.json
+                  </span>
+                </div>
+                <CopyButton text={tool.config_json} />
+                <pre className="overflow-x-auto p-5 text-sm font-mono leading-relaxed">
+                  <code className="text-zinc-300">{tool.config_json}</code>
+                </pre>
+              </div>
+            </section>
+
+            {setupSteps.length > 0 && (
+              <section id="setup" className="space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-semibold">How to set up {tool.name}</h2>
+                  <p className="text-zinc-500 text-sm leading-relaxed">
+                    These setup steps cover the typical installation flow for this MCP
+                    server. Double-check permissions, tokens, and environment variables
+                    before connecting it to your AI client.
+                  </p>
+                </div>
+                <ol className="space-y-3">
+                  {setupSteps.map((step: string, i: number) => (
+                    <li
+                      key={i}
+                      className="rounded-2xl border border-zinc-800 bg-zinc-950/50 p-4"
+                    >
+                      <div className="flex gap-4">
+                        <span className="flex-shrink-0 w-8 h-8 rounded-full bg-zinc-800 border border-zinc-700 flex items-center justify-center text-xs font-mono text-zinc-300">
+                          {i + 1}
+                        </span>
+                        <p className="text-zinc-300 leading-relaxed pt-1 text-[15px]">
+                          {step}
+                        </p>
+                      </div>
+                    </li>
+                  ))}
+                </ol>
+              </section>
+            )}
+
+            {compatibility && (
+              <section className="space-y-4">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-semibold">Compatibility</h2>
+                  <p className="text-zinc-500 text-sm leading-relaxed">
+                    Supported environments and integration notes for {tool.name}.
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                    <p className="text-sm text-zinc-500">Claude Desktop</p>
+                    <p className="text-base font-medium text-white">
+                      {compatibility.claude_desktop ? "Yes" : "No"}
+                    </p>
                   </div>
-                  <div className="space-y-5">
-                    {block.items.map((item, idx) => (
+
+                  <div className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                    <p className="text-sm text-zinc-500">Cursor</p>
+                    <p className="text-base font-medium text-white">
+                      {compatibility.cursor ? "Yes" : "No"}
+                    </p>
+                  </div>
+
+                  <div className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                    <p className="text-sm text-zinc-500">VS Code</p>
+                    <p className="text-base font-medium text-white">
+                      {compatibility.vscode ? "Yes" : "No"}
+                    </p>
+                  </div>
+                </div>
+
+                {compatibility.notes && (
+                  <div className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5">
+                    <p className="text-zinc-300 leading-relaxed text-[15px]">
+                      {compatibility.notes}
+                    </p>
+                  </div>
+                )}
+              </section>
+            )}
+
+            {faq.length > 0 && (
+              <section id="faq" className="space-y-6">
+                <div className="space-y-2">
+                  <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
+                  <p className="text-zinc-500 text-sm leading-relaxed">
+                    Common questions, setup guidance, and compatibility notes for{" "}
+                    {tool.name}.
+                  </p>
+                </div>
+
+                <div className="space-y-4">
+                  {faq.map(
+                    (item: { question: string; answer: string }, i: number) => (
                       <article
-                        key={idx}
-                        className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
+                        key={i}
+                        className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
                       >
                         <h3 className="text-lg font-semibold text-white">
                           {item.question}
                         </h3>
-                        <p className="text-zinc-400 leading-relaxed text-[15px]">
+                        <p className="text-zinc-300 leading-relaxed text-[15px]">
                           {item.answer}
                         </p>
                       </article>
-                    ))}
-                  </div>
-                </section>
-              );
-            }
+                    )
+                  )}
+                </div>
+              </section>
+            )}
 
-            return null;
-          })}
+            {comparisons.length > 0 && (
+              <section className="space-y-4">
+                <h2 className="text-2xl font-semibold">{tool.name} vs Competitors</h2>
+                <div className="overflow-x-auto rounded-2xl border border-zinc-800 bg-zinc-950/40">
+                  <table className="w-full text-sm">
+                    <thead>
+                      <tr className="bg-zinc-900/80">
+                        <th className="text-left px-5 py-3.5 font-semibold text-zinc-300 border-b border-zinc-800">
+                          Feature
+                        </th>
+                        <th className="text-center px-5 py-3.5 font-semibold text-purple-400 border-b border-zinc-800">
+                          {tool.name}
+                        </th>
+                        <th className="text-center px-5 py-3.5 font-semibold text-zinc-400 border-b border-zinc-800">
+                          Competitor
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {comparisons.map(
+                        (
+                          row: {
+                            feature: string;
+                            thisOk: boolean;
+                            thisTool: string;
+                            competitorOk: boolean;
+                            competitor: string;
+                          },
+                          i: number
+                        ) => (
+                          <tr
+                            key={i}
+                            className="border-b border-zinc-800/50 last:border-0 hover:bg-zinc-900/30 transition-colors"
+                          >
+                            <td className="px-5 py-3 text-zinc-300">{row.feature}</td>
+                            <td className="px-5 py-3 text-center">
+                              <span
+                                className={
+                                  row.thisOk ? "text-emerald-400" : "text-red-400"
+                                }
+                              >
+                                {row.thisOk ? "✅" : "❌"} {row.thisTool}
+                              </span>
+                            </td>
+                            <td className="px-5 py-3 text-center">
+                              <span
+                                className={
+                                  row.competitorOk
+                                    ? "text-emerald-400"
+                                    : "text-red-400"
+                                }
+                              >
+                                {row.competitorOk ? "✅" : "❌"} {row.competitor}
+                              </span>
+                            </td>
+                          </tr>
+                        )
+                      )}
+                    </tbody>
+                  </table>
+                </div>
+              </section>
+            )}
 
-        {relatedGuides.length > 0 && (
-          <section className="space-y-5">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold">Related guides</h2>
-              <p className="text-zinc-500 text-sm leading-relaxed">
-                Setup tutorials, workflow guides, and supporting articles related to{" "}
-                {tool.name}.
-              </p>
-            </div>
+            {contentBlocks.length > 0 &&
+              contentBlocks.map((block, index) => {
+                if (block.type === "pros_cons") {
+                  return (
+                    <section key={index} className="space-y-4">
+                      <h2 className="text-2xl font-semibold">{block.title}</h2>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        {block.items.map((item, idx) => (
+                          <div
+                            key={idx}
+                            className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5 space-y-4"
+                          >
+                            <div>
+                              <p className="text-xs uppercase tracking-[0.18em] text-emerald-400 mb-2">
+                                Strength
+                              </p>
+                              <p className="text-zinc-300 leading-relaxed text-[15px]">
+                                {item.strength}
+                              </p>
+                            </div>
+                            <div>
+                              <p className="text-xs uppercase tracking-[0.18em] text-red-400 mb-2">
+                                Limitation
+                              </p>
+                              <p className="text-zinc-400 leading-relaxed text-[15px]">
+                                {item.limitation}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                }
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {relatedGuides.map((item) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:bg-zinc-900/70 transition-colors block"
-                >
-                  <h3 className="text-base font-semibold text-white">
-                    {item.title}
-                  </h3>
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    {item.body}
-                  </p>
-                </Link>
-              ))}
-            </div>
-          </section>
-        )}
+                if (block.type === "faq") {
+                  return (
+                    <section key={index} className="space-y-4">
+                      <h2 className="text-2xl font-semibold">{block.title}</h2>
+                      <div className="space-y-4">
+                        {block.items.map((item, idx) => (
+                          <article
+                            key={idx}
+                            className="rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
+                          >
+                            <h3 className="text-lg font-semibold text-white">
+                              {item.question}
+                            </h3>
+                            <p className="text-zinc-300 leading-relaxed text-[15px]">
+                              {item.answer}
+                            </p>
+                          </article>
+                        ))}
+                      </div>
+                    </section>
+                  );
+                }
 
-        {relatedTools.length > 0 && (
-          <section className="space-y-4">
-            <div className="space-y-2">
-              <h2 className="text-2xl font-semibold">Related tools</h2>
-              <p className="text-zinc-500 text-sm leading-relaxed">
-                Explore similar MCP servers in the same category or with overlapping
-                capabilities.
-              </p>
-            </div>
+                return null;
+              })}
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              {relatedTools.map((item) => (
-                <Link
-                  key={item.slug}
-                  href={`/tools/${item.slug}`}
-                  className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 hover:bg-zinc-900/80 hover:border-zinc-700 transition-colors p-5 flex flex-col gap-4"
-                >
-                  <div className="flex flex-wrap items-center gap-2">
-                    <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800">
-                      {item.category}
-                    </span>
-                    {item.is_free ? (
-                      <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        Free
-                      </span>
-                    ) : (
-                      <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
-                        Freemium
-                      </span>
-                    )}
-                  </div>
-
+            <section id="related" className="space-y-8">
+              {relatedGuides.length > 0 && (
+                <div className="space-y-5">
                   <div className="space-y-2">
-                    <h3 className="text-lg font-semibold text-white group-hover:text-purple-300 transition-colors">
-                      {item.name}
-                    </h3>
-                    <p className="text-sm text-zinc-400 leading-relaxed line-clamp-3">
-                      {item.short_description}
+                    <h2 className="text-2xl font-semibold">Related guides</h2>
+                    <p className="text-zinc-500 text-sm leading-relaxed">
+                      Setup tutorials, workflow guides, and supporting articles related to{" "}
+                      {tool.name}.
                     </p>
                   </div>
-                </Link>
-              ))}
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {relatedGuides.map((item) => (
+                      <Link
+                        key={item.href}
+                        href={item.href}
+                        className="group rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5 transition hover:border-zinc-700 hover:bg-zinc-900/70 block"
+                      >
+                        <h3 className="text-base font-semibold text-white group-hover:text-purple-300 transition-colors">
+                          {item.title}
+                        </h3>
+                        <p className="mt-2 text-zinc-400 text-sm leading-relaxed">
+                          {item.body}
+                        </p>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {relatedTools.length > 0 && (
+                <div className="space-y-5">
+                  <div className="space-y-2">
+                    <h2 className="text-2xl font-semibold">Related tools</h2>
+                    <p className="text-zinc-500 text-sm leading-relaxed">
+                      Explore similar MCP servers in the same category or with overlapping
+                      capabilities.
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    {relatedTools.map((item) => (
+                      <Link
+                        key={item.slug}
+                        href={`/tools/${item.slug}`}
+                        className="group rounded-[24px] border border-zinc-800 bg-zinc-950/70 hover:bg-zinc-900/80 hover:border-zinc-700 transition-colors p-5 flex flex-col gap-4"
+                      >
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800">
+                            {item.category}
+                          </span>
+                          {item.is_free ? (
+                            <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                              Free
+                            </span>
+                          ) : (
+                            <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
+                              Freemium
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="space-y-2">
+                          <h3 className="text-lg font-semibold text-white group-hover:text-purple-300 transition-colors">
+                            {item.name}
+                          </h3>
+                          <p className="text-sm text-zinc-400 leading-relaxed line-clamp-3">
+                            {item.short_description}
+                          </p>
+                        </div>
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </section>
+
+            {tags.length > 0 && (
+              <section className="space-y-3">
+                <h2 className="text-lg font-semibold text-zinc-400">Tags</h2>
+                <div className="flex flex-wrap gap-2">
+                  {tags.map((tag: string) => (
+                    <span
+                      key={tag}
+                      className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800"
+                    >
+                      {sentenceCase(tag)}
+                    </span>
+                  ))}
+                </div>
+              </section>
+            )}
+          </div>
+
+          <aside className="hidden xl:block">
+            <div className="sticky top-24 rounded-[24px] border border-zinc-800 bg-zinc-950/60 p-5">
+              <p className="text-[11px] uppercase tracking-[0.18em] text-zinc-600">
+                On this page
+              </p>
+              <div className="mt-4 space-y-3 text-sm">
+                <a href="#overview" className="block text-zinc-400 hover:text-white">
+                  Overview
+                </a>
+                <a href="#config" className="block text-zinc-400 hover:text-white">
+                  Configuration
+                </a>
+                <a href="#setup" className="block text-zinc-400 hover:text-white">
+                  Setup
+                </a>
+                <a href="#faq" className="block text-zinc-400 hover:text-white">
+                  FAQ
+                </a>
+                <a href="#related" className="block text-zinc-400 hover:text-white">
+                  Related guides & tools
+                </a>
+              </div>
             </div>
-          </section>
-        )}
-
-        {tags.length > 0 && (
-          <section className="space-y-3">
-            <h2 className="text-lg font-semibold text-zinc-400">Tags</h2>
-            <div className="flex flex-wrap gap-2">
-              {tags.map((tag: string) => (
-                <span
-                  key={tag}
-                  className="px-3 py-1 text-xs font-mono rounded-full bg-zinc-900 text-zinc-400 border border-zinc-800"
-                >
-                  {sentenceCase(tag)}
-                </span>
-              ))}
-            </div>
-          </section>
-        )}
-
-        <section className="flex flex-wrap gap-4 pb-8">
-          <a
-            href={tool.github_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
-          >
-            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-              <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-            </svg>
-            GitHub
-          </a>
-
-          {tool.npm_package && (
-            <a
-              href={`https://www.npmjs.com/package/${tool.npm_package}`}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 px-4 py-2.5 text-sm font-medium bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-300 hover:bg-zinc-800 hover:text-white transition-colors"
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M1.5 0h21l-1.91 21.563L11.977 24l-8.564-2.438L1.5 0zm7.031 9.75l-.232-2.718 10.059.003.071-.747.49-5.538H5.879l1.41 15.97 5.691 1.577 5.726-1.577.779-8.748h-7.454z" />
-              </svg>
-              NPM
-            </a>
-          )}
-        </section>
+          </aside>
+        </div>
       </div>
 
-      <footer className="border-t border-zinc-800/60 mt-8">
-        <div className="max-w-4xl mx-auto px-6 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
+      <footer className="border-t border-zinc-800/60 mt-12">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
           <span>© 2026 MCPIndex. All rights reserved.</span>
           <div className="flex items-center gap-6 flex-wrap justify-center">
             <Link
