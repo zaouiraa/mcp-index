@@ -56,23 +56,15 @@ export const guides: Guide[] = [
     relatedToolSlugs: ['github-mcp', 'supabase-mcp', 'desktop-commander-mcp'],
     relatedGuideSlugs: ['claude-desktop-mcp-setup', 'how-to-install-mcp-servers'],
     faq: [
-      {
-        question: 'What does MCP stand for?',
-        answer: 'MCP stands for Model Context Protocol.',
-      },
-      {
-        question: 'Who created Model Context Protocol?',
-        answer: 'Anthropic introduced it in November 2024.',
-      },
+      { question: 'What does MCP stand for?', answer: 'MCP stands for Model Context Protocol.' },
+      { question: 'Who created Model Context Protocol?', answer: 'Anthropic introduced it in November 2024.' },
       {
         question: 'Is MCP the same as an MCP server?',
-        answer:
-          'No. MCP is the protocol, while an MCP server is an implementation that exposes capabilities through it.',
+        answer: 'No. MCP is the protocol, while an MCP server is an implementation that exposes capabilities through it.',
       },
       {
         question: 'Can MCP work outside Anthropic products?',
-        answer:
-          'Yes. MCP is designed as an open standard, although support depends on whether a specific client or platform implements it.',
+        answer: 'Yes. MCP is designed as an open standard, although support depends on whether a specific client or platform implements it.',
       },
     ],
     sections: [
@@ -82,7 +74,6 @@ export const guides: Guide[] = [
         body: [
           'Model Context Protocol, usually shortened to MCP, is an open standard for connecting AI applications to external tools, data sources, and systems in a consistent way.',
           'In simple terms, MCP gives AI products a shared way to discover capabilities, read context, and call tools without rebuilding every integration from scratch for every application and every service.',
-          'It acts as a common interface layer between an AI client and the outside world.',
         ],
       },
       {
@@ -91,7 +82,6 @@ export const guides: Guide[] = [
         body: [
           'Before MCP, teams often had to build custom integrations for each model, each application surface, and each external tool.',
           'MCP matters because it reduces that duplication into a more reusable model where compatible clients can work with compatible servers through a shared protocol.',
-          'This becomes more valuable as AI products move beyond static chat and toward workflows that depend on live context, external data, and tool execution.',
         ],
       },
       {
@@ -127,32 +117,23 @@ export const guides: Guide[] = [
     title: 'Claude Desktop MCP Setup',
     description:
       'A beginner-friendly walkthrough for connecting MCP servers in Claude Desktop and validating that the setup works.',
-    excerpt:
-      'Learn how to configure Claude Desktop for MCP, add a server config, and troubleshoot common setup issues.',
+    excerpt: 'Learn how to configure Claude Desktop for MCP, add a server config, and troubleshoot common setup issues.',
     category: 'Setup',
     publishedAt: '2026-06-20',
     updatedAt: '2026-07-06',
     readingTime: '6 min read',
-    keywords: [
-      'claude desktop mcp setup',
-      'claude mcp',
-      'how to install mcp in claude desktop',
-    ],
+    keywords: ['claude desktop mcp setup', 'claude mcp', 'how to install mcp in claude desktop'],
     relatedGuideSlugs: ['how-to-install-mcp-servers', 'what-is-model-context-protocol'],
     sections: [
       {
         id: 'overview',
         title: 'Overview',
-        body: [
-          'Claude Desktop is one of the most common places where new users first encounter MCP in practice.',
-        ],
+        body: ['Claude Desktop is one of the most common places where new users first encounter MCP in practice.'],
       },
       {
         id: 'setup-steps',
         title: 'Setup steps',
-        body: [
-          'The exact flow depends on your environment, but the general pattern is consistent across most MCP server setups.',
-        ],
+        body: ['The exact flow depends on your environment, but the general pattern is consistent across most MCP server setups.'],
         list: [
           'Install or identify the MCP server you want to use.',
           'Add the server configuration to your Claude Desktop MCP config file.',
@@ -167,25 +148,18 @@ export const guides: Guide[] = [
     title: 'How to Install MCP Servers',
     description:
       'A cross-client installation guide for MCP servers covering the general workflow and the most common setup mistakes.',
-    excerpt:
-      'Understand the shared setup pattern for MCP clients, server configuration, credentials, and troubleshooting.',
+    excerpt: 'Understand the shared setup pattern for MCP clients, server configuration, credentials, and troubleshooting.',
     category: 'Setup',
     publishedAt: '2026-06-18',
     updatedAt: '2026-07-06',
     readingTime: '7 min read',
-    keywords: [
-      'how to install mcp servers',
-      'install mcp',
-      'mcp client setup',
-    ],
+    keywords: ['how to install mcp servers', 'install mcp', 'mcp client setup'],
     relatedGuideSlugs: ['claude-desktop-mcp-setup', 'what-is-model-context-protocol'],
     sections: [
       {
         id: 'installation-pattern',
         title: 'The common installation pattern',
-        body: [
-          'Most MCP installations follow the same basic structure even when the client interface looks different.',
-        ],
+        body: ['Most MCP installations follow the same basic structure even when the client interface looks different.'],
         list: [
           'Choose the client or host that supports MCP.',
           'Select the server for your workflow.',
@@ -196,6 +170,13 @@ export const guides: Guide[] = [
     ],
   },
 ]
+
+/**
+ * Backward-compatible export required by app/sitemap.ts and any other
+ * existing module that still imports GUIDE_CATALOG directly.
+ * Do not remove this export without updating app/sitemap.ts.
+ */
+export const GUIDE_CATALOG = guides
 
 export function getAllGuides(): Guide[] {
   return guides
@@ -215,7 +196,6 @@ export function getGuidesByCategory(category: GuideCategory): Guide[] {
 
 export function getRelatedGuides(slug: string, limit = 3): Guide[] {
   const guide = getGuideBySlug(slug)
-
   if (!guide) return []
 
   const directRelations = (guide.relatedGuideSlugs ?? [])
@@ -229,10 +209,30 @@ export function getRelatedGuides(slug: string, limit = 3): Guide[] {
   const fallbackRelations = guides
     .filter((item) => item.slug !== slug)
     .filter((item) => item.category === guide.category)
-    .filter(
-      (item) =>
-        !directRelations.some((relatedGuide) => relatedGuide.slug === item.slug)
-    )
+    .filter((item) => !directRelations.some((related) => related.slug === item.slug))
 
   return [...directRelations, ...fallbackRelations].slice(0, limit)
+}
+
+/**
+ * Backward-compatible helper kept for any legacy call sites that still use
+ * the original function name from the tool detail page.
+ */
+export function getRelatedGuidesForTool(
+  tool: { slug: string; category?: string | null; tags?: string[] | null }
+) {
+  const category = tool.category?.toLowerCase()
+  const tags = tool.tags?.map((tag) => tag.toLowerCase()) ?? []
+
+  const matched = guides.filter((guide) => {
+    if (guide.relatedToolSlugs?.includes(tool.slug)) return true
+    if (category && guide.category.toLowerCase() === category) return true
+    return tags.some((tag) => guide.keywords.some((keyword) => keyword.includes(tag)))
+  })
+
+  return matched.slice(0, 3).map((guide) => ({
+    title: guide.title,
+    body: guide.excerpt,
+    href: guide.slug,
+  }))
 }
