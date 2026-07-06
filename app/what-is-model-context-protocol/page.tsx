@@ -1,4 +1,3 @@
-$ cat <<'EOF' > /home/user/output/what-is-model-context-protocol-page.tsx
 import Link from 'next/link'
 import type { Metadata } from 'next'
 
@@ -455,6 +454,3 @@ export default function WhatIsModelContextProtocolPage() {
     </main>
   )
 }
-EOF
-node -e "const fs=require('fs');const p='/home/user/output/what-is-model-context-protocol-page.tsx';const s=fs.readFileSync(p,'utf8'); if(!s.includes('What Is Model Context Protocol')) process.exit(1);"
-
