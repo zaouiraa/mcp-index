@@ -172,11 +172,13 @@ export const guides: Guide[] = [
 ]
 
 /**
- * Backward-compatible export required by app/sitemap.ts and any other
- * existing module that still imports GUIDE_CATALOG directly.
- * Do not remove this export without updating app/sitemap.ts.
+ * GUIDE_CATALOG must expose `href` (not just `slug`) because app/sitemap.ts
+ * builds URLs as `${baseUrl}${guide.href}`. Keep this shape stable.
  */
-export const GUIDE_CATALOG = guides
+export const GUIDE_CATALOG = guides.map((guide) => ({
+  ...guide,
+  href: `/guides/${guide.slug}`,
+}))
 
 export function getAllGuides(): Guide[] {
   return guides
