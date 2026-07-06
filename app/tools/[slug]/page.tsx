@@ -579,41 +579,6 @@ export async function generateMetadata({
   };
 }
 
-  const description = truncate(
-    stripMarkdown(
-      tool.editor_assessment ||
-        tool.answer_first_summary ||
-        tool.short_description ||
-        ""
-    )
-  );
-  const canonical = `${baseUrl}/tools/${tool.slug}`;
-
-  return {
-    title: `${tool.name} MCP Server Config, Setup Guide & Review | MCPIndex`,
-    description,
-    alternates: {
-      canonical,
-    },
-    openGraph: {
-      title: `${tool.name} MCP Server Config, Setup Guide & Review`,
-      description,
-      url: canonical,
-      siteName: "MCPIndex",
-      type: "article",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${tool.name} MCP Server Config, Setup Guide & Review`,
-      description,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
-}
-
 export default async function ToolDetailPage({ params }: PageProps) {
   const { slug } = await params;
   const tool = await getToolBySlug(slug);
@@ -662,20 +627,20 @@ export default async function ToolDetailPage({ params }: PageProps) {
       ""
   );
 
-const useCases = buildUseCases(tool);
-const whenToChoose = buildWhenToChoose(tool);
+  const useCases = buildUseCases(tool);
+  const whenToChoose = buildWhenToChoose(tool);
 
-const reviewedDate = tool.reviewed_at
-  ? new Date(tool.reviewed_at).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    })
-  : null;
+  const reviewedDate = tool.reviewed_at
+    ? new Date(tool.reviewed_at).toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+      })
+    : null;
 
-const categorySlug = tool.category
-  ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
-  : null;
+  const categorySlug = tool.category
+    ? tool.category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-")
+    : null;
 
   const jsonLdSoftware = {
     "@context": "https://schema.org",
@@ -855,24 +820,27 @@ const categorySlug = tool.category
             </span>
             <span className="text-zinc-700">|</span>
             <span>{tool.license} License</span>
+
             {tool.last_updated && (
               <>
                 <span className="text-zinc-700">|</span>
                 <span>Updated {tool.last_updated}</span>
               </>
             )}
+
             {tool.last_github_check_at && (
               <>
                 <span className="text-zinc-700">|</span>
                 <span>GitHub checked {tool.last_github_check_at}</span>
               </>
             )}
+
             {reviewedDate && (
-  <>
-    <span className="text-zinc-700">|</span>
-    <span>Reviewed {reviewedDate}</span>
-  </>
-)}
+              <>
+                <span className="text-zinc-700">|</span>
+                <span>Reviewed {reviewedDate}</span>
+              </>
+            )}
           </div>
 
           <p className="text-sm text-zinc-500 leading-relaxed">
