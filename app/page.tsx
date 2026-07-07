@@ -2,15 +2,103 @@ import Link from "next/link";
 import { getAllTools } from "@/lib/supabase";
 import ToolsSearchClient from "@/components/tools-search-client";
 
+type Tool = {
+  slug: string;
+  name?: string | null;
+  short_description?: string | null;
+  answer_first_summary?: string | null;
+  developer?: string | null;
+  installs?: number | null;
+  is_free?: boolean | null;
+  category?: string | null;
+  tags?: string[] | null;
+};
+
+function getCategorySlug(category: string) {
+  return category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-");
+}
+
 export default async function HomePage() {
-  const tools = (await getAllTools()) ?? [];
+  let tools: Tool[] = [];
+
+  try {
+    tools = (await getAllTools()) ?? [];
+  } catch (error) {
+    console.error("[HOME PAGE] getAllTools failed:", error);
+    tools = [];
+  }
 
   const totalTools = tools.length;
   const freeTools = tools.filter((tool) => Boolean(tool?.is_free)).length;
-  const categories = new Set(
-    tools.map((tool) => tool?.category).filter(Boolean)
-  ).size;
+
+  const categoryCounts = tools.reduce<Record<string, number>>((acc, tool) => {
+    const category = tool?.category?.trim();
+    if (!category) return acc;
+    acc[category] = (acc[category] || 0) + 1;
+    return acc;
+  }, {});
+
+  const categories = Object.keys(categoryCounts).length;
+
+  const topCategories = Object.entries(categoryCounts)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 6)
+    .map(([name, count]) => ({
+      name,
+      count,
+      slug: getCategorySlug(name),
+    }));
+
   const latestTools = tools.slice(0, 6);
+
+  const mostUsedTools = [...tools]
+    .sort((a, b) => (b.installs ?? 0) - (a.installs ?? 0))
+    .slice(0, 6);
+
+  const useCaseCards = [
+    {
+      title: "GitHub workflows",
+      description:
+        "Tools for repositories, pull requests, issues, code review, and documentation workflows.",
+      href: "/best-mcp-tools-for-github-workflows",
+      fallbackHref: "/categories/version-control",
+    },
+    {
+      title: "Database inspection",
+      description:
+        "Browse schemas, inspect records, and query structured data from your AI workflow.",
+      href: "/categories/databases",
+      fallbackHref: "/tools",
+    },
+    {
+      title: "Browser automation",
+      description:
+        "Automate websites, test flows, and extract structured web content.",
+      href: "/categories/browser-automation",
+      fallbackHref: "/tools",
+    },
+    {
+      title: "Cloud debugging",
+      description:
+        "Inspect infrastructure, cloud services, and operational environments with MCP tools.",
+      href: "/categories/cloud-infrastructure",
+      fallbackHref: "/tools",
+    },
+    {
+      title: "Security scanning",
+      description:
+        "Find vulnerabilities, scan code, and improve security workflows with AI assistance.",
+      href: "/categories/security",
+      fallbackHref: "/tools",
+    },
+    {
+      title: "Team knowledge search",
+      description:
+        "Search docs, notes, and workspace tools across productivity and collaboration systems.",
+      href: "/categories/productivity",
+      fallbackHref: "/tools",
+    },
+  ];
 
   return (
     <main className="min-h-screen bg-black text-white">
@@ -48,6 +136,13 @@ export default async function HomePage() {
               >
                 Open search
               </Link>
+
+              <Link
+                href="/categories"
+                className="rounded-xl border border-zinc-800 bg-zinc-900 px-6 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:bg-zinc-800"
+              >
+                Explore categories
+              </Link>
             </div>
           </div>
 
@@ -74,6 +169,161 @@ export default async function HomePage() {
               <p className="mb-2 text-xs font-mono text-zinc-500">CATEGORIES</p>
               <p className="text-3xl font-bold text-white">{categories}</p>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto max-w-6xl space-y-8 px-6 py-4 md:py-6">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-mono text-zinc-500">Start here</p>
+              <h2 className="text-2xl font-semibold text-white md:text-3xl">
+                Start from categories
+              </h2>
+            </div>
+
+            <Link
+              href="/categories"
+              className="text-sm text-purple-300 transition-colors hover:text-purple-200"
+            >
+              View all categories →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {topCategories.map((category) => (
+              <Link
+                key={category.slug}
+                href={`/categories/${category.slug}`}
+                className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 transition-colors hover:border-zinc-700 hover:bg-zinc-900/80"
+              >
+                <div className="flex items-center justify-between gap-4">
+                  <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
+                    {category.name}
+                  </h3>
+                  <span className="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-mono text-zinc-400">
+                    {category.count} tools
+                  </span>
+                </div>
+
+                <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                  Browse MCP servers in {category.name} and discover setup-ready
+                  tools for this workflow.
+                </p>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto max-w-6xl space-y-8 px-6 py-12">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-mono text-zinc-500">Popular picks</p>
+              <h2 className="text-2xl font-semibold text-white md:text-3xl">
+                Most used MCP tools
+              </h2>
+            </div>
+
+            <Link
+              href="/tools"
+              className="text-sm text-purple-300 transition-colors hover:text-purple-200"
+            >
+              Browse all tools →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {mostUsedTools.map((tool) => (
+              <Link
+                key={tool.slug}
+                href={`/tools/${tool.slug}`}
+                className="group flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 transition-colors hover:border-zinc-700 hover:bg-zinc-900/80"
+              >
+                <div className="space-y-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    {tool.category && (
+                      <span className="rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-[11px] font-mono text-zinc-400">
+                        {tool.category}
+                      </span>
+                    )}
+
+                    {tool.is_free ? (
+                      <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-mono text-emerald-400">
+                        Free
+                      </span>
+                    ) : (
+                      <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[11px] font-mono text-amber-400">
+                        Freemium
+                      </span>
+                    )}
+                  </div>
+
+                  <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
+                    {tool.name ?? "Untitled tool"}
+                  </h3>
+
+                  <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">
+                    {tool.short_description ?? "No description available."}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-zinc-800 bg-black/30 p-4">
+                  <p className="line-clamp-4 text-sm leading-relaxed text-zinc-300">
+                    {tool.answer_first_summary ?? "No summary available."}
+                  </p>
+                </div>
+
+                <div className="mt-auto flex items-center justify-between gap-3 text-xs font-mono text-zinc-500">
+                  <span>by {tool.developer ?? "Unknown"}</span>
+                  <span>{tool.installs ?? 0} installs</span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section>
+        <div className="mx-auto max-w-6xl space-y-8 px-6 pb-12">
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-mono text-zinc-500">Use cases</p>
+              <h2 className="text-2xl font-semibold text-white md:text-3xl">
+                Best tools by use case
+              </h2>
+            </div>
+
+            <Link
+              href="/tools/search"
+              className="text-sm text-purple-300 transition-colors hover:text-purple-200"
+            >
+              Search by workflow →
+            </Link>
+          </div>
+
+          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+            {useCaseCards.map((item) => (
+              <Link
+                key={item.title}
+                href={item.href || item.fallbackHref}
+                className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 transition-colors hover:border-zinc-700 hover:bg-zinc-900/80"
+              >
+                <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
+                  {item.title}
+                </h3>
+
+                <p className="mt-3 text-sm leading-relaxed text-zinc-400">
+                  {item.description}
+                </p>
+
+                <div className="mt-5 text-sm text-purple-300 group-hover:text-purple-200">
+                  Explore this use case →
+                </div>
+              </Link>
+            ))}
           </div>
         </div>
       </section>
