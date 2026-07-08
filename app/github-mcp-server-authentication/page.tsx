@@ -1,354 +1,194 @@
-import type { Metadata } from "next";
-import Link from "next/link";
-import { getAllTools } from "@/lib/supabase";
-import ToolsSearchClient from "@/components/tools-search-client";
-
-type Tool = {
-  slug: string;
-  name?: string | null;
-  short_description?: string | null;
-  answer_first_summary?: string | null;
-  developer?: string | null;
-  installs?: number | null;
-  is_free?: boolean | null;
-  category?: string | null;
-  tags?: string[] | null;
-};
-
-const baseUrl = "https://www.mcpindex.dev";
-
-const guides = [
-  {
-    href: "/guides/what-is-model-context-protocol",
-    badge: "Beginner",
-    time: "8 min read",
-    title: "What Is Model Context Protocol (MCP)?",
-    description:
-      "A complete introduction to MCP, how MCP servers work, and why Anthropic introduced it as an open standard.",
-  },
-  {
-    href: "/guides/claude-desktop-mcp-setup",
-    badge: "Setup",
-    time: "6 min read",
-    title: "Claude Desktop MCP Setup",
-    description:
-      "Step-by-step walkthrough for connecting MCP servers in Claude Desktop and validating that the setup works.",
-  },
-  {
-    href: "/guides/how-to-install-mcp-servers",
-    badge: "Setup",
-    time: "7 min read",
-    title: "How to Install MCP Servers",
-    description:
-      "A cross-client installation guide covering the general workflow and the most common setup mistakes.",
-  },
-];
-
-const useCaseCards = [
-  {
-    title: "GitHub workflows",
-    description:
-      "Tools for repositories, pull requests, issues, code review, and documentation workflows.",
-    href: "/categories/version-control",
-  },
-  {
-    title: "Database inspection",
-    description:
-      "Browse schemas, inspect records, and query structured data from your AI workflow.",
-    href: "/categories/database",
-  },
-  {
-    title: "Browser automation",
-    description:
-      "Automate websites, test flows, and extract structured web content.",
-    href: "/categories/browser-automation",
-  },
-  {
-    title: "Cloud debugging",
-    description:
-      "Inspect infrastructure, cloud services, and operational environments with MCP tools.",
-    href: "/categories/cloud-and-infrastructure",
-  },
-  {
-    title: "Security scanning",
-    description:
-      "Find vulnerabilities, scan code, and improve security workflows with AI assistance.",
-    href: "/categories/security",
-  },
-  {
-    title: "Team knowledge search",
-    description:
-      "Search docs, notes, and workspace tools across productivity and collaboration systems.",
-    href: "/categories/productivity",
-  },
-];
-
-export const metadata: Metadata = {
-  title:
-    "MCPIndex — The Definitive Directory for Model Context Protocol Servers",
+{
+  slug: "claude-desktop-mcp-setup",
+  title: "Claude Desktop MCP Setup: The Complete Step-by-Step Guide (2026)",
   description:
-    "Browse 29+ MCP servers for Claude, Cursor, VS Code, and AI agents. Find setup guides, config examples, FAQs, and implementation-ready details for every Model Context Protocol tool.",
-  alternates: {
-    canonical: baseUrl,
-  },
-  openGraph: {
-    title:
-      "MCPIndex — The Definitive Directory for Model Context Protocol Servers",
-    description:
-      "Browse 29+ MCP servers for Claude, Cursor, VS Code, and AI agents. Find setup guides, config examples, FAQs, and implementation-ready details for every Model Context Protocol tool.",
-    url: baseUrl,
-    siteName: "MCPIndex",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title:
-      "MCPIndex — The Definitive Directory for Model Context Protocol Servers",
-    description:
-      "Browse 29+ MCP servers for Claude, Cursor, VS Code, and AI agents. Find setup guides, config examples, and FAQs for every MCP tool.",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
-
-const jsonLdWebsite = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  name: "MCPIndex",
-  url: baseUrl,
-  description:
-    "The definitive directory for Model Context Protocol (MCP) servers.",
-  potentialAction: {
-    "@type": "SearchAction",
-    target: {
-      "@type": "EntryPoint",
-      urlTemplate: `${baseUrl}/tools/search?q={search_term_string}`,
+    "Learn how to set up MCP servers in Claude Desktop. This step-by-step guide covers installation, config file setup, authentication, testing, and troubleshooting for macOS and Windows.",
+  excerpt:
+    "A complete walkthrough for connecting MCP servers in Claude Desktop — from downloading the app to validating your first tool call.",
+  category: "Setup",
+  publishedAt: "2026-06-20",
+  updatedAt: "2026-07-08",
+  readingTime: "10 min read",
+  keywords: [
+    "claude desktop mcp setup",
+    "claude mcp",
+    "how to install mcp in claude desktop",
+    "claude desktop mcp config",
+    "mcp server claude",
+    "model context protocol claude desktop",
+  ],
+  relatedToolSlugs: [
+    "github-mcp",
+    "filesystem-mcp",
+    "supabase-mcp",
+  ],
+  relatedGuideSlugs: [
+    "how-to-install-mcp-servers",
+    "what-is-model-context-protocol",
+  ],
+  faq: [
+    {
+      question: "Where is the Claude Desktop MCP config file located?",
+      answer:
+        "On macOS the config file is at ~/Library/Application Support/Claude/claude_desktop_config.json. On Windows it is at %APPDATA%\\Claude\\claude_desktop_config.json.",
     },
-    "query-input": "required name=search_term_string",
-  },
-};
-
-const jsonLdOrganization = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: "MCPIndex",
-  url: baseUrl,
-  description:
-    "MCPIndex is the definitive directory for Model Context Protocol servers, helping developers discover and set up MCP tools.",
-};
-
-function getCategorySlug(category: string) {
-  return category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-");
-}
-
-export default async function HomePage() {
-  let tools: Tool[] = [];
-  try {
-    tools = (await getAllTools()) ?? [];
-  } catch (error) {
-    console.error("[HOME PAGE] getAllTools failed:", error);
-    tools = [];
-  }
-
-  const totalTools = tools.length;
-  const freeTools = tools.filter((t) => Boolean(t?.is_free)).length;
-
-  const categoryCounts = tools.reduce<Record<string, number>>((acc, tool) => {
-    const cat = tool?.category?.trim();
-    if (!cat) return acc;
-    acc[cat] = (acc[cat] || 0) + 1;
-    return acc;
-  }, {});
-
-  const categories = Object.keys(categoryCounts).length;
-
-  const topCategories = Object.entries(categoryCounts)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 6)
-    .map(([name, count]) => ({
-      name,
-      count,
-      slug: getCategorySlug(name),
-    }));
-
-  const latestTools = tools.slice(0, 6);
-
-  const mostUsedTools = [...tools]
-    .sort((a, b) => (b.installs ?? 0) - (a.installs ?? 0))
-    .slice(0, 6);
-
-  return (
-    <main className="min-h-screen bg-black text-white">
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebsite) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdOrganization) }}
-      />
-
-      {/* ── Hero ── */}
-      <section
-        aria-label="Hero"
-        className="border-b border-zinc-800/60 bg-zinc-950/40"
-      >
-        <div className="mx-auto max-w-6xl space-y-8 px-6 py-16 md:py-20">
-          <div className="max-w-4xl space-y-6">
-            <div className="inline-flex items-center gap-2 rounded-full border border-purple-500/20 bg-purple-500/10 px-3 py-1 text-xs font-mono text-purple-300">
-              <span className="h-2 w-2 rounded-full bg-purple-400" />
-              MCPINDEX DIRECTORY
-            </div>
-            <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-6xl">
-              Find MCP servers, setup guides, and configuration examples in one
-              place
-            </h1>
-            <p className="max-w-3xl text-lg leading-relaxed text-zinc-400 md:text-xl">
-              MCPIndex helps developers discover Model Context Protocol tools
-              for Claude, Cursor, VS Code, and AI agents, with config snippets,
-              setup steps, FAQs, GitHub links, npm packages, and
-              implementation-ready details.
-            </p>
-            <div className="flex flex-wrap gap-4 pt-2">
-              <Link
-                href="/tools"
-                className="rounded-xl bg-purple-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-purple-500"
-              >
-                Browse tools
-              </Link>
-              <Link
-                href="/tools/search"
-                className="rounded-xl border border-zinc-800 bg-zinc-900 px-6 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:bg-zinc-800"
-              >
-                Open search
-              </Link>
-              <Link
-                href="/categories"
-                className="rounded-xl border border-zinc-800 bg-zinc-900 px-6 py-3 text-sm font-semibold text-zinc-200 transition-colors hover:bg-zinc-800"
-              >
-                Explore categories
-              </Link>
-            </div>
-          </div>
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-6">
-            <ToolsSearchClient tools={tools} compact />
-          </div>
-        </div>
-      </section>
-
-      {/* ── Stats ── */}
-      <section aria-label="Directory statistics">
-        <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">TOTAL TOOLS</p>
-              <p className="text-3xl font-bold text-white">{totalTools}</p>
-            </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">FREE TOOLS</p>
-              <p className="text-3xl font-bold text-white">{freeTools}</p>
-            </div>
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">CATEGORIES</p>
-              <p className="text-3xl font-bold text-white">{categories}</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* ── Top Categories ── */}
-      <section aria-label="Browse by category">
-        <div className="mx-auto max-w-6xl space-y-8 px-6 py-4 md:py-6">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-mono text-zinc-500">Start here</p>
-              <h2 className="text-2xl font-semibold text-white md:text-3xl">
-                Start from categories
-              </h2>
-            </div>
-            <Link
-              href="/categories"
-              className="text-sm text-purple-300 transition-colors hover:text-purple-200"
-            >
-              View all categories →
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {topCategories.map((category) => (
-              <Link
-                key={category.slug}
-                href={`/categories/${category.slug}`}
-                className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 transition-colors hover:border-zinc-700 hover:bg-zinc-900/80"
-              >
-                <div className="flex items-center justify-between gap-4">
-                  <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
-                    {category.name}
-                  </h3>
-                  <span className="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-mono text-zinc-400">
-                    {category.count} tools
-                  </span>
-                </div>
-                <p className="mt-3 text-sm leading-relaxed text-zinc-400">
-                  Browse MCP servers in {category.name} and discover
-                  setup-ready tools for this workflow.
-                </p>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ── Most Used Tools ── */}
-      <section aria-label="Most used MCP tools">
-        <div className="mx-auto max-w-6xl space-y-8 px-6 py-12">
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-mono text-zinc-500">Popular picks</p>
-              <h2 className="text-2xl font-semibold text-white md:text-3xl">
-                Most used MCP tools
-              </h2>
-            </div>
-            <Link
-              href="/tools"
-              className="text-sm text-purple-300 transition-colors hover:text-purple-200"
-            >
-              Browse all tools →
-            </Link>
-          </div>
-          <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
-            {mostUsedTools.map((tool) => (
-              <Link
-                key={tool.slug}
-                href={`/tools/${tool.slug}`}
-                className="group flex flex-col gap-5 rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 transition-colors hover:border-zinc-700 hover:bg-zinc-900/80"
-              >
-                <div className="space-y-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    {tool.category && (
-                      <span className="rounded-md border border-zinc-800 bg-zinc-900 px-2.5 py-1 text-[11px] font-mono text-zinc-400">
-                        {tool.category}
-                      </span>
-                    )}
-                    {tool.is_free ? (
-                      <span className="rounded-md border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1 text-[11px] font-mono text-emerald-400">
-                        Free
-                      </span>
-                    ) : (
-                      <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[11px] font-mono text-amber-400">
-                        Freemium
-                      </span>
-                    )}
-                  </div>
-                  <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
-                    {tool.name ?? "Untitled tool"}
-                  </h3>
-                  <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">
-                    {tool.short_description ?? "No description available."}
-                  </p>
-                </div>
-                <div className="rounded-xl border border-zinc-800 bg-black/30 p-4">
-                  <p className="line-clamp-4 text-sm leading-relaxed text-zinc-300">
-                    {tool
+    {
+      question: "Do I need to restart Claude Desktop after adding an MCP server?",
+      answer:
+        "Yes. Claude Desktop reads the config file at startup. Any change to the config requires a full restart before the new server appears.",
+    },
+    {
+      question: "Why does my MCP server not appear after restarting?",
+      answer:
+        "The most common causes are a JSON syntax error in the config file, a wrong path to the server binary or script, or a missing environment variable. Open the MCP log file to see the exact error.",
+    },
+    {
+      question: "Can I add multiple MCP servers to Claude Desktop?",
+      answer:
+        "Yes. The mcpServers object in the config file accepts any number of named server entries. Each entry runs as a separate process.",
+    },
+    {
+      question: "Is Claude Desktop MCP available on Windows?",
+      answer:
+        "Yes. Claude Desktop supports MCP on both macOS and Windows. The config file path differs between platforms but the JSON structure is identical.",
+    },
+    {
+      question: "How do I know if an MCP server is working correctly?",
+      answer:
+        "After restarting Claude Desktop, open a new conversation and ask Claude to list the tools available. If the server loaded correctly, its tools will appear in the response.",
+    },
+  ],
+  sections: [
+    {
+      id: "what-is-claude-desktop-mcp",
+      title: "What is Claude Desktop MCP?",
+      body: [
+        "Claude Desktop is the official desktop application from Anthropic for macOS and Windows. It supports Model Context Protocol natively, which means you can connect external MCP servers directly to Claude without any additional middleware or API setup.",
+        "When you add an MCP server to Claude Desktop, Claude gains the ability to call tools exposed by that server during a conversation. This includes reading local files, querying databases, inspecting repositories, searching the web, or calling any other capability the server exposes.",
+        "This guide covers the complete setup process from installing Claude Desktop to verifying that your first MCP server is working correctly.",
+      ],
+    },
+    {
+      id: "before-you-start",
+      title: "Before you start",
+      body: [
+        "Before adding any MCP server to Claude Desktop, make sure you have the following in place.",
+      ],
+      list: [
+        "Claude Desktop installed and signed in with your Anthropic account.",
+        "The MCP server you want to add is already installed on your machine, or you have its npm package name or repository path ready.",
+        "You know whether the server requires any API keys or credentials, and those are available.",
+        "A plain text or JSON editor to edit the config file (VS Code, Cursor, or any text editor works).",
+      ],
+    },
+    {
+      id: "locate-config-file",
+      title: "Step 1 — Locate the config file",
+      body: [
+        "Claude Desktop stores its MCP server configuration in a single JSON file on your local machine. The location depends on your operating system.",
+        "On macOS the config file is at this path:",
+        "~/Library/Application Support/Claude/claude_desktop_config.json",
+        "On Windows the config file is at this path:",
+        "%APPDATA%\\Claude\\claude_desktop_config.json",
+        "If the file does not exist yet, you can create it. Claude Desktop will pick it up automatically on the next launch. If the Claude directory does not exist, create that first.",
+      ],
+    },
+    {
+      id: "config-file-structure",
+      title: "Step 2 — Understand the config file structure",
+      body: [
+        "The config file uses a simple JSON structure. The top-level key is mcpServers, and each entry inside it is a named MCP server with its own command and optional arguments and environment variables.",
+        "A minimal config file with one server looks like this:",
+        '{ "mcpServers": { "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/yourname/projects"] } } }',
+        "Each server entry requires at minimum a command field that tells Claude Desktop how to start the server process. The args array passes additional arguments to that command. The optional env object sets environment variables for that server process.",
+        "You can add as many server entries as you need inside the mcpServers object. Each one runs as a separate process managed by Claude Desktop.",
+      ],
+    },
+    {
+      id: "add-first-server",
+      title: "Step 3 — Add your first MCP server",
+      body: [
+        "Open the config file in your text editor. If it is empty or does not exist yet, start with this base structure and replace the example with your chosen server.",
+        "For a filesystem server that gives Claude read access to a specific directory:",
+        '{ "mcpServers": { "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/yourname/projects"] } } }',
+        "For a server that requires an API key, use the env field to pass it without hardcoding it in the args:",
+        '{ "mcpServers": { "brave-search": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-brave-search"], "env": { "BRAVE_API_KEY": "your-api-key-here" } } } }',
+        "Save the file after editing. JSON syntax errors will prevent Claude Desktop from loading the server, so verify that all brackets and commas are correct before saving.",
+      ],
+    },
+    {
+      id: "restart-and-verify",
+      title: "Step 4 — Restart Claude Desktop and verify",
+      body: [
+        "After saving the config file, fully quit Claude Desktop and relaunch it. On macOS use Cmd+Q to quit completely rather than just closing the window. On Windows use the system tray icon to exit.",
+        "Once Claude Desktop has restarted, open a new conversation and test the connection with a direct prompt. For example, if you added the filesystem server, ask Claude to list the files in the directory you configured. If the server loaded correctly, Claude will be able to do this immediately.",
+        "You can also ask Claude directly: list all the MCP tools you currently have access to. Claude will list every tool exposed by all active MCP servers.",
+      ],
+    },
+    {
+      id: "troubleshooting",
+      title: "Step 5 — Troubleshooting common issues",
+      body: [
+        "If the server does not appear after restarting, these are the most common causes and how to fix them.",
+      ],
+      list: [
+        "JSON syntax error in the config file: use a JSON validator or open the file in VS Code which highlights syntax errors automatically.",
+        "Wrong command path: if you are using a local script or binary instead of npx, make sure the path is absolute and the file is executable.",
+        "Missing environment variable: if the server requires an API key or token that is not set, it will fail silently. Check the MCP log file for the exact error.",
+        "npx not found: make sure Node.js is installed and that npx is available in your PATH. Run npx --version in your terminal to confirm.",
+        "Server starts but tools do not appear: the server may have started but failed during initialization. Check the log file for initialization errors.",
+      ],
+    },
+    {
+      id: "mcp-log-file",
+      title: "How to read the MCP log file",
+      body: [
+        "Claude Desktop writes MCP server logs to a dedicated log file. This is the first place to check when a server does not load correctly.",
+        "On macOS the log file is at:",
+        "~/Library/Logs/Claude/mcp.log",
+        "On Windows the log file is at:",
+        "%APPDATA%\\Claude\\logs\\mcp.log",
+        "Open the log file in any text editor after a failed startup attempt. The log will show which servers were detected, whether they started successfully, and the exact error message if they failed.",
+        "Common log messages include ENOENT which means a file or command was not found, JSON parse error which means the config file has a syntax problem, and connection refused which typically means the server process exited before Claude Desktop could connect to it.",
+      ],
+    },
+    {
+      id: "add-multiple-servers",
+      title: "Adding multiple MCP servers",
+      body: [
+        "Claude Desktop supports any number of MCP servers running simultaneously. Each server entry in the config file runs as a separate process, and Claude can call tools from any of them during a single conversation.",
+        "A config file with multiple servers looks like this:",
+        '{ "mcpServers": { "filesystem": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-filesystem", "/Users/yourname/projects"] }, "github": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-github"], "env": { "GITHUB_PERSONAL_ACCESS_TOKEN": "your-token-here" } }, "brave-search": { "command": "npx", "args": ["-y", "@modelcontextprotocol/server-brave-search"], "env": { "BRAVE_API_KEY": "your-key-here" } } } }',
+        "There is no hard limit on the number of servers, but each one consumes memory and starts a process. Start with the servers you actually need and add more as your workflow evolves.",
+      ],
+    },
+    {
+      id: "security-best-practices",
+      title: "Security best practices",
+      body: [
+        "MCP servers run as local processes with the permissions you configure. A few practices help keep your setup safe.",
+      ],
+      list: [
+        "Never share your claude_desktop_config.json file publicly. It may contain API keys and access tokens in the env fields.",
+        "Use read-only access when connecting to databases or file systems. Most MCP servers support scoping permissions to specific paths or operations.",
+        "Only install MCP servers from sources you trust. A malicious server could expose sensitive data from the tools it accesses.",
+        "Review what paths you grant to the filesystem server. Limit it to project directories rather than your entire home folder.",
+        "Rotate API keys and tokens periodically, especially for servers that access cloud services or third-party APIs.",
+      ],
+    },
+    {
+      id: "next-steps",
+      title: "Next steps after setup",
+      body: [
+        "Once Claude Desktop is connected to one or more MCP servers and you have verified that the tools are accessible, you can start using them in real workflows.",
+        "A few directions worth exploring after your initial setup is working:",
+      ],
+      list: [
+        "Add a GitHub MCP server to give Claude access to your repositories, pull requests, and issues.",
+        "Add a database MCP server to let Claude query and inspect your development database during debugging sessions.",
+        "Explore the full MCP tools directory to find servers that match your workflow.",
+        "Read the how to install MCP servers guide for a cross-client perspective if you also use Cursor or VS Code.",
+      ],
+    },
+  ],
+},
