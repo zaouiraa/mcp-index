@@ -3,8 +3,6 @@ import Link from "next/link";
 import { getAllTools } from "@/lib/supabase";
 import ToolsSearchClient from "@/components/tools-search-client";
 
-// ─── Types ────────────────────────────────────────────────────────────────────
-
 type Tool = {
   slug: string;
   name?: string | null;
@@ -16,8 +14,6 @@ type Tool = {
   category?: string | null;
   tags?: string[] | null;
 };
-
-// ─── Constants ────────────────────────────────────────────────────────────────
 
 const baseUrl = "https://www.mcpindex.dev";
 
@@ -87,8 +83,6 @@ const useCaseCards = [
   },
 ];
 
-// ─── Metadata ─────────────────────────────────────────────────────────────────
-
 export const metadata: Metadata = {
   title:
     "MCPIndex — The Definitive Directory for Model Context Protocol Servers",
@@ -119,8 +113,6 @@ export const metadata: Metadata = {
   },
 };
 
-// ─── JSON-LD ──────────────────────────────────────────────────────────────────
-
 const jsonLdWebsite = {
   "@context": "https://schema.org",
   "@type": "WebSite",
@@ -147,13 +139,9 @@ const jsonLdOrganization = {
     "MCPIndex is the definitive directory for Model Context Protocol servers, helping developers discover and set up MCP tools.",
 };
 
-// ─── Helpers ──────────────────────────────────────────────────────────────────
-
 function getCategorySlug(category: string) {
   return category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-");
 }
-
-// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default async function HomePage() {
   let tools: Tool[] = [];
@@ -194,7 +182,6 @@ export default async function HomePage() {
   return (
     <main className="min-h-screen bg-black text-white">
 
-      {/* ── JSON-LD ── */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdWebsite) }}
@@ -257,21 +244,15 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">
-                TOTAL TOOLS
-              </p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">TOTAL TOOLS</p>
               <p className="text-3xl font-bold text-white">{totalTools}</p>
             </div>
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">
-                FREE TOOLS
-              </p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">FREE TOOLS</p>
               <p className="text-3xl font-bold text-white">{freeTools}</p>
             </div>
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">
-                CATEGORIES
-              </p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">CATEGORIES</p>
               <p className="text-3xl font-bold text-white">{categories}</p>
             </div>
           </div>
@@ -359,3 +340,15 @@ export default async function HomePage() {
                       <span className="rounded-md border border-amber-500/20 bg-amber-500/10 px-2.5 py-1 text-[11px] font-mono text-amber-400">
                         Freemium
                       </span>
+                    )}
+                  </div>
+                  <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
+                    {tool.name ?? "Untitled tool"}
+                  </h3>
+                  <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">
+                    {tool.short_description ?? "No description available."}
+                  </p>
+                </div>
+                <div className="rounded-xl border border-zinc-800 bg-black/30 p-4">
+                  <p className="line-clamp-4 text-sm leading-relaxed text-zinc-300">
+                    {tool
