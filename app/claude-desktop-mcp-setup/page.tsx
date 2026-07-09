@@ -285,12 +285,12 @@ export default function ClaudeDesktopMcpSetupPage() {
           </p>
 
           <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
-            If you want a concrete example after this Claude Desktop MCP tutorial, start with{" "}
+            If you want a concrete example after this Claude Desktop MCP tutorial, start with the step-by-step{" "}
             <Link
               href="/github-mcp-server-setup"
               className="text-zinc-300 underline underline-offset-4 hover:text-white"
             >
-              GitHub MCP Server Setup Guide
+              GitHub MCP Server setup
             </Link>
             . For broader recommendations, see{" "}
             <Link
@@ -590,12 +590,12 @@ npx -v`}
   items={[
     {
       title: "How to Install MCP Servers",
-      body: "Cross-client MCP installation guide for Claude Desktop, Cursor, and VS Code with claude_desktop_config.json examples.",
+      body: "Cross-client MCP installation guide for Cursor, Claude Code, and VS Code with claude_desktop_config.json examples.",
       href: "/how-to-install-mcp-servers",
     },
     {
-      title: "GitHub MCP Server Setup Tutorial",
-      body: "Step-by-step guide to install GitHub MCP Server in Claude Desktop with real claude_desktop_config.json config.",
+      title: "GitHub MCP Server Setup",
+      body: "Step-by-step guide to install GitHub MCP Server with a real claude_desktop_config.json example.",
       href: "/github-mcp-server-setup",
     },
     {
