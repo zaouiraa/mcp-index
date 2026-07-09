@@ -265,12 +265,19 @@ export default function GitHubMcpServerSetupPage() {
           </p>
 
           <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
-            If you want the tool profile first, see the{" "}
+            If you haven't set up Claude Desktop yet, read the{" "}
+            <Link
+              href="/claude-desktop-mcp-setup"
+              className="text-zinc-300 underline underline-offset-4 hover:text-white font-medium"
+            >
+              Claude Desktop MCP Setup
+            </Link>{" "}
+            guide first. For the tool profile, see the{" "}
             <Link
               href="/tools/github-mcp"
               className="text-zinc-300 underline underline-offset-4 hover:text-white"
             >
-              GitHub MCP Server tool profile
+              GitHub MCP Server listing
             </Link>
             . For broader recommendations, read{" "}
             <Link
