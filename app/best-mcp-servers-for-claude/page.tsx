@@ -854,6 +854,26 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
+        {/* RelatedGuides - FIXED VERSION */}
+        <RelatedGuides
+  items={[
+    {
+      title: "Claude Desktop MCP Setup",
+      body: "The definitive guide for claude_desktop_config.json configuration.",
+      href: "/claude-desktop-mcp-setup",
+    },
+    {
+      title: "GitHub MCP Server Setup",
+      body: "Step-by-step installation guide with a real config example.",
+      href: "/github-mcp-server-setup",
+    },
+    {
+      title: "How to Install MCP Servers",
+      body: "Cross-client installation for Cursor, Claude Code, and VS Code.",
+      href: "/how-to-install-mcp-servers",
+    },
+  ]}
+/>
         {/* FAQ */}
         <section id="best-mcp-servers-claude-faq" className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
