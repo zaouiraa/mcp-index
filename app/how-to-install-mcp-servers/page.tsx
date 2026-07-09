@@ -284,19 +284,19 @@ export default function HowToInstallMcpServersPage() {
           </p>
 
           <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
-            If you are starting from scratch, read{" "}
+            If you are only using Claude Desktop, read the dedicated{" "}
             <Link
               href="/claude-desktop-mcp-setup"
-              className="text-zinc-300 underline underline-offset-4 hover:text-white"
+              className="text-zinc-300 underline underline-offset-4 hover:text-white font-medium"
             >
-              Claude Desktop MCP Setup Guide
-            </Link>
-            . If you want a specific example, go to{" "}
+              Claude Desktop MCP Setup
+            </Link>{" "}
+            guide. This page focuses on cross-client installation for Cursor, Claude Code, and VS Code. If you want a specific example, go to{" "}
             <Link
               href="/github-mcp-server-setup"
               className="text-zinc-300 underline underline-offset-4 hover:text-white"
             >
-              GitHub MCP Server Setup Tutorial
+              GitHub MCP Server Setup
             </Link>
             .
           </p>
@@ -406,7 +406,7 @@ export default function HowToInstallMcpServersPage() {
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">Install MCP servers in Claude Desktop</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
-              Best for beginners and still the most common MCP server setup path.
+              The most common path. For a complete Claude Desktop walkthrough, see the dedicated guide below.
             </p>
           </div>
 
@@ -635,13 +635,13 @@ export default function HowToInstallMcpServersPage() {
         <RelatedGuides
   items={[
     {
-      title: "Claude Desktop MCP Setup Guide",
-      body: "Beginner-friendly MCP server setup guide focused on Claude Desktop and claude_desktop_config.json.",
+      title: "Claude Desktop MCP Setup",
+      body: "The dedicated guide for Claude Desktop claude_desktop_config.json configuration.",
       href: "/claude-desktop-mcp-setup",
     },
     {
-      title: "GitHub MCP Server Setup Tutorial",
-      body: "Concrete example of installing an MCP server with real claude_desktop_config.json config.",
+      title: "GitHub MCP Server Setup",
+      body: "Concrete example of installing an MCP server with a real claude_desktop_config.json example.",
       href: "/github-mcp-server-setup",
     },
     {
