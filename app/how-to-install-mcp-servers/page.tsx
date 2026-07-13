@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/how-to-install-mcp-servers`;
-const ogImage = `${baseUrl}/og/how-to-install-mcp-servers.png`;
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("How to Install MCP Servers")}&description=${encodeURIComponent("Cross-client installation for Cursor, Claude Code, and VS Code.")}`;
 
 export const metadata: Metadata = {
   title: "How to Install MCP Servers (2026 Guide) | Claude, Cursor, VS Code",
