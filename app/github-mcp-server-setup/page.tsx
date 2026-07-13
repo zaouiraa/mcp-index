@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/github-mcp-server-setup`;
-const ogImage = `${baseUrl}/og/github-mcp-server-setup.png`;
-
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("GitHub MCP Server Setup Guide")}&description=${encodeURIComponent("Step-by-step installation guide with a real config example.")}`;
 export const metadata: Metadata = {
   title: "GitHub MCP Server Setup for Claude Desktop (2026 Guide) | MCPIndex",
   description:
