@@ -189,6 +189,24 @@ const faqs = [
   },
 ];
 
+const relatedGuides = [
+  {
+    title: "Claude Desktop MCP Setup",
+    body: "The definitive guide for claude_desktop_config.json configuration.",
+    href: "/claude-desktop-mcp-setup",
+  },
+  {
+    title: "GitHub MCP Server Setup",
+    body: "Step-by-step installation guide with a real config example.",
+    href: "/github-mcp-server-setup",
+  },
+  {
+    title: "How to Install MCP Servers",
+    body: "Cross-client installation for Cursor, Claude Code, and VS Code.",
+    href: "/how-to-install-mcp-servers",
+  },
+];
+
 export default function BestMcpServersForClaudePage() {
   const jsonLdArticle = {
     "@context": "https://schema.org",
@@ -854,26 +872,23 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* RelatedGuides - FIXED VERSION */}
-        <RelatedGuides
-  items={[
-    {
-      title: "Claude Desktop MCP Setup",
-      body: "The definitive guide for claude_desktop_config.json configuration.",
-      href: "/claude-desktop-mcp-setup",
-    },
-    {
-      title: "GitHub MCP Server Setup",
-      body: "Step-by-step installation guide with a real config example.",
-      href: "/github-mcp-server-setup",
-    },
-    {
-      title: "How to Install MCP Servers",
-      body: "Cross-client installation for Cursor, Claude Code, and VS Code.",
-      href: "/how-to-install-mcp-servers",
-    },
-  ]}
-/>
+        {/* Related Guides - INLINE VERSION */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">Related Guides</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {relatedGuides.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:border-purple-500/30 transition-colors"
+              >
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
         {/* FAQ */}
         <section id="best-mcp-servers-claude-faq" className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
