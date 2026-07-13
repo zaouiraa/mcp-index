@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/claude-desktop-mcp-setup`;
-const ogImage = `${baseUrl}/og/claude-desktop-mcp-setup.png`;
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("Claude Desktop MCP Setup Guide")}&description=${encodeURIComponent("The definitive guide for claude_desktop_config.json configuration.")}`;
 
 export const metadata: Metadata = {
   title: "Claude Desktop MCP Setup (2026 Guide) | Config JSON & npx",
