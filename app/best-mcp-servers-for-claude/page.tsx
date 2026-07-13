@@ -3,8 +3,7 @@ import type { Metadata } from "next";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-servers-for-claude`;
-const ogImage = `${baseUrl}/og/best-mcp-servers-for-claude.png`;
-
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("Best MCP Servers for Claude in 2026")}&description=${encodeURIComponent("Top 10 MCP servers ranked by use case with setup examples.")}`;
 export const metadata: Metadata = {
   title: "Best MCP Servers for Claude (2026 Top 10) | MCPIndex",
   description:
