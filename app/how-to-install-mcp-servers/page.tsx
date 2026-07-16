@@ -215,17 +215,212 @@ export default function HowToInstallMcpServersPage() {
           </p>
 
           <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
-            If you're only using Claude Desktop, see{" "}
+            If you are only using Claude Desktop, read the dedicated{" "}
             <Link href="/claude-desktop-mcp-setup" className="text-zinc-300 underline underline-offset-4 hover:text-white font-medium">
               Claude Desktop MCP Setup
-            </Link>
-            . For a real example, visit{" "}
+            </Link>{" "}
+            guide. This page focuses on cross-client installation for Cursor, Claude Code, and VS Code. If you want a specific example, go to{" "}
             <Link href="/github-mcp-server-setup" className="text-zinc-300 underline underline-offset-4 hover:text-white">
               GitHub MCP Server Setup
-            </Link>.
+            </Link>
+            .
           </p>
         </header>
 
+        <section id="how-mcp-server-installation-works" className="space-y-4">
+          <h2 className="text-2xl font-semibold">How MCP server installation works</h2>
+          <p className="text-zinc-400 leading-relaxed">
+            Most MCP servers are installed by giving your AI client a command or a
+            remote endpoint that it can launch or connect to through the Model
+            Context Protocol. In practice, that usually means one of three models:
+            a local stdio MCP server started with{" "}
+            <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">npx</code>,
+            a custom executable, or a remote MCP endpoint accessed through a URL.
+          </p>
+          <p className="text-zinc-400 leading-relaxed">
+            The client-specific part is where you register that MCP server. Claude
+            Desktop uses a local claude_desktop_config.json file, Cursor uses its
+            MCP settings interface, and Claude Code or VS Code commonly use the{" "}
+            <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
+              claude mcp add
+            </code>{" "}
+            command for MCP server registration.
+          </p>
+        </section>
+
+        <section id="what-you-need-before-installing-mcp-servers" className="space-y-5">
+          <h2 className="text-2xl font-semibold">What you need before installing MCP servers</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              {
+                title: "An MCP-compatible client",
+                body: "Use Claude Desktop, Claude Code, Cursor, or a VS Code workflow that supports Model Context Protocol server registration.",
+              },
+              {
+                title: "Node.js for npx MCP servers",
+                body: "Many popular MCP servers run through npx, so Node.js and npm need to be installed first for these MCP server packages.",
+              },
+              {
+                title: "Credentials when required",
+                body: "Some MCP servers need tokens, API keys, or OAuth before they can access GitHub, Supabase, AWS, or other tools via the Model Context Protocol.",
+              },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="standard-mcp-server-installation-flow" className="space-y-5">
+          <h2 className="text-2xl font-semibold">The standard MCP server installation flow</h2>
+          <ol className="space-y-4">
+            {[
+              { step: "1", title: "Choose the MCP server to install", body: "Pick an MCP server that matches your workflow. GitHub MCP Server is the best first install for most developers, while Context7 MCP Server is excellent for live docs." },
+              { step: "2", title: "Install dependencies like Node.js", body: "If the MCP server uses npx, install Node.js first. If it uses a remote endpoint, make sure you have the correct URL and any required credentials for the MCP server." },
+              { step: "3", title: "Register the MCP server in your client", body: "Add the MCP server config through claude_desktop_config.json for Claude Desktop, Cursor MCP settings, or the claude mcp add command depending on the MCP-compatible client you use." },
+              { step: "4", title: "Add MCP server environment variables", body: "Paste API keys, access tokens, or profile values exactly as required by the MCP server documentation." },
+              { step: "5", title: "Restart or reload the MCP-compatible client", body: "Many MCP server installation problems happen because users save the config but do not fully reload the client." },
+              { step: "6", title: "Run a simple MCP server test prompt", body: "Ask Claude to do a task that clearly requires the new MCP server integration, such as listing repositories or opening a dashboard." },
+            ].map((item) => (
+              <li key={item.step} className="flex gap-4 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-mono flex items-center justify-center mt-0.5">{item.step}</span>
+                <div className="space-y-1.5">
+                  <p className="text-white font-medium text-sm">{item.title}</p>
+                  <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <section id="install-mcp-servers-claude-desktop" className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold">Install MCP servers in Claude Desktop</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">The most common path. For a complete Claude Desktop walkthrough, see the dedicated guide below.</p>
+          </div>
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
+            <p className="text-zinc-400 text-sm leading-relaxed">Claude Desktop loads MCP servers from a local claude_desktop_config.json file:</p>
+            <p className="text-zinc-400 text-sm">macOS: <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">~/Library/Application Support/Claude/claude_desktop_config.json</code></p>
+            <p className="text-zinc-400 text-sm">Windows: <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">%APPDATA%\Claude\claude_desktop_config.json</code></p>
+            <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs text-zinc-300 leading-relaxed">
+{`{
+  "mcpServers": {
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@github/github-mcp-server"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_GITHUB_TOKEN"
+      }
+    }
+  }
+}`}
+            </pre>
+            <p className="text-zinc-400 text-sm leading-relaxed">Save the file, fully restart Claude Desktop, then test with a prompt like &quot;List my GitHub repositories.&quot;</p>
+            <div className="pt-1">
+              <Link href="/claude-desktop-mcp-setup" className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium">
+                Full Claude Desktop MCP setup guide →
+              </Link>
+            </div>
+          </div>
+        </section>
+
+        <section id="install-mcp-servers-cursor" className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold">Install MCP servers in Cursor</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">Good for developers who want MCP servers directly inside the editor.</p>
+          </div>
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
+            <ol className="space-y-2 text-sm text-zinc-400">
+              <li>1. Open Cursor Settings.</li>
+              <li>2. Go to the MCP section.</li>
+              <li>3. Choose Add New MCP Server.</li>
+              <li>4. Paste the npx command or MCP server config details.</li>
+              <li>5. Add any required MCP server environment variables.</li>
+              <li>6. Save and test the MCP server from the MCP panel or chat interface.</li>
+            </ol>
+            <p className="text-zinc-400 text-sm leading-relaxed">Cursor usually makes MCP server setup easier through its UI, especially for npx-based command local servers. If the MCP server does not appear, confirm the command path, token values, and whether Cursor needs a restart.</p>
+          </div>
+        </section>
+
+        <section id="install-mcp-servers-claude-code" className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold">Install MCP servers in Claude Code</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">Best for terminal-first developers using Claude inside coding workflows.</p>
+          </div>
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
+            <p className="text-zinc-400 text-sm leading-relaxed">Claude Code commonly uses the claude mcp add CLI command to register MCP servers. The basic MCP server setup flow looks like this:</p>
+            <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs text-zinc-300 leading-relaxed">
+{`claude mcp add github -- npx -y @github/github-mcp-server`}
+            </pre>
+            <p className="text-zinc-400 text-sm leading-relaxed">After MCP server registration, Claude Code can use the server in terminal-driven workflows. If your MCP server needs credentials, configure them according to the MCP server documentation before testing.</p>
+          </div>
+        </section>
+
+        <section id="install-mcp-servers-vs-code" className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold">Install MCP servers in VS Code</h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">Works best when paired with Claude Code or compatible MCP-aware tooling.</p>
+          </div>
+          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
+            <p className="text-zinc-400 text-sm leading-relaxed">In VS Code workflows that use Claude Code, you typically install or register MCP servers through the integrated terminal using the claude mcp add command rather than a standalone graphical settings page.</p>
+            <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs text-zinc-300 leading-relaxed">
+{`claude mcp add github -- npx -y @github/github-mcp-server`}
+            </pre>
+            <p className="text-zinc-400 text-sm leading-relaxed">This makes VS Code MCP server setup very similar to Claude Code setup. The main difference is that you trigger and use the Model Context Protocol workflow inside the editor.</p>
+          </div>
+        </section>
+
+        <section id="best-mcp-servers-to-install-first" className="space-y-5">
+          <h2 className="text-2xl font-semibold">Best first MCP servers to install</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { title: "GitHub MCP Server", body: "Best first MCP server to install for repositories, pull requests, issues, and code search.", href: "/tools/github-mcp" },
+              { title: "Context7 MCP Server", body: "Best second MCP server to install for version-specific library docs and more accurate coding output.", href: "/tools/context7-mcp" },
+              { title: "Desktop Commander MCP", body: "Best MCP server for local file access, shell automation, and direct project operations.", href: "/tools/desktop-commander-mcp" },
+            ].map((item) => (
+              <Link key={item.title} href={item.href} className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:bg-zinc-900/70 transition-colors block">
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        <section id="common-mcp-server-installation-errors" className="space-y-5">
+          <h2 className="text-2xl font-semibold">Common MCP server installation errors</h2>
+          <div className="space-y-3">
+            {[
+              { title: "Node.js is missing for npx MCP servers", body: "If the MCP server uses npx and your machine does not have Node installed, the npx command cannot start the MCP server." },
+              { title: "claude_desktop_config.json syntax is invalid", body: "JSON formatting errors in the MCP server config are especially common in Claude Desktop config files." },
+              { title: "MCP server credentials are wrong", body: "A typo in an API key, token, or profile name can make the MCP server appear installed but unusable." },
+              { title: "The wrong MCP-compatible client flow was used", body: "A claude_desktop_config.json that works in Claude Desktop is not always entered the same way in Cursor MCP settings or with claude mcp add." },
+              { title: "The MCP-compatible client was not restarted", body: "Many MCP clients need a restart or reload before newly added MCP servers become available through the Model Context Protocol." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section id="mcp-server-security-tips" className="space-y-5">
+          <h2 className="text-2xl font-semibold">MCP server security tips before you install</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {[
+              { title: "Start with official MCP servers", body: "Official MCP servers from vendors like GitHub, AWS, and Supabase are usually easier to trust and maintain." },
+              { title: "Use least-privilege tokens for MCP servers", body: "Only give each MCP server the minimum scopes it needs to do its job through the Model Context Protocol." },
+              { title: "Be cautious with local MCP server access", body: "MCP servers that can run shell commands or edit files should be reviewed carefully before installation." },
+            ].map((item) => (
+              <div key={item.title} className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
+              </div>
+            ))}
+          </div>
+        </section>
 
         <RelatedGuides
           items={[
@@ -247,6 +442,7 @@ export default function HowToInstallMcpServersPage() {
           ]}
         />
 
+        {/* صندوق التحميل المجاني */}
         <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
