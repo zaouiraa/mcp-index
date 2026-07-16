@@ -1,6 +1,5 @@
 import Link from "next/link";
-import type { Metadata } from "next";
-import { DownloadGithubPromptsButton } from "@/components/download-github-prompts-button";
+import type { Metadata } from "import { DownloadGithubPromptsButton } from "@/components/download-github-prompts-button";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-tools-for-github-workflows`;
@@ -549,8 +548,8 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
             ))}
           </div>
         </section>
-
         
+        {/* تم تعديل قسم الروابط الموجهة إلى Inline لتجنبّه أخطاء المكون غير الموجود */}
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Related Guides</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -566,7 +565,6 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
             ))}
           </div>
         </section>
-
         
         <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
