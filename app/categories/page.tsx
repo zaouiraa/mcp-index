@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { getAllTools } from "@/lib/supabase";
 
 const baseUrl = "https://www.mcpindex.dev";
-const ogImage = `${baseUrl}/og/categories.png`;
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("MCP Categories")}&description=${encodeURIComponent("Browse MCP tools by workflow and use case.")}`;
 
 type Tool = {
   slug: string;
@@ -25,31 +25,24 @@ function getCategoryDescription(categoryName: string, count: number) {
   if (lower.includes("search")) {
     return `${count} MCP tools for live search, web retrieval, and current information access.`;
   }
-
   if (lower.includes("version control")) {
     return `${count} MCP tools for Git, GitHub, GitLab, repositories, branches, and code collaboration workflows.`;
   }
-
   if (lower.includes("developer tools")) {
     return `${count} MCP tools for coding, desktop automation, documentation, and local engineering workflows.`;
   }
-
   if (lower.includes("database")) {
     return `${count} MCP tools for querying databases, inspecting schemas, and connecting AI assistants to backend data.`;
   }
-
   if (lower.includes("cloud") || lower.includes("infrastructure")) {
     return `${count} MCP tools for cloud services, DevOps, Kubernetes, and infrastructure operations.`;
   }
-
   if (lower.includes("productivity")) {
     return `${count} MCP tools for docs, calendar, email, drive, and AI-powered workspace automation.`;
   }
-
   if (lower.includes("security")) {
     return `${count} MCP tools for vulnerability scanning, code analysis, and safer development workflows.`;
   }
-
   if (lower.includes("monitoring")) {
     return `${count} MCP tools for dashboards, observability, incident response, and operational visibility.`;
   }
@@ -64,14 +57,14 @@ function safeJsonLd(data: unknown) {
 export const metadata: Metadata = {
   title: "Browse MCP Tool Categories by Use Case | MCPIndex",
   description:
-    "Browse MCP tool categories including search, version control, databases, developer tools, productivity, cloud infrastructure, monitoring, and security.",
+    "Browse MCP tool categories including search, version control, databases, developer tools, productivity, cloud infrastructure, monitoring, and security. Find the right MCP server for your workflow.",
   alternates: {
     canonical: `${baseUrl}/categories`,
   },
   openGraph: {
     title: "MCP Categories | MCPIndex",
     description:
-      "Explore MCP servers grouped by use case and workflow category on MCPIndex.",
+      "Explore MCP servers grouped by use case and workflow category on MCPIndex. Find tools for coding, search, security, cloud, and more.",
     url: `${baseUrl}/categories`,
     siteName: "MCPIndex",
     type: "website",
@@ -96,6 +89,50 @@ export const metadata: Metadata = {
     follow: true,
   },
 };
+
+// بيانات إضافية للـ FAQ العامة عن التصنيفات
+const categoriesFaq = [
+  {
+    q: "What are MCP categories?",
+    a: "MCP categories group Model Context Protocol servers by their primary workflow or use case. This helps you quickly find tools designed for similar tasks, such as version control, search, databases, or productivity.",
+  },
+  {
+    q: "How do I choose a category?",
+    a: "Start with the category that matches your main goal (e.g., 'Version Control' for Git-related tasks). Within each category, compare the available tools based on their features, setup complexity, and compatibility with your MCP client.",
+  },
+  {
+    q: "Are all tools in a category free?",
+    a: "Not necessarily. Some MCP servers are completely free and open source, while others may require a paid API key or subscription to the underlying service. Each tool page indicates its pricing model.",
+  },
+  {
+    q: "Can a tool appear in multiple categories?",
+    a: "Currently, each tool is assigned to a single primary category to keep navigation simple. If a tool fits multiple workflows, we list it in the most relevant category.",
+  },
+];
+
+// أدلة مرتبطة
+const relatedGuides = [
+  {
+    title: "Claude Desktop MCP Setup",
+    desc: "Full beginner tutorial to connect MCP servers.",
+    href: "/claude-desktop-mcp-setup",
+  },
+  {
+    title: "How to Install MCP Servers",
+    desc: "Cross-client installation guide (Claude, Cursor, VS Code).",
+    href: "/how-to-install-mcp-servers",
+  },
+  {
+    title: "GitHub MCP Server Setup",
+    desc: "Step‑by‑step example for GitHub integration.",
+    href: "/github-mcp-server-setup",
+  },
+  {
+    title: "Best MCP Servers for Claude",
+    desc: "Curated list of top servers by use case.",
+    href: "/best-mcp-servers-for-claude",
+  },
+];
 
 export default async function CategoriesIndexPage() {
   const tools = (await getAllTools()) as Tool[];
@@ -157,7 +194,8 @@ export default async function CategoriesIndexPage() {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: "MCP Categories",
-    description: "Browse MCP tools by category and use case on MCPIndex.",
+    description:
+      "Browse MCP tools by category and use case on MCPIndex. Find servers for search, version control, databases, cloud, productivity, and more.",
     url: `${baseUrl}/categories`,
     hasPart: categories.map((category, index) => ({
       "@type": "CollectionPage",
@@ -168,6 +206,19 @@ export default async function CategoriesIndexPage() {
         category.name,
         category.tools.length
       ),
+    })),
+  };
+
+  const jsonLdFaq = {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    mainEntity: categoriesFaq.map((item) => ({
+      "@type": "Question",
+      name: item.q,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.a,
+      },
     })),
   };
 
@@ -185,6 +236,12 @@ export default async function CategoriesIndexPage() {
           __html: safeJsonLd(jsonLdCollection),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: safeJsonLd(jsonLdFaq),
+        }}
+      />
 
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
@@ -196,14 +253,27 @@ export default async function CategoriesIndexPage() {
         </nav>
 
         <header className="space-y-4">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-zinc-800 text-zinc-400 border border-zinc-700">
+              Directory
+            </span>
+            <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+              Updated July 2026
+            </span>
+            <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-blue-500/10 text-blue-400 border border-blue-500/20">
+              Free Resource
+            </span>
+          </div>
+
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight">
             MCP Categories
           </h1>
           <p className="text-zinc-400 text-lg max-w-3xl leading-relaxed">
-            Explore MCP servers by workflow and use case. These category pages
+            Explore MCP servers by workflow and use case. These category hubs
             help you move from broad research to specific tool comparisons,
             making it easier to find the right MCP server for search, version
             control, databases, productivity, cloud infrastructure, and more.
+            Every category page includes setup tips, popular tools, and FAQs.
           </p>
           <p className="text-sm text-zinc-500">
             Browse{" "}
@@ -299,15 +369,38 @@ export default async function CategoriesIndexPage() {
           </div>
         </section>
 
+        {/* قسم الأدلة ذات الصلة */}
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">
+            Related Setup Guides
+          </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {relatedGuides.map((guide) => (
+              <Link
+                key={guide.href}
+                href={guide.href}
+                className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 hover:bg-zinc-900/70 transition-colors"
+              >
+                <h3 className="font-semibold text-white">{guide.title}</h3>
+                <p className="text-sm text-zinc-400 mt-1">{guide.desc}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        {/* مساحة إعلانية */}
         <section className="flex items-center justifycenter py-2">
           <div className="w-full max-w-[728px] min-h-[90px] border border-dashed border-zinc-800 rounded-xl flex items-center justify-center text-zinc-600 text-sm font-mono text-center px-4">
             Ad Space
           </div>
         </section>
 
+        {/* لماذا تهم محاور التصنيف */}
         <section className="space-y-6">
           <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Why category hubs matter</h2>
+            <h2 className="text-2xl font-semibold">
+              Why category hubs matter
+            </h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
               Category pages make your directory easier to browse and help
               connect broad topics with tool-specific pages.
@@ -340,6 +433,66 @@ export default async function CategoriesIndexPage() {
             </div>
           </div>
         </section>
+
+        {/* الأسئلة الشائعة عن التصنيفات */}
+        <section className="space-y-6">
+          <div className="space-y-2">
+            <h2 className="text-2xl font-semibold">
+              Frequently asked questions about MCP categories
+            </h2>
+            <p className="text-zinc-500 text-sm leading-relaxed">
+              Common questions about using category pages to find the right MCP
+              servers.
+            </p>
+          </div>
+
+          <div className="space-y-5">
+            {categoriesFaq.map((item, i) => (
+              <article
+                key={i}
+                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
+              >
+                <h3 className="text-lg font-semibold">{item.q}</h3>
+                <p className="text-zinc-400 leading-relaxed text-[15px]">
+                  {item.a}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-zinc-800/60 pt-8">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 text-sm text-zinc-600">
+            <span>© 2026 MCPIndex. All rights reserved.</span>
+            <div className="flex items-center gap-6">
+              <Link
+                href="/privacy-policy"
+                className="hover:text-zinc-400 transition-colors"
+              >
+                Privacy Policy
+              </Link>
+              <Link
+                href="/terms-of-service"
+                className="hover:text-zinc-400 transition-colors"
+              >
+                Terms of Service
+              </Link>
+              <Link
+                href="/submit"
+                className="hover:text-zinc-400 transition-colors"
+              >
+                Submit MCP Server
+              </Link>
+              <Link
+                href="/contact"
+                className="hover:text-zinc-400 transition-colors"
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+        </footer>
       </div>
     </main>
   );
