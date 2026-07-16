@@ -1,5 +1,6 @@
 import Link from "next/link";
-import type { Metadata } from "import { DownloadGithubPromptsButton } from "@/components/download-github-prompts-button";
+import type { Metadata } from "next";
+import { DownloadGithubPromptsButton } from "@/components/download-github-prompts-button";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-tools-for-github-workflows`;
