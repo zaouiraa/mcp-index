@@ -28,56 +28,32 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }
 
   const staticPages: MetadataRoute.Sitemap = [
-    {
-      url: `${baseUrl}/`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 1,
-    },
-    {
-      url: `${baseUrl}/tools`,
-      lastModified: now,
-      changeFrequency: "daily",
-      priority: 0.9,
-    },
-    {
-      url: `${baseUrl}/categories`,
-      lastModified: now,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
-    {
-      url: `${baseUrl}/submit`,
-      lastModified: now,
-      changeFrequency: "monthly",
-      priority: 0.5,
-    },
-    {
-      url: `${baseUrl}/privacy-policy`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/terms-of-service`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
-    {
-      url: `${baseUrl}/contact`,
-      lastModified: now,
-      changeFrequency: "yearly",
-      priority: 0.3,
-    },
+    { url: `${baseUrl}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
+    { url: `${baseUrl}/tools`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
+    { url: `${baseUrl}/categories`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
+    { url: `${baseUrl}/submit`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
+    { url: `${baseUrl}/privacy-policy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${baseUrl}/terms-of-service`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+    { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
+
+    { url: `${baseUrl}/what-is-model-context-protocol`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/claude-desktop-mcp-setup`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/how-to-install-mcp-servers`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/github-mcp-server-setup`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/github-mcp-server-authentication`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/best-mcp-servers-for-claude`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/best-mcp-tools-for-github-workflows`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${baseUrl}/best-open-source-mcp-tools-on-github`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
   ];
 
-  const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
-    url: `${baseUrl}/tools/${tool.slug}`,
-    lastModified: tool.last_updated ? new Date(tool.last_updated) : now,
-    changeFrequency: "weekly",
-    priority: 0.8,
-  }));
+  const toolPages: MetadataRoute.Sitemap = tools
+    .filter((tool) => tool.slug && tool.slug.trim().length > 0)
+    .map((tool) => ({
+      url: `${baseUrl}/tools/${tool.slug}`,
+      lastModified: tool.last_updated ? new Date(tool.last_updated) : now,
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
 
   const categorySlugs = Array.from(
     new Set(
@@ -91,16 +67,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const categoryPages: MetadataRoute.Sitemap = categorySlugs.map((category) => ({
     url: `${baseUrl}/categories/${category}`,
     lastModified: now,
-    changeFrequency: "weekly",
+    changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
-  const guidePages: MetadataRoute.Sitemap = GUIDE_CATALOG.map((guide) => ({
-    url: `${baseUrl}${guide.href}`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.7,
-  }));
+  const guidePages: MetadataRoute.Sitemap = GUIDE_CATALOG
+    .filter((guide) => guide.href && guide.href.trim().length > 0)
+    .map((guide) => {
+      const correctedHref = guide.href.replace(/^\/guides\//, "/");
+      return {
+        url: `${baseUrl}${correctedHref}`,
+        lastModified: now,
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      };
+    });
 
   return [...staticPages, ...categoryPages, ...toolPages, ...guidePages];
 }
