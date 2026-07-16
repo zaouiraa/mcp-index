@@ -1,10 +1,11 @@
-import RelatedGuides from "@/components/content/RelatedGuides";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { DownloadGithubPromptsButton } from "@/components/download-github-prompts-button";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-tools-for-github-workflows`;
-const ogImage = `${baseUrl}/og/best-mcp-tools-for-github-workflows.png`;
+
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("Best MCP Tools for GitHub Workflows")}&description=${encodeURIComponent("Compare the best MCP tools for GitHub workflows for Claude Desktop PRs, docs, and security.")}`;
 
 export const metadata: Metadata = {
   title: "Best MCP Tools for GitHub Workflows (2026) | MCPIndex",
@@ -129,6 +130,24 @@ const faqs = [
     question: "How do I set up these MCP tools for GitHub workflows?",
     answer:
       "Most of these MCP tools are installed by adding their JSON configuration to your claude_desktop_config.json file. GitHub MCP Server, Context7, and Desktop Commander all use npx, making Claude Desktop MCP setup fast and repeatable.",
+  },
+];
+
+const relatedGuides = [
+  {
+    title: "GitHub MCP Server Setup Tutorial",
+    body: "Step-by-step Claude Desktop setup guide for the core GitHub MCP server with claude_desktop_config.json.",
+    href: "/github-mcp-server-setup",
+  },
+  {
+    title: "GitHub MCP Authentication Guide",
+    body: "Fix GitHub MCP server token scopes, claude_desktop_config.json, and private repo access problems.",
+    href: "/github-mcp-server-authentication",
+  },
+  {
+    title: "Best Open Source MCP Tools on GitHub",
+    body: "Broader ranking of the best open source MCP servers for Claude Desktop and other MCP-compatible clients.",
+    href: "/best-open-source-mcp-tools-on-github",
   },
 ];
 
@@ -531,25 +550,59 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <RelatedGuides
-          items={[
-            {
-              title: "GitHub MCP Server Setup Tutorial",
-              body: "Step-by-step Claude Desktop setup guide for the core GitHub MCP server with claude_desktop_config.json.",
-              href: "/github-mcp-server-setup",
-            },
-            {
-              title: "GitHub MCP Authentication Guide",
-              body: "Fix GitHub MCP server token scopes, claude_desktop_config.json, and private repo access problems.",
-              href: "/github-mcp-server-authentication",
-            },
-            {
-              title: "Best Open Source MCP Tools on GitHub",
-              body: "Broader ranking of the best open source MCP servers for Claude Desktop and other MCP-compatible clients.",
-              href: "/best-open-source-mcp-tools-on-github",
-            },
-          ]}
-        />
+        
+        <section className="space-y-4">
+          <h2 className="text-2xl font-semibold">Related Guides</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            {relatedGuides.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:border-purple-500/30 transition-colors"
+              >
+                <h3 className="text-base font-semibold text-white">{item.title}</h3>
+                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
+              </Link>
+            ))}
+          </div>
+        </section>
+
+        
+        <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
+            <div className="flex-1 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-zinc-700 text-zinc-300 text-xs font-mono w-fit">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-white"></span>
+                </span>
+                Free Cheat Sheet
+              </div>
+              
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                Stop guessing what to ask Claude.
+              </h2>
+              <p className="text-zinc-400 leading-relaxed max-w-xl">
+                We wrote 5 battle-tested System Prompts specifically for GitHub workflows (PR Reviews, Issue Triage, CI/CD Debugging). Copy, paste, and get instant, senior-level results.
+              </p>
+              
+              <div className="flex flex-wrap gap-2 pt-1">
+                {["PR Reviewer", "Issue Triage", "Changelog", "CI Debugger", "Release Notes"].map((tool) => (
+                  <span key={tool} className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-black border border-zinc-800 text-zinc-500">
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="w-full lg:w-auto flex-shrink-0">
+              <DownloadGithubPromptsButton />
+              <p className="text-[11px] text-zinc-600 mt-3 text-center lg:text-right">Downloads as a clean .md file.</p>
+            </div>
+          </div>
+        </section>
 
         <section id="mcp-tools-github-workflows-faq" className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions about MCP tools for GitHub workflows</h2>
