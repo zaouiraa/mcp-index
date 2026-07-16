@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { getAllTools } from "@/lib/supabase";
 
+export const dynamic = 'force-dynamic'; 
+
+
 const baseUrl = "https://www.mcpindex.dev";
 
 type Tool = {
