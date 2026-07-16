@@ -226,8 +226,6 @@ export default function HowToInstallMcpServersPage() {
           </p>
         </header>
 
-        {/* (جميع الأقسام الأصلية تبقى كما هي: "How MCP server installation works"، "What you need"، "The standard flow"، ... إلخ) */}
-        {/* ... المحتوى الأصلي من السؤال ... */}
 
         <RelatedGuides
           items={[
@@ -249,7 +247,6 @@ export default function HowToInstallMcpServersPage() {
           ]}
         />
 
-        {/* ========== صندوق التحميل المجاني ========== */}
         <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
