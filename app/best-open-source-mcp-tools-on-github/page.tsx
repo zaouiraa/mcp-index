@@ -1,10 +1,11 @@
-import RelatedGuides from "@/components/content/RelatedGuides";
 import Link from "next/link";
 import type { Metadata } from "next";
+import { DownloadMcpChecklistButton } from "@/components/download-mcp-checklist-button";
+import RelatedGuides from "@/components/content/RelatedGuides";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-open-source-mcp-tools-on-github`;
-const ogImage = `${baseUrl}/og/best-open-source-mcp-tools-on-github.png`;
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("Best Open Source MCP Tools on GitHub")}&description=${encodeURIComponent("Compare top MCP servers by use case, setup difficulty, and Claude Desktop integration.")}`;
 
 export const metadata: Metadata = {
   title: "Best Open Source MCP Tools on GitHub (2026) | MCPIndex",
@@ -189,6 +190,24 @@ const faqs = [
     question: "How do I install open source MCP servers from GitHub?",
     answer:
       "Most open source MCP tools are installed by adding their JSON configuration block to your claude_desktop_config.json file. Many use npx to run directly from the GitHub npm package without manual cloning, making MCP server setup fast and repeatable.",
+  },
+];
+
+const relatedGuides = [
+  {
+    title: "Best MCP Tools for GitHub Workflows",
+    body: "Find the strongest open source MCP server stack for pull requests, docs, and security.",
+    href: "/best-mcp-tools-for-github-workflows",
+  },
+  {
+    title: "GitHub MCP Server Setup Tutorial",
+    body: "Step-by-step Claude Desktop setup guide for the most important open source GitHub MCP tool.",
+    href: "/github-mcp-server-setup",
+  },
+  {
+    title: "GitHub MCP Authentication Guide",
+    body: "Troubleshoot GitHub MCP server token scopes, claude_desktop_config.json, and private repository access.",
+    href: "/github-mcp-server-authentication",
   },
 ];
 
@@ -457,34 +476,6 @@ export default function BestOpenSourceMcpToolsOnGitHubPage() {
                   {tool.why}
                 </p>
 
-                {tool.slug === "github-mcp" && (
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    GitHub MCP Server is the clearest starting point because it
-                    maps directly to the highest-frequency engineering workflow:
-                    repositories, pull requests, issues, and code search. If you
-                    only install one open source MCP tool from GitHub, this is
-                    usually the best first choice for Claude Desktop.
-                  </p>
-                )}
-
-                {tool.slug === "context7-mcp" && (
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    Context7 earns its spot because it improves Claude answer quality
-                    immediately. Instead of relying on stale framework knowledge,
-                    Claude can pull the exact docs for the library version you are
-                    using through this MCP server and write more accurate code.
-                  </p>
-                )}
-
-                {tool.slug === "desktop-commander-mcp" && (
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    Desktop Commander is one of the most powerful open source MCP tools
-                    because it gives Claude direct file and shell access through the
-                    Model Context Protocol. That also means it deserves extra caution.
-                    It is high leverage, but not a casual MCP server install for sensitive environments.
-                  </p>
-                )}
-
                 <div className="flex items-center gap-3 pt-1 flex-wrap">
                   <Link
                     href={`/tools/${tool.slug}`}
@@ -554,28 +545,48 @@ export default function BestOpenSourceMcpToolsOnGitHubPage() {
         </section>
 
         <RelatedGuides
-          items={[
-            {
-              title: "Best MCP Tools for GitHub Workflows",
-              body: "Find the strongest open source MCP server stack for pull requests, docs, and security.",
-              href: "/best-mcp-tools-for-github-workflows",
-            },
-            {
-              title: "GitHub MCP Server Setup Tutorial",
-              body: "Step-by-step Claude Desktop setup guide for the most important open source GitHub MCP tool.",
-              href: "/github-mcp-server-setup",
-            },
-            {
-              title: "GitHub MCP Authentication Guide",
-              body: "Troubleshoot GitHub MCP server token scopes, claude_desktop_config.json, and private repository access.",
-              href: "/github-mcp-server-authentication",
-            },
-          ]}
+          title="Related Guides"
+          items={relatedGuides}
         />
+
+        <section className="rounded-2xl border border-amber-500/20 bg-gradient-to-br from-amber-950/20 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-amber-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
+          
+          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
+            <div className="flex-1 space-y-4">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-400 text-xs font-mono w-fit">
+                <span className="relative flex h-2 w-2">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-400"></span>
+                </span>
+                Security Resource
+              </div>
+              
+              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
+                Don't run random npx commands blindly.
+              </h2>
+              <p className="text-zinc-400 leading-relaxed max-w-xl">
+                Before installing any open-source MCP tool, run it through our 4-step Security & Evaluation Checklist. It covers repo vetting, permission auditing, token scoping, and config isolation.
+              </p>
+              
+              <div className="flex flex-wrap gap-2 pt-1">
+                {["Repo Vetting", "Permission Audit", "Token Scoping", "Isolation"].map((tool) => (
+                  <span key={tool} className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-black border border-zinc-800 text-zinc-500">
+                    {tool}
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            <div className="w-full lg:w-auto flex-shrink-0">
+              <DownloadMcpChecklistButton />
+              <p className="text-[11px] text-zinc-600 mt-3 text-center lg:text-right">Downloads as a clean .md file.</p>
+            </div>
+          </div>
+        </section>
 
         <section id="open-source-mcp-tools-faq" className="space-y-5">
           <h2 className="text-2xl font-semibold">Frequently asked questions about open source MCP tools</h2>
-    
           <div className="space-y-3">
             {faqs.map((faq) => (
               <details
