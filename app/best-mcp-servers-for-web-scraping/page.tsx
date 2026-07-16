@@ -77,7 +77,7 @@ const picks = [
   {
     rank: 2,
     name: "Firecrawl MCP Server",
-    slug: "firecrawl-mcp",
+    slug: "firecrawl-mcp-server", // تم تصحيح slug
     category: "Data Extraction",
     bestFor: "LLM Markdown/JSON",
     oneliner: "Convert entire dynamic websites into clean Markdown instantly.",
@@ -130,7 +130,6 @@ const faqs = [
   },
 ];
 
-// ✅ Fixed: only real, existing pages
 const relatedGuides = [
   {
     title: "Claude Desktop MCP Setup (2026)",
@@ -367,7 +366,7 @@ export default function BestMcpServersForWebScrapingPage() {
           </p>
         </section>
 
-        {/* Head-to-Head Table */}
+        {/* Head-to-Head Table with internal links in headers */}
         <section id="head-to-head-comparison" className="space-y-5">
           <h2 className="text-2xl font-semibold">
             Head-to-Head Comparison: Playwright vs Firecrawl vs Puppeteer
@@ -384,13 +383,13 @@ export default function BestMcpServersForWebScrapingPage() {
                     Feature
                   </th>
                   <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    Playwright MCP
+                    <Link href="/tools/playwright-mcp" className="hover:text-white transition-colors">Playwright MCP</Link>
                   </th>
                   <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    Firecrawl MCP
+                    <Link href="/tools/firecrawl-mcp-server" className="hover:text-white transition-colors">Firecrawl MCP</Link>
                   </th>
                   <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    Puppeteer MCP
+                    <Link href="/tools/puppeteer-mcp" className="hover:text-white transition-colors">Puppeteer MCP</Link>
                   </th>
                 </tr>
               </thead>
@@ -470,7 +469,7 @@ export default function BestMcpServersForWebScrapingPage() {
           </div>
         </section>
 
-        {/* Deep dives */}
+        {/* Deep dives with links to tool pages */}
         <section id="deep-dive-playwright" className="space-y-6">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
             <h2 className="text-2xl font-semibold">
@@ -509,6 +508,11 @@ export default function BestMcpServersForWebScrapingPage() {
               its status as one of the{" "}
               <strong>best MCP servers for web scraping</strong>.
             </p>
+            <p className="pt-2">
+              <Link href="/tools/playwright-mcp" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                View Playwright MCP Server full setup guide →
+              </Link>
+            </p>
           </div>
         </section>
 
@@ -542,6 +546,11 @@ export default function BestMcpServersForWebScrapingPage() {
               to extract pricing schemas without writing custom traversal logic,
               Firecrawl&apos;s MCP server will do it faster and cheaper.
             </p>
+            <p className="pt-2">
+              <Link href="/tools/firecrawl-mcp-server" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                View Firecrawl MCP Server full setup guide →
+              </Link>
+            </p>
           </div>
         </section>
 
@@ -568,6 +577,11 @@ export default function BestMcpServersForWebScrapingPage() {
               isolated Puppeteer BrowserContext per tool execution, perform the
               scraping task, and immediately close it to prevent memory leaks
               over long AI context windows.
+            </p>
+            <p className="pt-2">
+              <Link href="/tools/puppeteer-mcp" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
+                View Puppeteer MCP Server full setup guide →
+              </Link>
             </p>
           </div>
         </section>
@@ -674,7 +688,7 @@ export default function BestMcpServersForWebScrapingPage() {
           </div>
         </section>
 
-        {/* Related guides (now real) */}
+        {/* Related guides */}
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Related Guides</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
