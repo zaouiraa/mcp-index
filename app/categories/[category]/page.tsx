@@ -34,49 +34,157 @@ function titleizeSlug(slug: string) {
     .join(" ");
 }
 
+// ---------- مُحتوى مُحسَّن (غني وقابل للتوسع) ----------
 function getCategoryIntro(categoryName: string, count: number) {
   const lower = categoryName.toLowerCase();
 
   if (lower.includes("search")) {
-    return `Browse ${count} MCP search tools that help AI assistants retrieve live web results, research sources, and current information beyond static training data.`;
+    return `Discover ${count} MCP servers for web and data search. These tools allow AI assistants to retrieve live information, perform research, and access external knowledge sources beyond static training data. Perfect for building AI workflows that need current facts, news, or deep web retrieval.`;
   }
   if (lower.includes("version control")) {
-    return `Browse ${count} version control MCP servers for Git, GitHub, GitLab, repositories, branches, pull requests, merge requests, and code collaboration workflows.`;
+    return `Explore ${count} version control MCP servers for Git, GitHub, GitLab, and more. Manage repositories, automate pull requests, review code, and streamline collaboration directly from Claude Desktop, Cursor, or other MCP clients.`;
   }
   if (lower.includes("developer tools")) {
-    return `Browse ${count} developer-focused MCP servers for coding, docs, desktop automation, local workflows, and AI-assisted engineering tasks.`;
+    return `Discover ${count} developer-focused MCP servers. Enhance your coding workflow with tools for editing, local automation, documentation lookup, and terminal operations. Ideal for software engineers using Claude or Cursor.`;
   }
   if (lower.includes("database")) {
-    return `Browse ${count} database MCP servers for querying data, managing schemas, inspecting records, and connecting AI tools to structured backends.`;
+    return `Browse ${count} database MCP servers. Connect your AI assistant to SQL, NoSQL, and other data stores. Run queries, inspect schemas, and manage data without leaving your conversation.`;
   }
   if (lower.includes("cloud") || lower.includes("infrastructure")) {
-    return `Browse ${count} cloud and infrastructure MCP servers for AWS, Kubernetes, DevOps workflows, cluster operations, and environment management.`;
+    return `Explore ${count} cloud and infrastructure MCP servers. Interact with AWS, Kubernetes, and other platforms, check statuses, and manage deployments from Claude or your IDE.`;
   }
   if (lower.includes("productivity")) {
-    return `Browse ${count} productivity MCP servers for docs, calendar, email, drive, workspace automation, and AI-assisted team operations.`;
+    return `Discover ${count} productivity MCP servers. Automate tasks, manage documents, emails, calendars, and workspaces. Enhance your daily workflow with AI-powered tools.`;
   }
   if (lower.includes("security")) {
-    return `Browse ${count} security MCP servers for vulnerability scanning, code analysis, and safer AI-assisted development workflows.`;
+    return `Browse ${count} security MCP servers. Perform vulnerability scanning, code analysis, and security audits directly within your AI chat interface. Strengthen your development lifecycle.`;
+  }
+  if (lower.includes("monitoring")) {
+    return `Explore ${count} monitoring MCP servers. Keep an eye on dashboards, observability, incident response, and operational health from within your AI assistant.`;
   }
 
-  return `Browse ${count} MCP servers in the ${categoryName} category on MCPIndex. Compare tools, review setup options, and find the best fit for your AI workflow.`;
+  return `Browse ${count} MCP servers in the ${categoryName} category. Find tools to automate tasks, access data, and enhance your AI workflows. Compare features and setup instructions.`;
+}
+
+function getCategoryTips(categoryName: string) {
+  const lower = categoryName.toLowerCase();
+
+  if (lower.includes("search")) {
+    return [
+      "Combine search MCP servers with a documentation server to verify results.",
+      "Always check the terms of service for web scraping tools before heavy usage.",
+    ];
+  }
+  if (lower.includes("version control")) {
+    return [
+      "Start with read-only permissions and expand to write access as needed.",
+      "Use fine-grained tokens for better security, especially in team environments.",
+    ];
+  }
+  if (lower.includes("developer tools")) {
+    return [
+      "Pair a Desktop Commander MCP with a code search tool for maximum control.",
+      "Keep your local environment clean; grant only necessary file access.",
+    ];
+  }
+  if (lower.includes("database")) {
+    return [
+      "Use read-only credentials for query-only workflows to prevent data loss.",
+      "Test on a staging database before connecting to production.",
+    ];
+  }
+  if (lower.includes("cloud") || lower.includes("infrastructure")) {
+    return [
+      "Use least-privilege IAM roles for cloud MCP tools.",
+      "Monitor usage to avoid unexpected API charges.",
+    ];
+  }
+  if (lower.includes("productivity")) {
+    return [
+      "Review the permissions requested by each productivity tool before installing.",
+      "Separate personal and work accounts for better data management.",
+    ];
+  }
+  if (lower.includes("security")) {
+    return [
+      "Always use dedicated API tokens with minimal scopes for security tools.",
+      "Review scan results critically; AI may need human validation.",
+    ];
+  }
+
+  return [];
 }
 
 function getCategoryFaq(categoryName: string) {
-  return [
+  const lower = categoryName.toLowerCase();
+  let extraFaq: { q: string; a: string }[] = [];
+
+  if (lower.includes("version control")) {
+    extraFaq = [
+      {
+        q: "Can I use multiple version control MCP servers at once?",
+        a: "Yes, you can configure multiple servers in your claude_desktop_config.json, but be mindful of potential conflicts if they access the same repos.",
+      },
+    ];
+  } else if (lower.includes("search")) {
+    extraFaq = [
+      {
+        q: "Are search MCP servers free to use?",
+        a: "Many are open source and free, but some may require API keys for underlying search services which could have usage limits.",
+      },
+    ];
+  } else if (lower.includes("developer tools")) {
+    extraFaq = [
+      {
+        q: "Do I need coding experience to use developer tools MCP servers?",
+        a: "Most are designed for developers, so some familiarity with terminals, config files, and basic scripting is helpful. Beginner-friendly options usually include detailed guides.",
+      },
+    ];
+  }
+
+  const baseFaq = [
     {
-      q: `What is the ${categoryName} category on MCPIndex?`,
-      a: `This category groups MCP servers related to ${categoryName.toLowerCase()} so you can compare similar tools, review setup details, and choose the right server for your workflow.`,
+      q: `What are ${categoryName} MCP servers?`,
+      a: `These are Model Context Protocol servers that specialize in ${categoryName.toLowerCase()} tasks, allowing AI assistants to interact with relevant tools and data.`,
     },
     {
-      q: `How do I choose the best ${categoryName} MCP server?`,
-      a: `Start by checking the tool's primary use case, required credentials, setup complexity, compatibility with your MCP client, and whether it supports the exact workflow you want to automate.`,
+      q: `How do I install a ${categoryName} MCP server?`,
+      a: `Most can be installed via npx and configured in your claude_desktop_config.json file. Check the individual tool page for exact setup instructions.`,
     },
     {
-      q: `Are all tools in ${categoryName} free?`,
-      a: `Not always. Some MCP servers are fully free and open source, while others may depend on a paid API, hosted product, or commercial service behind the integration.`,
+      q: `How to choose the right ${categoryName} MCP server?`,
+      a: `Consider your specific workflow: do you need read-only access, write capabilities, or integration with a particular service? Start with a popular, well-documented option.`,
     },
   ];
+
+  return [...baseFaq, ...extraFaq];
+}
+
+function getRelatedGuides(categorySlug: string) {
+  const guides: Record<string, { title: string; desc: string; href: string }[]> = {
+    "version-control": [
+      { title: "GitHub MCP Server Setup", desc: "Step-by-step installation guide.", href: "/github-mcp-server-setup" },
+      { title: "GitHub MCP Authentication", desc: "Fix token and scopes issues.", href: "/github-mcp-server-authentication" },
+    ],
+    "developer-tools": [
+      { title: "Claude Desktop MCP Setup", desc: "Full beginner tutorial.", href: "/claude-desktop-mcp-setup" },
+      { title: "How to Install MCP Servers", desc: "Cross-client guide.", href: "/how-to-install-mcp-servers" },
+    ],
+    "search": [
+      { title: "Best MCP Tools for GitHub Workflows", desc: "Includes search tools.", href: "/best-mcp-tools-for-github-workflows" },
+    ],
+    "database": [
+      { title: "Claude Desktop MCP Setup", desc: "Learn config basics.", href: "/claude-desktop-mcp-setup" },
+    ],
+    "cloud": [
+      { title: "How to Install MCP Servers", desc: "Cross-client guide.", href: "/how-to-install-mcp-servers" },
+    ],
+    "infrastructure": [
+      { title: "How to Install MCP Servers", desc: "Cross-client guide.", href: "/how-to-install-mcp-servers" },
+    ],
+  };
+
+  return guides[categorySlug] || [];
 }
 
 type PageProps = {
@@ -122,6 +230,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const categoryName = matchingTools[0].category || titleizeSlug(category);
   const description = getCategoryIntro(categoryName, matchingTools.length);
   const canonical = `${baseUrl}/categories/${category}`;
+  const ogImageUrl = `${baseUrl}/api/og?title=${encodeURIComponent(categoryName)}&description=${encodeURIComponent(`${matchingTools.length} tools`)}`;
 
   return {
     title: `${categoryName} MCP Servers: Best Tools, Setup & Directory | MCPIndex`,
@@ -133,11 +242,13 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       url: canonical,
       siteName: "MCPIndex",
       type: "website",
+      images: [{ url: ogImageUrl, width: 1200, height: 630, alt: categoryName }],
     },
     twitter: {
       card: "summary_large_image",
       title: `${categoryName} MCP Servers | MCPIndex`,
       description,
+      images: [ogImageUrl],
     },
     robots: { index: true, follow: true },
   };
@@ -156,6 +267,7 @@ export default async function CategoryPage({ params }: PageProps) {
   const categoryName = matchingTools[0].category || titleizeSlug(category);
   const intro = getCategoryIntro(categoryName, matchingTools.length);
   const faq = getCategoryFaq(categoryName);
+  const tips = getCategoryTips(categoryName);
 
   const allCategories = Array.from(
     new Set(
@@ -168,6 +280,9 @@ export default async function CategoryPage({ params }: PageProps) {
   const siblingCategories = allCategories
     .filter((item) => slugifyCategory(item) !== category)
     .slice(0, 6);
+
+  const featuredTools = matchingTools.slice(0, 3);
+  const relatedGuides = getRelatedGuides(category);
 
   const jsonLdBreadcrumb = {
     "@context": "https://schema.org",
@@ -220,8 +335,7 @@ export default async function CategoryPage({ params }: PageProps) {
       />
 
       <div className="max-w-5xl mx-auto px-6 py-12 space-y-10">
-
-        {/* Breadcrumb — مُصحح ليشير إلى /categories */}
+        {/* Breadcrumb */}
         <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
           <Link href="/" className="hover:text-white transition-colors">
             MCPIndex
@@ -253,38 +367,64 @@ export default async function CategoryPage({ params }: PageProps) {
           </p>
 
           <p className="text-sm text-zinc-500 leading-relaxed">
-            Compare setup patterns, supported workflows, and related tools in the{" "}
+            Browse the full{" "}
             <Link
               href="/tools"
               className="text-zinc-300 underline underline-offset-4 hover:text-white"
             >
-              full MCP tools directory
+              MCP tools directory
             </Link>
             .
           </p>
         </header>
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
-          <h2 className="text-xl font-semibold">What you will find here</h2>
-          <ul className="space-y-3 text-sm text-zinc-400 leading-relaxed">
-            <li className="flex gap-3">
-              <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
-              <span>Tools grouped by a shared workflow focus so you can compare similar MCP servers faster.</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
-              <span>Direct links to individual tool pages with configuration snippets, setup steps, and FAQs.</span>
-            </li>
-            <li className="flex gap-3">
-              <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
-              <span>Internal links that help you move from broad category research to tool-specific decisions.</span>
-            </li>
-          </ul>
-        </section>
+        {tips.length > 0 && (
+          <section className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 space-y-4">
+            <h2 className="text-xl font-semibold">Key Tips for {categoryName}</h2>
+            <ul className="space-y-3 text-sm text-zinc-400">
+              {tips.map((tip, i) => (
+                <li key={i} className="flex gap-3">
+                  <span className="mt-1.5 h-2 w-2 rounded-full bg-purple-400 flex-shrink-0" />
+                  <span>{tip}</span>
+                </li>
+              ))}
+            </ul>
+          </section>
+        )}
+
+        {featuredTools.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">Popular {categoryName} Tools</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {featuredTools.map((tool) => (
+                <Link
+                  key={tool.slug}
+                  href={`/tools/${tool.slug}`}
+                  className="rounded-2xl border border-zinc-800 bg-zinc-950/70 hover:bg-zinc-900/80 p-5 flex flex-col gap-2 transition-colors"
+                >
+                  <h3 className="font-semibold text-white">{tool.name}</h3>
+                  {tool.short_description && (
+                    <p className="text-sm text-zinc-400 line-clamp-3">{tool.short_description}</p>
+                  )}
+                  <div className="flex flex-wrap gap-1.5 mt-1">
+                    {(tool.tags || []).slice(0, 3).map((tag) => (
+                      <span
+                        key={tag}
+                        className="px-2 py-0.5 rounded-full bg-zinc-900 border border-zinc-800 text-[11px] font-mono text-zinc-500"
+                      >
+                        {tag}
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
 
         <section className="space-y-4">
           <div className="flex items-center justify-between gap-3 flex-wrap">
-            <h2 className="text-2xl font-semibold">Tools in {categoryName}</h2>
+            <h2 className="text-2xl font-semibold">All {categoryName} Tools</h2>
             <span className="text-sm text-zinc-600 font-mono">
               {matchingTools.length} results
             </span>
@@ -353,6 +493,24 @@ export default async function CategoryPage({ params }: PageProps) {
           </div>
         </section>
 
+        {relatedGuides.length > 0 && (
+          <section className="space-y-4">
+            <h2 className="text-2xl font-semibold">Related Setup Guides</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {relatedGuides.map((guide) => (
+                <Link
+                  key={guide.href}
+                  href={guide.href}
+                  className="rounded-xl border border-zinc-800 bg-zinc-950/60 p-4 hover:bg-zinc-900/70 transition-colors"
+                >
+                  <h3 className="font-semibold text-white">{guide.title}</h3>
+                  <p className="text-sm text-zinc-400 mt-1">{guide.desc}</p>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
         {siblingCategories.length > 0 && (
           <section className="space-y-4">
             <h2 className="text-2xl font-semibold">Related categories</h2>
@@ -374,7 +532,7 @@ export default async function CategoryPage({ params }: PageProps) {
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
-              Common questions about the {categoryName} category and how to evaluate similar MCP servers.
+              Common questions about {categoryName} MCP servers and how to evaluate them.
             </p>
           </div>
 
