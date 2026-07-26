@@ -53,7 +53,7 @@ export const metadata: Metadata = {
       },
     ],
     publishedTime: "2026-01-15T00:00:00Z",
-    modifiedTime: new Date().toISOString(),
+    modifiedTime: "2026-06-05T00:00:00Z",
   },
   twitter: {
     card: "summary_large_image",
@@ -137,14 +137,14 @@ const relatedGuides = [
     href: "/claude-desktop-mcp-setup",
   },
   {
+    title: "Best MCP Servers for Code Review",
+    body: "Automate PR feedback and security scanning with GitHub & Semgrep MCP.",
+    href: "/best-mcp-servers-for-code-review",
+  },
+  {
     title: "How to Install MCP Servers",
     body: "Cross-client installation for Cursor, Claude Code, and VS Code.",
     href: "/how-to-install-mcp-servers",
-  },
-  {
-    title: "Best MCP Servers for Claude (2026)",
-    body: "Curated list of the top MCP tools by use case.",
-    href: "/best-mcp-servers-for-claude",
   },
 ];
 
@@ -160,7 +160,7 @@ export default function BestMcpServersForWebScrapingPage() {
     mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
     image: ogImage,
     datePublished: "2026-01-15T00:00:00Z",
-    dateModified: new Date().toISOString().split("T")[0],
+    dateModified: "2026-06-05T00:00:00Z",
     wordCount: 2400,
     author: { "@type": "Organization", name: "MCPIndex Team", url: baseUrl },
     publisher: {
@@ -259,7 +259,6 @@ export default function BestMcpServersForWebScrapingPage() {
 
   return (
     <main className="min-h-screen bg-black text-white">
-      {/* ... (scripts unchanged) ... */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }}
@@ -322,8 +321,19 @@ export default function BestMcpServersForWebScrapingPage() {
           </p>
         </header>
 
+        {/* Image 1: Why MCP (Hero visual) - eager loading */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${baseUrl}/api/og?title=${encodeURIComponent("Web Scraping in 2026")}&description=${encodeURIComponent("Legacy scripts fail. AI-driven MCP browsers succeed.")}`}
+          alt="MCP-based web scraping overview"
+          className="rounded-2xl border border-zinc-800 w-full"
+          width={1200}
+          height={630}
+          loading="eager"
+        />
+
         {/* Why MCP for scraping */}
-        <section id="why-web-scraping-needs-mcp" className="space-y-4">
+        <section id="why-web-scraping-needs-mcp" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">
             Why Web Scraping Needs the Model Context Protocol in 2026
           </h2>
@@ -368,8 +378,19 @@ export default function BestMcpServersForWebScrapingPage() {
           </p>
         </section>
 
-        {/* Head-to-Head Table with internal links */}
-        <section id="head-to-head-comparison" className="space-y-5">
+        {/* Image 2: Comparison Table visual - lazy loading */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          src={`${baseUrl}/api/og?title=${encodeURIComponent("Playwright vs Firecrawl vs Puppeteer")}&description=${encodeURIComponent("Side-by-side feature comparison for AI scraping")}`}
+          alt="Comparison chart of MCP scraping tools"
+          className="rounded-2xl border border-zinc-800 w-full"
+          width={1200}
+          height={630}
+          loading="lazy"
+        />
+
+        {/* Head-to-Head Table */}
+        <section id="head-to-head-comparison" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">
             Head-to-Head Comparison: Playwright vs Firecrawl vs Puppeteer
           </h2>
@@ -378,7 +399,7 @@ export default function BestMcpServersForWebScrapingPage() {
             data extraction.
           </p>
           <div className="overflow-x-auto rounded-2xl border border-zinc-800">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" aria-label="Comparison between Playwright, Firecrawl, and Puppeteer MCP features">
               <thead>
                 <tr className="border-b border-zinc-800 bg-zinc-950/80">
                   <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
@@ -472,11 +493,20 @@ export default function BestMcpServersForWebScrapingPage() {
         </section>
 
         {/* Deep Dive: Playwright */}
-        <section id="deep-dive-playwright" className="space-y-6">
+        <section id="deep-dive-playwright" className="space-y-6 scroll-mt-24">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
             <h2 className="text-2xl font-semibold">
               Deep Dive: Playwright MCP Server
             </h2>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${baseUrl}/api/og?title=${encodeURIComponent("Playwright MCP Setup")}&description=${encodeURIComponent("Cross-browser control with stealth plugins")}`}
+              alt="Playwright MCP configuration example"
+              className="rounded-xl border border-zinc-700 w-full"
+              width={1200}
+              height={630}
+              loading="lazy"
+            />
             <p className="text-zinc-400 leading-relaxed text-sm">
               Playwright has dominated browser automation for years, and its MCP
               wrapper is the heavyweight champion for complex, stateful scraping
@@ -522,11 +552,7 @@ export default function BestMcpServersForWebScrapingPage() {
               property and spoof the WebGL rendering signatures. If you
               don&apos;t, the site&apos;s firewall will block the browser before
               the LLM even sees the page, invalidating its status as one of the{" "}
-              <strong>best MCP servers for web scraping</strong>. For advanced
-              users, Playwright also supports custom routing—you can intercept
-              network requests and block images, fonts, or analytics scripts
-              directly from your MCP server, making the scraping process
-              significantly faster and less detectable.
+              <strong>best MCP servers for web scraping</strong>.
             </p>
             <p className="pt-2">
               <Link href="/tools/playwright-mcp" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
@@ -537,11 +563,20 @@ export default function BestMcpServersForWebScrapingPage() {
         </section>
 
         {/* Deep Dive: Firecrawl */}
-        <section id="deep-dive-firecrawl" className="space-y-6">
+        <section id="deep-dive-firecrawl" className="space-y-6 scroll-mt-24">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
             <h2 className="text-2xl font-semibold">
               Deep Dive: Firecrawl MCP Server
             </h2>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${baseUrl}/api/og?title=${encodeURIComponent("Firecrawl MCP")}&description=${encodeURIComponent("Instant Markdown output from any website")}`}
+              alt="Firecrawl MCP converting a website to clean Markdown"
+              className="rounded-xl border border-zinc-700 w-full"
+              width={1200}
+              height={630}
+              loading="lazy"
+            />
             <p className="text-zinc-400 leading-relaxed text-sm">
               While Playwright requires the LLM to manually click its way
               through a site, Firecrawl takes a fundamentally different
@@ -559,26 +594,11 @@ export default function BestMcpServersForWebScrapingPage() {
               The core difference in the{" "}
               <strong>firecrawl vs playwright mcp</strong> debate is
               abstraction. Playwright MCP treats the LLM as an active browser
-              operator. The LLM must reason through pagination, cookie banners,
-              and dynamic loading. Firecrawl MCP treats the LLM as a data
-              consumer. The heavy lifting—proxy rotation, headless browser
-              management, and JavaScript rendering—is handled server-side.
-            </p>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              For enterprise-scale operations, many developers offload the heavy
-              browser rendering to a managed{" "}
-              <strong>browserbase mcp server</strong>, but Firecrawl&apos;s
-              all-in-one approach significantly reduces the engineering
-              overhead. You don&apos;t need to maintain browser instances, worry
-              about memory leaks, or configure stealth plugins. If you simply
-              need to ingest the documentation of a competitor&apos;s website or
-              scrape 50 product pages to extract pricing schemas, Firecrawl&apos;s
-              MCP server will do it faster, cheaper, and with far fewer API
-              round-trips to your LLM provider. The trade-off is that you lose
-              the fine-grained control needed for deeply interactive
-              applications. For example, if a site requires solving an
-              interactive CAPTCHA, Playwright would be necessary; Firecrawl
-              would be blocked.
+              operator. Firecrawl MCP treats the LLM as a data consumer. For
+              enterprise operations, many developers offload rendering to a
+              managed <strong>browserbase mcp server</strong>, but
+              Firecrawl&apos;s all-in-one approach significantly reduces
+              engineering overhead.
             </p>
             <p className="pt-2">
               <Link href="/tools/firecrawl-mcp-server" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
@@ -589,11 +609,20 @@ export default function BestMcpServersForWebScrapingPage() {
         </section>
 
         {/* Deep Dive: Puppeteer */}
-        <section id="deep-dive-puppeteer" className="space-y-6">
+        <section id="deep-dive-puppeteer" className="space-y-6 scroll-mt-24">
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
             <h2 className="text-2xl font-semibold">
               Deep Dive: Puppeteer MCP Server
             </h2>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`${baseUrl}/api/og?title=${encodeURIComponent("Puppeteer MCP")}&description=${encodeURIComponent("Fast, isolated browser contexts for high-frequency tasks")}`}
+              alt="Puppeteer MCP high-speed browser context"
+              className="rounded-xl border border-zinc-700 w-full"
+              width={1200}
+              height={630}
+              loading="lazy"
+            />
             <p className="text-zinc-400 leading-relaxed text-sm">
               Puppeteer is the veteran of the group, focused exclusively on
               Chromium. While it lacks Playwright&apos;s native cross-browser
@@ -601,35 +630,17 @@ export default function BestMcpServersForWebScrapingPage() {
               remains on the shortlist of the{" "}
               <strong>best MCP servers for web scraping</strong> if your
               infrastructure is strictly Chrome-based and you need maximum
-              execution speed with minimal overhead. In an MCP context,
-              Puppeteer shines in lightweight AWS Lambda deployments or
-              containerized edge functions where Playwright&apos;s binaries
-              might be too heavy. I frequently use a Puppeteer MCP server for
-              high-frequency, targeted DOM snapshots—for instance, navigating
-              to a specific URL, taking a full-page screenshot, extracting the
-              rendered HTML, and shutting down in under two seconds.
+              execution speed with minimal overhead.
             </p>
             <h3 className="text-lg font-medium text-zinc-200 mt-2">
               Can I use Puppeteer with Model Context Protocol?
             </h3>
             <p className="text-zinc-400 leading-relaxed text-sm">
-              Absolutely. You can expose Puppeteer using the official MCP SDK by
-              defining tools like{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                puppeteer_scrape
-              </code>
-              . Here is an architectural insight: when using Puppeteer via MCP,
-              avoid keeping a single browser instance alive indefinitely. LLM
-              interactions can be unpredictable, and memory leaks in Chromium
-              are common. Instead, configure your MCP server to launch an
-              isolated Puppeteer{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                BrowserContext
-              </code>{" "}
-              per tool execution, perform the scraping task, and immediately
-              close the context. This ensures your MCP connection remains stable
-              over long AI context windows and prevents the infamous
-              &quot;browser has crashed&quot; error after prolonged sessions.
+              Absolutely. You can expose Puppeteer using the official MCP SDK.
+              My architectural insight: avoid keeping a single browser instance
+              alive indefinitely. Configure your MCP server to launch an
+              isolated Puppeteer BrowserContext per tool execution, perform the
+              scraping task, and immediately close it to prevent memory leaks.
             </p>
             <p className="pt-2">
               <Link href="/tools/puppeteer-mcp" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
@@ -640,7 +651,7 @@ export default function BestMcpServersForWebScrapingPage() {
         </section>
 
         {/* Build a workflow */}
-        <section id="build-ai-scraping-workflow" className="space-y-5">
+        <section id="build-ai-scraping-workflow" className="space-y-5 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">
               How to Build a Complete AI Scraping Workflow with MCP
@@ -658,13 +669,13 @@ export default function BestMcpServersForWebScrapingPage() {
                 step: "1",
                 title: "Configure the MCP Server Manifest",
                 detail:
-                  "Register your Playwright or Puppeteer server in your client's configuration (like claude_desktop_config.json). Define the executable path to launch your Node.js script containing the MCP implementation.",
+                  "Register your Playwright or Puppeteer server in your client's configuration. Define the executable path to launch your Node.js script.",
               },
               {
                 step: "2",
                 title: "Expose the Right Tools",
                 detail:
-                  "Inside your server, define a tightly scoped toolset. Do not just expose generic JS evaluation. Expose structured tools like navigate_and_wait(), get_clean_markdown(), and screenshot_element().",
+                  "Inside your server, define a tightly scoped toolset. Expose structured tools like navigate_and_wait(), get_clean_markdown(), and screenshot_element().",
               },
               {
                 step: "3",
@@ -676,7 +687,7 @@ export default function BestMcpServersForWebScrapingPage() {
                 step: "4",
                 title: "Handling the Shadow DOM",
                 detail:
-                  "In your server's implementation, inject a utility that traverses shadow roots automatically. If the LLM still fails to find the target, instruct it to use the screenshot_element tool, allowing the multimodal LLM to visually read the price directly from the rendered image.",
+                  "In your server's implementation, inject a utility that traverses shadow roots automatically. If the LLM still fails, instruct it to use the screenshot_element tool.",
               },
             ].map((item) => (
               <li
@@ -700,7 +711,7 @@ export default function BestMcpServersForWebScrapingPage() {
         </section>
 
         {/* Security & Ethics */}
-        <section id="security-and-ethics" className="space-y-4">
+        <section id="security-and-ethics" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">
             Key Security and Ethical Considerations for AI Scraping
           </h2>
@@ -712,9 +723,9 @@ export default function BestMcpServersForWebScrapingPage() {
               Your MCP server must be the ultimate authority on respect. Do not
               rely on the LLM to &quot;remember&quot; to read robots.txt.
               Implement middleware inside your MCP server that automatically
-              parses it upon navigation and forcefully blocks restricted paths.
-              Furthermore, implement a token bucket rate limiter to prevent an
-              LLM in a loop from firing 50 requests a second.
+              parses it upon navigation. Furthermore, implement a token bucket
+              rate limiter to prevent an LLM in a loop from firing 50 requests a
+              second.
             </p>
 
             <h3 className="text-lg font-semibold text-white mt-4">
@@ -724,13 +735,8 @@ export default function BestMcpServersForWebScrapingPage() {
               Never paste plain-text passwords into the LLM context window. If
               the scraping task requires authentication, manage the session
               entirely server-side. Have your MCP server authenticate via an
-              external secure vault (like AWS Secrets Manager), retrieve the JWT
-              or session cookies, and inject them directly into the browser
-              context. The LLM only needs a tool called{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                load_authenticated_session()
-              </code>
-              .
+              external secure vault, retrieve the cookies, and inject them
+              directly into the browser context.
             </p>
 
             <h3 className="text-lg font-semibold text-white mt-4">
@@ -739,12 +745,10 @@ export default function BestMcpServersForWebScrapingPage() {
             <p className="text-zinc-400 leading-relaxed text-sm">
               Running one of the{" "}
               <strong>best MCP servers for web scraping</strong> from your local
-              IP or a standard AWS datacenter IP will result in an instant ban
-              from modern Web Application Firewalls. You must configure your MCP
-              server to route traffic through a residential proxy network. By
-              combining residential IPs, stealth browser plugins, and the
-              human-like reasoning of an LLM via MCP, you create an extraction
-              pipeline that is both resilient and undetectable.
+              IP will result in an instant ban from modern Web Application
+              Firewalls. You must configure your MCP server to route traffic
+              through a residential proxy network for resilient, undetectable
+              extraction pipelines.
             </p>
           </div>
         </section>
@@ -821,7 +825,7 @@ export default function BestMcpServersForWebScrapingPage() {
         </section>
 
         {/* FAQ */}
-        <section id="best-mcp-servers-scraping-faq" className="space-y-5">
+        <section id="best-mcp-servers-scraping-faq" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">
             Frequently asked questions
           </h2>
@@ -830,6 +834,7 @@ export default function BestMcpServersForWebScrapingPage() {
               <details
                 key={faq.question}
                 className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden"
+                aria-label={faq.question}
               >
                 <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
                   {faq.question}
