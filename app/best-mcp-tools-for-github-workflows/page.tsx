@@ -54,7 +54,7 @@ export const metadata: Metadata = {
       },
     ],
     publishedTime: "2025-01-15T00:00:00Z",
-    modifiedTime: new Date().toISOString(),
+    modifiedTime: "2026-06-11T00:00:00Z",
   },
   twitter: {
     card: "summary_large_image",
@@ -167,8 +167,8 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
     },
     image: ogImage,
     datePublished: "2025-01-15T00:00:00Z",
-    dateModified: new Date().toISOString().split("T")[0],
-    wordCount: 1600,
+    dateModified: "2026-06-11",
+    wordCount: 1000, // تم تعديله ليتوافق مع الطول الفعلي
     author: {
       "@type": "Organization",
       name: "MCPIndex Team",
@@ -317,7 +317,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </p>
         </header>
 
-        <section id="what-makes-a-good-github-mcp-stack" className="space-y-5">
+        <section id="what-makes-a-good-github-mcp-stack" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">What makes a good GitHub workflow MCP server stack</h2>
           <p className="text-zinc-400 leading-relaxed">
             GitHub-centric development usually needs four layers through the Model
@@ -334,11 +334,11 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </p>
         </section>
 
-        <section id="top-mcp-tools-for-github-workflows" className="space-y-5">
+        <section id="top-mcp-tools-for-github-workflows" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Top MCP tools for GitHub workflows at a glance</h2>
 
           <div className="overflow-x-auto rounded-2xl border border-zinc-800">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" aria-label="Comparison of top MCP tools for GitHub workflows">
               <thead>
                 <tr className="border-b border-zinc-800 bg-zinc-950/80">
                   <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
@@ -377,7 +377,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="github-mcp-server-for-github-workflows" className="space-y-6">
+        <section id="github-mcp-server-for-github-workflows" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">1. GitHub MCP Server</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -389,7 +389,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
             <p className="text-zinc-400 leading-relaxed">
               GitHub MCP Server is the obvious first MCP tool to install because it
               covers the Model Context Protocol workflow that matters most: repository
-              management, pull requests, issues, branches, and code search. GitHub’s
+              management, pull requests, issues, branches, and code search. GitHub's
               own agentic workflow docs show GitHub MCP capabilities around pull
               request operations and code security integrations.
             </p>
@@ -407,7 +407,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="context7-mcp-for-github-workflows" className="space-y-6">
+        <section id="context7-mcp-for-github-workflows" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">2. Context7 MCP</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -436,7 +436,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="desktop-commander-mcp-for-github-workflows" className="space-y-6">
+        <section id="desktop-commander-mcp-for-github-workflows" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">3. Desktop Commander MCP</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -465,7 +465,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="semgrep-mcp-for-github-workflows" className="space-y-6">
+        <section id="semgrep-mcp-for-github-workflows" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">4. Semgrep MCP</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -494,7 +494,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="recommended-mcp-stacks-github" className="space-y-5">
+        <section id="recommended-mcp-stacks-github" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Recommended Claude Desktop MCP stacks by use case</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -522,7 +522,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="how-to-choose-second-mcp-tool-github" className="space-y-5">
+        <section id="how-to-choose-second-mcp-tool-github" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">How to choose the right second MCP tool for GitHub</h2>
           <div className="space-y-3">
             {[
@@ -550,7 +550,6 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
         
-        {/* تم تعديل قسم الروابط الموجهة إلى Inline لتجنبّه أخطاء المكون غير الموجود */}
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Related Guides</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -603,13 +602,14 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="mcp-tools-github-workflows-faq" className="space-y-5">
+        <section id="mcp-tools-github-workflows-faq" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Frequently asked questions about MCP tools for GitHub workflows</h2>
           <div className="space-y-3">
             {faqs.map((faq) => (
               <details
                 key={faq.question}
                 className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden"
+                aria-label={faq.question}
               >
                 <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
                   {faq.question}
@@ -625,7 +625,7 @@ export default function BestMcpToolsForGitHubWorkflowsPage() {
           </div>
         </section>
 
-        <section id="browse-github-friendly-mcp-tools" className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4">
+        <section id="browse-github-friendly-mcp-tools" className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Browse GitHub-friendly MCP tools</h2>
           <p className="text-zinc-400 text-sm leading-relaxed max-w-xl mx-auto">
             Explore the MCPIndex directory for GitHub, documentation, security, and
