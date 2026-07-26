@@ -53,7 +53,7 @@ export const metadata: Metadata = {
       },
     ],
     publishedTime: "2025-01-15T00:00:00Z",
-    modifiedTime: new Date().toISOString(),
+    modifiedTime: "2026-06-10T00:00:00Z", // تاريخ ثابت
   },
   twitter: {
     card: "summary_large_image",
@@ -222,7 +222,7 @@ export default function BestMcpServersForClaudePage() {
     },
     image: ogImage,
     datePublished: "2025-01-15T00:00:00Z",
-    dateModified: new Date().toISOString().split("T")[0],
+    dateModified: "2026-06-10", // تاريخ ثابت
     wordCount: 2800,
     author: {
       "@type": "Organization",
@@ -389,8 +389,8 @@ export default function BestMcpServersForClaudePage() {
           </p>
         </header>
 
-        {/* What are MCP servers */}
-        <section id="what-are-mcp-servers" className="space-y-4">
+        {/* What are MCP servers - scroll-mt-24 added */}
+        <section id="what-are-mcp-servers" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">What are MCP servers?</h2>
           <p className="text-zinc-400 leading-relaxed">
             MCP stands for{" "}
@@ -409,14 +409,14 @@ export default function BestMcpServersForClaudePage() {
           </p>
         </section>
 
-        {/* Quick Picks Table */}
-        <section id="top-10-mcp-servers-claude" className="space-y-5">
+        {/* Quick Picks Table - aria-label and scroll-mt-24 added */}
+        <section id="top-10-mcp-servers-claude" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Top 10 MCP servers for Claude</h2>
           <p className="text-zinc-500 text-sm">
             Quick reference — full breakdowns by use case below.
           </p>
           <div className="overflow-x-auto rounded-2xl border border-zinc-800">
-            <table className="w-full text-sm">
+            <table className="w-full text-sm" aria-label="Top 10 MCP servers for Claude ranked by category">
               <thead>
                 <tr className="border-b border-zinc-800 bg-zinc-950/80">
                   <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">#</th>
@@ -466,8 +466,8 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* For Developers */}
-        <section id="best-mcp-servers-developers" className="space-y-6">
+        {/* For Developers - scroll-mt-24 added */}
+        <section id="best-mcp-servers-developers" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">Best MCP servers for developers</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -614,8 +614,8 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* For Design & Frontend */}
-        <section id="best-mcp-server-design-frontend" className="space-y-6">
+        {/* For Design & Frontend - scroll-mt-24 added */}
+        <section id="best-mcp-server-design-frontend" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">Best MCP server for design and frontend</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -654,8 +654,8 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* For DevOps & Monitoring */}
-        <section id="best-mcp-servers-devops-monitoring" className="space-y-6">
+        {/* For DevOps & Monitoring - scroll-mt-24 added */}
+        <section id="best-mcp-servers-devops-monitoring" className="space-y-6 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">Best MCP servers for DevOps and monitoring</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -704,8 +704,8 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* For Security */}
-        <section id="best-mcp-server-security" className="space-y-4">
+        {/* For Security - scroll-mt-24 added */}
+        <section id="best-mcp-server-security" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Best MCP server for security</h2>
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
             <div>
@@ -732,8 +732,8 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* For Productivity */}
-        <section id="best-mcp-servers-productivity" className="space-y-4">
+        {/* For Productivity - scroll-mt-24 added */}
+        <section id="best-mcp-servers-productivity" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Best MCP servers for productivity</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-3">
@@ -775,8 +775,8 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* How to install */}
-        <section id="how-to-install-mcp-servers-claude-desktop" className="space-y-5">
+        {/* How to install - scroll-mt-24 added */}
+        <section id="how-to-install-mcp-servers-claude-desktop" className="space-y-5 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">How to install MCP servers on Claude Desktop</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -839,8 +839,8 @@ export default function BestMcpServersForClaudePage() {
           </ol>
         </section>
 
-        {/* How to choose */}
-        <section id="how-to-choose-mcp-servers" className="space-y-5">
+        {/* How to choose - scroll-mt-24 added */}
+        <section id="how-to-choose-mcp-servers" className="space-y-5 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">How to choose the right MCP servers</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -873,7 +873,7 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* Related Guides - INLINE VERSION */}
+        {/* Related Guides */}
         <section className="space-y-4">
           <h2 className="text-2xl font-semibold">Related Guides</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -889,9 +889,9 @@ export default function BestMcpServersForClaudePage() {
             ))}
           </div>
         </section>
-                {/* Free Lead Magnet - Download Config */}
+
+        {/* Free Lead Magnet - Download Config */}
         <section className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/40 via-zinc-950 to-zinc-900 p-8 sm:p-10 space-y-6 relative overflow-hidden">
-          {/* Background Glow Effects */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
           
@@ -928,15 +928,15 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-
-        {/* FAQ */}
-        <section id="best-mcp-servers-claude-faq" className="space-y-5">
+        {/* FAQ - aria-label and scroll-mt-24 added */}
+        <section id="best-mcp-servers-claude-faq" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
           <div className="space-y-3">
             {faqs.map((faq) => (
               <details
                 key={faq.question}
                 className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden"
+                aria-label={faq.question}
               >
                 <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
                   {faq.question}
@@ -952,8 +952,8 @@ export default function BestMcpServersForClaudePage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section id="browse-full-mcp-tools-directory" className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4">
+        {/* CTA - scroll-mt-24 added */}
+        <section id="browse-full-mcp-tools-directory" className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Browse the full MCP tools directory</h2>
           <p className="text-zinc-400 text-sm leading-relaxed max-w-xl mx-auto">
             MCPIndex tracks the best MCP servers across every category — version
