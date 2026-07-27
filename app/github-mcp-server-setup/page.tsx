@@ -4,12 +4,12 @@ import { DownloadGitHubSetupCheatsheet } from "@/components/download-github-setu
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/github-mcp-server-setup`;
-const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("GitHub MCP Server Setup (2026)")}&description=${encodeURIComponent("Step-by-step guide with real config example & free cheat sheet.")}`;
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("GitHub MCP Server Setup (2026)")}&description=${encodeURIComponent("Step-by-step guide + free premium cheat sheet worth $29.")}`;
 
 export const metadata: Metadata = {
   title: "GitHub MCP Server Setup for Claude Desktop (2026 Guide) | MCPIndex",
   description:
-    "Complete GitHub MCP Server setup guide for Claude Desktop, Claude Code, and Cursor in 2026. Step-by-step GitHub Personal Access Token creation, claude_desktop_config.json, npx installation, troubleshooting, and free cheat sheet.",
+    "Stop tab-switching to GitHub. Step-by-step setup for the official GitHub MCP Server on Claude Desktop, Claude Code, and Cursor. Includes token scopes, claude_desktop_config.json, npx installation, troubleshooting, and a free premium cheat sheet (normally $29).",
   keywords: [
     "GitHub MCP Server setup 2026",
     "GitHub MCP Server Claude Desktop 2026",
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: "GitHub MCP Server Setup for Claude Desktop (2026 Guide)",
     description:
-      "Complete GitHub MCP Server setup guide for Claude Desktop, Claude Code, and Cursor. Token scopes, claude_desktop_config.json, npx installation, troubleshooting, and free cheat sheet.",
+      "Stop wasting time tab-switching to GitHub. Complete setup guide with token scopes, config JSON, npx installation, and a free premium cheat sheet (worth $29).",
     url: canonical,
     siteName: "MCPIndex",
     type: "article",
@@ -53,14 +53,14 @@ export const metadata: Metadata = {
         alt: "GitHub MCP Server Setup for Claude Desktop in 2026",
       },
     ],
-    publishedTime: "2026-06-20",
-    modifiedTime: new Date().toISOString(),
+    publishedTime: "2026-06-20T00:00:00Z",
+    modifiedTime: "2026-06-21T00:00:00Z", // ✅ ثابت
   },
   twitter: {
     card: "summary_large_image",
     title: "GitHub MCP Server Setup for Claude Desktop (2026 Guide) | MCPIndex",
     description:
-      "Complete GitHub MCP Server setup guide for Claude Desktop, Claude Code, and Cursor. Free cheat sheet included.",
+      "Complete setup guide with free premium cheat sheet (normally $29). Step-by-step for Claude Desktop, Claude Code, Cursor.",
     images: [ogImage],
   },
 };
@@ -104,16 +104,16 @@ export default function GitHubMcpServerSetupPage() {
     "@type": "TechArticle",
     headline: "GitHub MCP Server Setup for Claude Desktop in 2026",
     description:
-      "Complete GitHub MCP Server setup guide for Claude Desktop, Claude Code, and Cursor. Step-by-step token creation, claude_desktop_config.json, npx installation, troubleshooting, and security best practices. Includes free downloadable cheat sheet.",
+      "Complete GitHub MCP Server setup guide for Claude Desktop, Claude Code, and Cursor. Step-by-step token creation, claude_desktop_config.json, npx installation, troubleshooting, and security best practices. Includes free downloadable cheat sheet (normally $29).",
     url: canonical,
     mainEntityOfPage: {
       "@type": "WebPage",
       "@id": canonical,
     },
     image: ogImage,
-    datePublished: "2026-06-20",
-    dateModified: new Date().toISOString().split("T")[0],
-    wordCount: 1500,
+    datePublished: "2026-06-20T00:00:00Z",
+    dateModified: "2026-06-21T00:00:00Z", // ✅ ثابت
+    wordCount: 1700,
     author: {
       "@type": "Organization",
       name: "MCPIndex Team",
@@ -133,7 +133,8 @@ export default function GitHubMcpServerSetupPage() {
     about: {
       "@type": "Thing",
       name: "GitHub MCP Server",
-      description: "GitHub's official Model Context Protocol server for AI assistant integration with GitHub API.",
+      description:
+        "GitHub's official Model Context Protocol server for AI assistant integration with GitHub API.",
       url: "https://github.com/github/github-mcp-server",
     },
     isAccessibleForFree: true,
@@ -142,7 +143,7 @@ export default function GitHubMcpServerSetupPage() {
       price: "0",
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
-      description: "Free GitHub MCP Setup Cheat Sheet (Markdown)",
+      description: "Free GitHub MCP Setup Cheat Sheet (Markdown) – normally $29",
     },
   };
 
@@ -173,7 +174,8 @@ export default function GitHubMcpServerSetupPage() {
     "@context": "https://schema.org",
     "@type": "HowTo",
     name: "How to Set Up GitHub MCP Server for Claude Desktop",
-    description: "Step-by-step guide to install and configure GitHub MCP Server for Claude Desktop using npx and a GitHub Personal Access Token. Free cheat sheet available.",
+    description:
+      "Step-by-step guide to install and configure GitHub MCP Server for Claude Desktop using npx and a GitHub Personal Access Token. Free cheat sheet available (normally $29).",
     totalTime: "PT10M",
     tool: [
       { "@type": "HowToTool", name: "Claude Desktop" },
@@ -225,19 +227,21 @@ export default function GitHubMcpServerSetupPage() {
               Setup Guide
             </span>
             <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-              Free Cheat Sheet
+              Free Premium Cheat Sheet
             </span>
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            GitHub MCP Server Setup for Claude Desktop (2026)
+            GitHub MCP Server Setup: Stop Tab-Switching to GitHub in 2026
           </h1>
 
           <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl">
-            This 2026 guide shows you exactly how to install the official GitHub MCP
-            Server for Claude Desktop, Claude Code, and Cursor. Create a token, configure
-            claude_desktop_config.json, restart Claude, and test the connection in minutes.
-            Download our free cheat sheet for quick reference.
+            You're asking Claude to review a pull request, but it has no idea what's in
+            the repo. You copy-paste code back and forth, losing context with every
+            switch. There's a better way. This guide gets your official GitHub MCP Server
+            running on Claude Desktop, Claude Code, or Cursor in under 10 minutes — and
+            includes a free premium cheat sheet (normally $29) with every token scope and
+            config template you'll need.
           </p>
 
           <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
@@ -257,21 +261,21 @@ export default function GitHubMcpServerSetupPage() {
           </p>
         </header>
 
-        {/* الأقسام الأصلية بنفس الترتيب والمحتوى مع تعديل طفيف للعام 2026 */}
-        <section id="what-github-mcp-server-does" className="space-y-4">
+        <section id="what-github-mcp-server-does" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">What GitHub MCP Server does</h2>
           <p className="text-zinc-400 leading-relaxed">
             GitHub MCP Server is GitHub's official Model Context Protocol integration.
             It lets Claude interact directly with GitHub API endpoints for repositories,
-            issues, pull requests, branches, and code search – no tab switching needed.
+            issues, pull requests, branches, and code search — no tab switching needed.
           </p>
           <p className="text-zinc-400 leading-relaxed">
             Ask Claude to list repos, inspect PRs, review changed files, search code,
-            summarize issues, or prepare fixes before pushing changes.
+            summarize issues, or prepare fixes before pushing changes. All without ever
+            leaving the chat window.
           </p>
         </section>
 
-        <section id="before-you-start" className="space-y-5">
+        <section id="before-you-start" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Before you start</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -287,7 +291,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        <section id="step-1-create-github-token" className="space-y-5">
+        <section id="step-1-create-github-token" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 1: Create a GitHub token</h2>
           <p className="text-zinc-400 leading-relaxed">
             Go to GitHub Settings → Developer Settings → Personal Access Tokens.
@@ -296,7 +300,7 @@ export default function GitHubMcpServerSetupPage() {
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
             <h3 className="text-lg font-semibold">Recommended GitHub token scopes</h3>
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm" aria-label="GitHub token scopes and their purposes">
                 <thead>
                   <tr className="border-b border-zinc-800 bg-zinc-950/80">
                     <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Scope</th>
@@ -325,7 +329,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        <section id="step-2-add-to-claude-desktop" className="space-y-5">
+        <section id="step-2-add-to-claude-desktop" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 2: Add GitHub MCP Server to Claude Desktop</h2>
           <p className="text-zinc-400 leading-relaxed">
             Open <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">claude_desktop_config.json</code> and add:
@@ -353,7 +357,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        <section id="step-3-restart-and-test" className="space-y-5">
+        <section id="step-3-restart-and-test" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 3: Restart Claude and test it</h2>
           <p className="text-zinc-400 leading-relaxed">Save the config, fully quit Claude, reopen. Try:</p>
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
@@ -366,7 +370,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        <section id="claude-code-and-cursor-setup" className="space-y-5">
+        <section id="claude-code-and-cursor-setup" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">GitHub MCP Server for Claude Code and Cursor</h2>
           <p className="text-zinc-400 leading-relaxed">
             The same token and package work with Claude Code (CLI config) and Cursor (MCP settings).
@@ -374,7 +378,7 @@ export default function GitHubMcpServerSetupPage() {
           </p>
         </section>
 
-        <section id="common-errors-and-fixes" className="space-y-5">
+        <section id="common-errors-and-fixes" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Common GitHub MCP Server errors and fixes</h2>
           <div className="space-y-3">
             {[
@@ -392,7 +396,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        <section id="security-best-practices" className="space-y-5">
+        <section id="security-best-practices" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Security best practices</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -408,8 +412,8 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        {/* ========== صندوق التحميل المجاني ========== */}
-        <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
+        {/* Premium Cheat Sheet Section with Price */}
+        <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden scroll-mt-24">
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
             <div className="flex-1 space-y-4">
@@ -418,14 +422,15 @@ export default function GitHubMcpServerSetupPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-400"></span>
                 </span>
-                Free 2026 Cheat Sheet
+                Free Premium Resource (Worth $29)
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 Get the GitHub MCP Setup Cheat Sheet
               </h2>
               <p className="text-zinc-400 leading-relaxed max-w-xl">
-                One‑page Markdown reference: exact config JSON, token scopes table,
-                common errors, and test prompts. Keep it open while you set up.
+                The exact Markdown reference we use internally to onboard new developers.
+                Normally sold for <span className="text-white line-through">$29</span> — free
+                today for mcpindex.dev readers.
               </p>
               <ul className="space-y-2 text-sm text-zinc-400">
                 <li className="flex items-start gap-2"><span className="text-purple-400 mt-1">▹</span> Ready‑to‑paste config block</li>
@@ -440,7 +445,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        <section id="why-github-mcp-server-is-worth-installing" className="space-y-5">
+        <section id="why-github-mcp-server-is-worth-installing" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Why GitHub MCP Server is worth installing</h2>
           <p className="text-zinc-400 leading-relaxed">
             For most developers, GitHub MCP Server is the highest‑value MCP server.
@@ -454,11 +459,11 @@ export default function GitHubMcpServerSetupPage() {
           </p>
         </section>
 
-        <section id="frequently-asked-questions" className="space-y-5">
+        <section id="frequently-asked-questions" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Frequently asked questions (2026)</h2>
           <div className="space-y-3">
             {faqs.map((faq) => (
-              <details key={faq.question} className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden">
+              <details key={faq.question} className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden" aria-label={faq.question}>
                 <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
                   {faq.question}
                   <span className="text-zinc-500 group-open:rotate-180 transition-transform flex-shrink-0">▾</span>
@@ -471,7 +476,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4">
+        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Explore more MCP tools</h2>
           <p className="text-zinc-400 text-sm max-w-xl mx-auto">
             Browse the full MCPIndex directory for setup guides, config examples, and recommendations.
