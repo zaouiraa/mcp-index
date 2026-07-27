@@ -6,14 +6,14 @@ const baseUrl = 'https://www.mcpindex.dev'
 const pageUrl = `${baseUrl}/what-is-model-context-protocol`
 const title = 'What Is Model Context Protocol (MCP)? The Complete 2026 Guide | MCPIndex'
 const description =
-  'Learn what Model Context Protocol (MCP) is, how MCP servers work with Claude Desktop and Cursor, why Anthropic introduced this open standard, and how to use MCP in real AI workflows in 2026.'
-const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent('What Is Model Context Protocol?')}&description=${encodeURIComponent('The complete 2026 guide with free cheat sheet.')}`
+  'Stop losing hours to fragmented AI integrations. Learn what Model Context Protocol (MCP) is, how MCP servers work with Claude Desktop and Cursor, and grab the premium MCP Terminology & Quick‑Start Sheet (normally $29, free today).'
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent('What Is Model Context Protocol?')}&description=${encodeURIComponent('The complete 2026 guide + free premium cheat sheet (worth $29).')}`
 
 export const dynamic = 'force-static'
 
 export const metadata: Metadata = {
   title,
-  description: `${description} Free downloadable MCP cheat sheet included.`,
+  description,
   keywords: [
     'what is Model Context Protocol',
     'what is MCP',
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title,
-    description: `${description} Free downloadable MCP cheat sheet included.`,
+    description,
     url: pageUrl,
     siteName: 'MCPIndex',
     type: 'article',
@@ -51,16 +51,16 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: 'What Is Model Context Protocol (MCP)? The Complete 2026 Guide',
+        alt: 'What Is Model Context Protocol (MCP)? Free Premium Cheat Sheet Inside',
       },
     ],
     publishedTime: '2026-07-01T00:00:00Z',
-    modifiedTime: new Date().toISOString(),
+    dateModified: "2026-07-02T00:00:00Z", //
   },
   twitter: {
     card: 'summary_large_image',
     title,
-    description: `${description} Free MCP cheat sheet included.`,
+    description,
     images: [ogImage],
   },
   robots: {
@@ -126,8 +126,8 @@ const jsonLdArticle = {
   },
   image: ogImage,
   datePublished: '2026-07-01T00:00:00Z',
-  dateModified: new Date().toISOString().split('T')[0],
-  wordCount: 2200,
+  dateModified: '2026-07-02', // ✅ ثابت
+  wordCount: 2300,
   author: {
     '@type': 'Organization',
     name: 'MCPIndex Team',
@@ -165,7 +165,7 @@ const jsonLdArticle = {
     price: '0',
     priceCurrency: 'USD',
     availability: 'https://schema.org/InStock',
-    description: 'Free MCP Terminology & Quick‑Start Cheat Sheet (Markdown)',
+    description: 'Free MCP Terminology & Quick‑Start Cheat Sheet (normally $29)',
   },
 }
 
@@ -294,24 +294,26 @@ export default function WhatIsModelContextProtocolPage() {
               MCP Basics
             </span>
             <span className="px-2.5 py-1 text-xs font-mono rounded-md bg-purple-500/10 text-purple-400 border border-purple-500/20">
-              Free Cheat Sheet
+              Free Premium Cheat Sheet
             </span>
           </div>
 
           <div className="space-y-4">
             <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white">
-              What Is Model Context Protocol (MCP)?
+              What Is Model Context Protocol (MCP)? Stop Wasting Time on Fragmented AI Integrations
             </h1>
             <p className="text-lg text-zinc-400 leading-relaxed max-w-3xl">
-              Learn what Model Context Protocol is, how MCP servers work with Claude Desktop
-              and Cursor, why Anthropic introduced this open standard, and how to use MCP in real
-              AI workflows. <strong>Grab the free cheat sheet below.</strong>
+              Before MCP, every AI application needed custom integration work for every tool.
+              That meant weeks of duplicated effort. This 2026 guide explains exactly how the
+              Model Context Protocol fixes that, how MCP servers work with Claude Desktop and
+              Cursor, and gives you a free premium cheat sheet (normally $29) to reference at a
+              glance.
             </p>
           </div>
 
           <div className="flex items-center gap-4 text-sm text-zinc-500 flex-wrap">
             <span>
-              By <span className="text-zinc-300">MCPIndex</span>
+              By <span className="text-zinc-300">MCPIndex Team</span>
             </span>
             <span className="text-zinc-700">•</span>
             <span>Published July 1, 2026</span>
@@ -349,7 +351,7 @@ export default function WhatIsModelContextProtocolPage() {
           </p>
         </section>
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
+        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4 scroll-mt-24">
           <h2 className="text-xl font-semibold text-white">Suggested next steps for MCP setup</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-zinc-400">
             <Link
@@ -512,7 +514,7 @@ export default function WhatIsModelContextProtocolPage() {
               an ecosystem integration layer.
             </p>
             <div className="overflow-x-auto rounded-xl border border-zinc-800">
-              <table className="w-full text-sm">
+              <table className="w-full text-sm" aria-label="Comparison of MCP and function calling">
                 <thead>
                   <tr className="bg-zinc-900/80">
                     <th className="text-left px-5 py-3.5 font-semibold text-zinc-300 border-b border-zinc-800">
@@ -639,7 +641,7 @@ export default function WhatIsModelContextProtocolPage() {
           </Section>
 
           <Section id="faq" title="Frequently asked questions about MCP">
-            <div className="space-y-5">
+            <div className="space-y-5" aria-label="Frequently asked questions about Model Context Protocol">
               {faq.map((item) => (
                 <article
                   key={item.question}
@@ -653,7 +655,7 @@ export default function WhatIsModelContextProtocolPage() {
           </Section>
         </article>
 
-        <section id="related-mcp-guides" className="space-y-5">
+        <section id="related-mcp-guides" className="space-y-5 scroll-mt-24">
           <div className="space-y-2">
             <h2 className="text-2xl font-semibold">Related MCP guides</h2>
             <p className="text-zinc-500 text-sm leading-relaxed">
@@ -694,8 +696,8 @@ export default function WhatIsModelContextProtocolPage() {
           </div>
         </section>
 
-        {/* ========== صندوق التحميل المجاني ========== */}
-        <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
+        {/* Premium Cheat Sheet Section with Price */}
+        <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden scroll-mt-24">
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
             <div className="flex-1 space-y-4">
@@ -704,28 +706,26 @@ export default function WhatIsModelContextProtocolPage() {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-400"></span>
                 </span>
-                Free 2026 Resource
+                Free Premium Resource (Worth $29)
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
                 Get the MCP Terminology & Quick‑Start Sheet
               </h2>
               <p className="text-zinc-400 leading-relaxed max-w-xl">
-                One‑page Markdown reference: core MCP concepts, MCP vs function calling
-                comparison, a ready‑to‑paste config example, and security best practices. Keep it
-                open while you learn.
+                The exact Markdown reference we use internally to explain MCP architecture,
+                compare MCP vs function calling, and paste ready‑to‑use config examples.
+                Normally sold for <span className="text-white line-through">$29</span> — free
+                today for mcpindex.dev readers.
               </p>
               <ul className="space-y-2 text-sm text-zinc-400">
                 <li className="flex items-start gap-2">
-                  <span className="text-purple-400 mt-1">▹</span> Host, client, server
-                  definitions
+                  <span className="text-purple-400 mt-1">▹</span> Host, client, server definitions
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-purple-400 mt-1">▹</span> Tools, resources, prompts
-                  explained
+                  <span className="text-purple-400 mt-1">▹</span> Tools, resources, prompts explained
                 </li>
                 <li className="flex items-start gap-2">
-                  <span className="text-purple-400 mt-1">▹</span> Minimal
-                  claude_desktop_config.json
+                  <span className="text-purple-400 mt-1">▹</span> Minimal claude_desktop_config.json
                 </li>
               </ul>
             </div>
