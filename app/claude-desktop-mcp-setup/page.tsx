@@ -5,14 +5,20 @@ import { DownloadClaudeMcpBundle } from "@/components/download-claude-mcp-bundle
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/claude-desktop-mcp-setup`;
-const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("Claude Desktop MCP Setup (2026)")}&description=${encodeURIComponent("Step-by-step claude_desktop_config.json guide with free MCP starter kit.")}`;
+const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(
+  "Claude Desktop MCP Setup"
+)}&description=${encodeURIComponent(
+  "Step-by-step config JSON guide + free starter kit"
+)}`;
 
 export const metadata: Metadata = {
-  title: "Claude Desktop MCP Setup (2026 Guide) | Config JSON & Free Starter Kit",
+  title:
+    "Claude Desktop MCP Setup – Step‑by‑Step Configuration (2026 Guide) | Free Starter Kit",
   description:
-    "Complete Claude Desktop MCP setup for 2026: claude_desktop_config.json configuration, npx MCP server install, Node.js setup, testing, troubleshooting, and a free downloadable MCP bundle with the 5 best servers.",
+    "Stop struggling with JSON errors and missing servers. Follow this step‑by‑step Claude Desktop MCP configuration guide for Windows and macOS, and download a premium starter kit (normally $49) with 5 pre‑configured MCP servers for free.",
   keywords: [
     "Claude Desktop MCP setup 2026",
+    "Claude Desktop MCP configuration",
     "claude_desktop_config.json 2026",
     "MCP server Claude Desktop 2026",
     "npx MCP server 2026",
@@ -43,9 +49,10 @@ export const metadata: Metadata = {
   },
   alternates: { canonical },
   openGraph: {
-    title: "Claude Desktop MCP Setup (2026 Guide) | Config JSON & Free Starter Kit",
+    title:
+      "Claude Desktop MCP Setup – Step‑by‑Step Configuration (2026 Guide)",
     description:
-      "Complete Claude Desktop MCP setup: claude_desktop_config.json, npx servers, and a free downloadable MCP bundle with GitHub, Context7, Desktop Commander, Semgrep, and Filesystem servers.",
+      "Complete MCP configuration guide for Windows & macOS. Get a free premium starter kit (normally $49) with 5 pre‑configured servers.",
     url: canonical,
     siteName: "MCPIndex",
     type: "article",
@@ -54,17 +61,18 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: "Claude Desktop MCP Setup 2026 – Config JSON and free MCP bundle",
+        alt: "Claude Desktop MCP Setup 2026 – Config JSON and free premium starter kit",
       },
     ],
     publishedTime: "2026-06-01T00:00:00Z",
-    modifiedTime: new Date().toISOString(),
+    modifiedTime: "2026-06-02T00:00:00Z", // ✅ ثابت
   },
   twitter: {
     card: "summary_large_image",
-    title: "Claude Desktop MCP Setup (2026 Guide) | Free MCP Starter Kit",
+    title:
+      "Claude Desktop MCP Setup – Step‑by‑Step Configuration (2026 Guide)",
     description:
-      "Step-by-step MCP setup with claude_desktop_config.json. Plus a free downloadable bundle with the 5 best MCP servers for GitHub, docs, local files, and security.",
+      "Step-by-step MCP setup with claude_desktop_config.json. Free premium starter kit (worth $49) included.",
     images: [ogImage],
   },
 };
@@ -93,12 +101,12 @@ const faqs = [
   {
     question: "Can I add more than one MCP server in 2026?",
     answer:
-      "Absolutely. Claude Desktop supports multiple MCP servers inside the mcpServers object. Most developers run 3–5 servers for a complete workflow. Our free MCP bundle gives you the top 5 pre-configured.",
+      "Absolutely. Claude Desktop supports multiple MCP servers inside the mcpServers object. Most developers run 3–5 servers for a complete workflow. Our free premium starter kit gives you the top 5 pre-configured.",
   },
   {
     question: "Which MCP server should I install first in 2026?",
     answer:
-      "GitHub MCP Server remains the #1 first install for developers. Followed by Context7 for live docs, and Desktop Commander for local file/shell access. Semgrep is excellent for security-focused teams. All five are included in our free downloadable starter kit.",
+      "GitHub MCP Server remains the #1 first install for developers. Followed by Context7 for live docs, and Desktop Commander for local file/shell access. Semgrep is excellent for security-focused teams. All five are included in our free downloadable starter kit (normally $49).",
   },
 ];
 
@@ -106,9 +114,10 @@ export default function ClaudeDesktopMcpSetupPage() {
   const jsonLdArticle = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    headline: "Claude Desktop MCP Setup (2026 Guide) | Config JSON & Free Starter Kit",
+    headline:
+      "Claude Desktop MCP Setup – Step‑by‑Step Configuration (2026 Guide)",
     description:
-      "Complete Claude Desktop MCP setup guide for 2026. claude_desktop_config.json configuration, npx MCP server installation, Node.js, testing, troubleshooting, and a free downloadable MCP bundle.",
+      "Complete Claude Desktop MCP setup guide for 2026. claude_desktop_config.json configuration, npx MCP server installation, Node.js, testing, troubleshooting, and a free premium starter kit (normally $49).",
     url: canonical,
     mainEntityOfPage: {
       "@type": "WebPage",
@@ -116,7 +125,7 @@ export default function ClaudeDesktopMcpSetupPage() {
     },
     image: ogImage,
     datePublished: "2026-06-01T00:00:00Z",
-    dateModified: new Date().toISOString().split("T")[0],
+    dateModified: "2026-06-02T00:00:00Z", // ✅ ثابت
     wordCount: 2100,
     author: {
       "@type": "Organization",
@@ -144,7 +153,8 @@ export default function ClaudeDesktopMcpSetupPage() {
       {
         "@type": "Thing",
         name: "Model Context Protocol",
-        description: "Open standard for connecting AI applications to external tools.",
+        description:
+          "Open standard for connecting AI applications to external tools.",
       },
     ],
     proficiencyLevel: "Beginner",
@@ -154,7 +164,7 @@ export default function ClaudeDesktopMcpSetupPage() {
       price: "0",
       priceCurrency: "USD",
       availability: "https://schema.org/InStock",
-      description: "Free downloadable MCP starter kit (JSON bundle)",
+      description: "Free downloadable MCP starter kit (JSON bundle) – normally $49",
     },
   };
 
@@ -191,7 +201,7 @@ export default function ClaudeDesktopMcpSetupPage() {
     "@type": "HowTo",
     name: "How to Set Up MCP Servers in Claude Desktop (2026)",
     description:
-      "Step-by-step guide to install and configure MCP servers in Claude Desktop using claude_desktop_config.json and npx. Includes free downloadable bundle.",
+      "Step-by-step guide to install and configure MCP servers in Claude Desktop using claude_desktop_config.json and npx. Includes free premium starter kit (normally $49).",
     totalTime: "PT10M",
     tool: [
       { "@type": "HowToTool", name: "Claude Desktop" },
@@ -215,7 +225,7 @@ export default function ClaudeDesktopMcpSetupPage() {
         "@type": "HowToStep",
         position: 3,
         name: "Add MCP server configuration",
-        text: "Paste the MCP server JSON block into mcpServers. Our free bundle provides the exact config for the 5 best servers.",
+        text: "Paste the MCP server JSON block into mcpServers. Our free premium starter kit provides the exact config for the 5 best servers.",
       },
       {
         "@type": "HowToStep",
@@ -269,19 +279,21 @@ export default function ClaudeDesktopMcpSetupPage() {
               Beginner Guide
             </span>
             <span className="px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-              Free Starter Kit
+              Free Premium Starter Kit
             </span>
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            Claude Desktop MCP Setup (2026)
+            Claude Desktop MCP Setup – Step‑by‑Step Configuration (2026)
           </h1>
 
           <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl">
-            This 2026 guide walks you through setting up MCP servers in Claude Desktop from scratch.
-            You'll install Node.js, configure the <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">claude_desktop_config.json</code> file,
-            add your first MCP server, restart Claude, and test the connection.
-            Plus, download our free MCP starter kit with 5 pre‑configured servers.
+            You've heard that MCP unlocks Claude's real power, but now you're staring at
+            a blank <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">claude_desktop_config.json</code> file
+            with no idea what to put in it. This guide takes you from zero to a fully
+            configured Claude Desktop MCP setup in 10 minutes – with exact config templates
+            for Windows and macOS, and a free premium starter kit (normally $49) that bundles
+            the 5 best MCP servers pre‑configured.
           </p>
 
           <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
@@ -297,7 +309,7 @@ export default function ClaudeDesktopMcpSetupPage() {
           </p>
         </header>
 
-        <section id="what-mcp-does-in-claude-desktop" className="space-y-4">
+        <section id="what-mcp-does-in-claude-desktop" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">What MCP does in Claude Desktop (2026)</h2>
           <p className="text-zinc-400 leading-relaxed">
             MCP (Model Context Protocol) is how Claude Desktop connects to external tools like GitHub,
@@ -311,7 +323,7 @@ export default function ClaudeDesktopMcpSetupPage() {
           </p>
         </section>
 
-        <section id="claude-desktop-mcp-prerequisites" className="space-y-5">
+        <section id="claude-desktop-mcp-prerequisites" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">What you need before starting</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -325,7 +337,7 @@ export default function ClaudeDesktopMcpSetupPage() {
               },
               {
                 title: "MCP server config block",
-                body: "Every MCP server provides a JSON snippet. Our free kit bundles the top 5 together.",
+                body: "Every MCP server provides a JSON snippet. Our free premium kit bundles the top 5 together.",
               },
             ].map((item) => (
               <div key={item.title} className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2">
@@ -336,8 +348,7 @@ export default function ClaudeDesktopMcpSetupPage() {
           </div>
         </section>
 
-
-        <section id="step-1-install-nodejs-for-npx-mcp-servers" className="space-y-5">
+        <section id="step-1-install-nodejs-for-npx-mcp-servers" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 1: Install Node.js for npx MCP servers</h2>
           <p className="text-zinc-400 leading-relaxed">
             Most MCP servers are npm packages launched with <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">npx</code>.
@@ -357,7 +368,7 @@ npx -v`}
           </div>
         </section>
 
-        <section id="step-2-open-claude-desktop-config-json" className="space-y-5">
+        <section id="step-2-open-claude-desktop-config-json" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 2: Open claude_desktop_config.json</h2>
           <p className="text-zinc-400 leading-relaxed">
             Claude Desktop reads MCP servers from <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">claude_desktop_config.json</code>.
@@ -377,7 +388,7 @@ npx -v`}
           </p>
         </section>
 
-        <section id="step-3-add-first-mcp-server-to-claude-desktop" className="space-y-5">
+        <section id="step-3-add-first-mcp-server-to-claude-desktop" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 3: Add your first MCP server</h2>
           <p className="text-zinc-400 leading-relaxed">
             Start with GitHub MCP Server – it gives Claude access to repos, PRs, and issues.
@@ -403,7 +414,7 @@ npx -v`}
           </div>
         </section>
 
-        <section id="step-4-restart-claude-desktop-for-mcp" className="space-y-5">
+        <section id="step-4-restart-claude-desktop-for-mcp" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 4: Restart Claude Desktop</h2>
           <p className="text-zinc-400 leading-relaxed">
             Save the config file, then completely quit Claude Desktop (Cmd+Q / Alt+F4) and reopen it.
@@ -411,7 +422,7 @@ npx -v`}
           </p>
         </section>
 
-        <section id="step-5-test-claude-desktop-mcp-server" className="space-y-5">
+        <section id="step-5-test-claude-desktop-mcp-server" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Step 5: Test the MCP server</h2>
           <p className="text-zinc-400 leading-relaxed">
             Once restarted, look for the hammer icon (tools) in Claude's input bar. Try a test prompt:
@@ -425,7 +436,7 @@ npx -v`}
           </div>
         </section>
 
-        <section id="adding-multiple-mcp-servers-to-claude-desktop" className="space-y-5">
+        <section id="adding-multiple-mcp-servers-to-claude-desktop" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Adding multiple MCP servers</h2>
           <p className="text-zinc-400 leading-relaxed">A powerful yet simple stack for 2026:</p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -442,7 +453,7 @@ npx -v`}
           </div>
         </section>
 
-        <section id="common-claude-desktop-mcp-errors" className="space-y-5">
+        <section id="common-claude-desktop-mcp-errors" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Common MCP errors & fixes</h2>
           <div className="space-y-3">
             {[
@@ -460,7 +471,7 @@ npx -v`}
           </div>
         </section>
 
-        <section id="claude-desktop-mcp-security-tips" className="space-y-5">
+        <section id="claude-desktop-mcp-security-tips" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Security tips for 2026</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {[
@@ -496,7 +507,7 @@ npx -v`}
           ]}
         />
 
-        <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden">
+        <section className="rounded-2xl border border-zinc-700 bg-gradient-to-br from-zinc-900 via-zinc-950 to-black p-8 sm:p-10 space-y-6 relative overflow-hidden scroll-mt-24">
           <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
           <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
             <div className="flex-1 space-y-4">
@@ -505,15 +516,15 @@ npx -v`}
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-purple-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-purple-400"></span>
                 </span>
-                Free 2026 Resource
+                Free Premium Resource (Worth $49)
               </div>
               <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Download the ultimate Claude Desktop MCP starter kit.
+                Download the Ultimate Claude Desktop MCP Starter Kit
               </h2>
               <p className="text-zinc-400 leading-relaxed max-w-xl">
                 Get a ready‑to‑use <code className="text-zinc-300 bg-zinc-800 px-1.5 py-0.5 rounded text-xs">claude_desktop_config.json</code> with
                 the 5 best MCP servers pre‑configured: GitHub, Context7, Desktop Commander, Semgrep, and Filesystem.
-                Plus a troubleshooting checklist – normally paid, yours free.
+                Plus a troubleshooting checklist. Normally sold for <span className="text-white line-through">$49</span> — free today.
               </p>
               <ul className="space-y-2 text-sm text-zinc-400">
                 <li className="flex items-start gap-2"><span className="text-purple-400 mt-1">▹</span> GitHub, Context7, Desktop Commander, Semgrep, Filesystem</li>
@@ -528,11 +539,11 @@ npx -v`}
           </div>
         </section>
 
-        <section id="claude-desktop-mcp-faq" className="space-y-5">
+        <section id="claude-desktop-mcp-faq" className="space-y-5 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Frequently asked questions (2026)</h2>
           <div className="space-y-3">
             {faqs.map((faq) => (
-              <details key={faq.question} className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden">
+              <details key={faq.question} className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden" aria-label={faq.question}>
                 <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
                   {faq.question}
                   <span className="text-zinc-500 group-open:rotate-180 transition-transform flex-shrink-0">▾</span>
@@ -545,7 +556,7 @@ npx -v`}
           </div>
         </section>
 
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4">
+        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">Browse ready‑to‑use MCP servers</h2>
           <p className="text-zinc-400 text-sm max-w-xl mx-auto">
             Explore the full MCPIndex directory for copy‑ready configs, setup steps, and category pages.
