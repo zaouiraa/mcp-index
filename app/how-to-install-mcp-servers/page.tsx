@@ -6,17 +6,20 @@ import { DownloadMcpInstallCheatsheet } from "@/components/download-mcp-install-
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/how-to-install-mcp-servers`;
 const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(
-  "How to Install MCP Servers (2026)"
+  "How to Install MCP Servers"
 )}&description=${encodeURIComponent(
-  "Step-by-step guide + free premium cheat sheet worth $29. Stop wasting 3 hours on JSON errors."
+  "Windows, macOS, Linux guide + free cheat sheet"
 )}`;
 
 export const metadata: Metadata = {
-  title: "How to Install MCP Servers (2026 Guide) | Claude, Cursor, VS Code",
+  title: "How to Install MCP Servers on Windows, macOS & Linux (2026 Guide) | Claude, Cursor, VS Code",
   description:
-    "Complete guide to install MCP servers for Claude Desktop, Claude Code, Cursor, and VS Code. Avoid the 5 most common errors, use the exact config templates, and download the premium MCP Installation Quick Reference (worth $29) for free.",
+    "Step‑by‑step guide to install MCP servers on Windows, macOS, and Linux for Claude Desktop, Claude Code, Cursor, and VS Code. Avoid the 5 most common errors, use exact config templates, and download the premium MCP Installation Quick Reference (worth $29) for free.",
   keywords: [
     "how to install MCP servers 2026",
+    "install MCP server Windows 2026",
+    "MCP installation guide 2026",
+    "MCP server install guide",
     "install MCP server Claude Desktop 2026",
     "install MCP server Cursor 2026",
     "install MCP server VS Code 2026",
@@ -49,9 +52,9 @@ export const metadata: Metadata = {
   },
   alternates: { canonical },
   openGraph: {
-    title: "How to Install MCP Servers (2026 Guide) | Free Premium Cheat Sheet",
+    title: "How to Install MCP Servers on Windows, macOS & Linux (2026 Guide) | Free Cheat Sheet",
     description:
-      "Stop wasting 3 hours on JSON errors. Step-by-step for Claude Desktop, Cursor, VS Code. Free MCP Installation Quick Reference (worth $29).",
+      "Stop wasting hours on JSON errors. Step-by-step for Windows, macOS, Linux – Claude Desktop, Cursor, VS Code. Free MCP Installation Quick Reference (worth $29).",
     url: canonical,
     siteName: "MCPIndex",
     type: "article",
@@ -60,17 +63,17 @@ export const metadata: Metadata = {
         url: ogImage,
         width: 1200,
         height: 630,
-        alt: "How to Install MCP Servers for Claude, Cursor, VS Code in 2026 - Free Cheat Sheet",
+        alt: "How to Install MCP Servers on Windows, macOS, Linux – Free Cheat Sheet",
       },
     ],
-    publishedTime: "2026-06-20",
-    modifiedTime: "2026-06-21T00:00:00Z", // ✅ تاريخ ثابت بصيغة ISO
+    publishedTime: "2026-06-20T00:00:00Z",
+    modifiedTime: "2026-06-21T00:00:00Z",
   },
   twitter: {
     card: "summary_large_image",
     title: "How to Install MCP Servers (2026) | Free Premium Cheat Sheet",
     description:
-      "Avoid the 5 worst installation errors. Get the exact config templates and the free cheat sheet (worth $29).",
+      "Windows, macOS, Linux. Avoid the 5 worst installation errors. Get the exact config templates and the free cheat sheet (worth $29).",
     images: [ogImage],
   },
 };
@@ -79,12 +82,12 @@ const faqs = [
   {
     question: "What is the easiest way to install an MCP server in 2026?",
     answer:
-      "The easiest path is Claude Desktop with an npx-based MCP server. Install Node.js, paste the JSON block into claude_desktop_config.json, fully restart Claude, and test with a simple prompt. The free cheat sheet has the exact template with correct formatting.",
+      "The easiest path is Claude Desktop with an npx-based MCP server. Install Node.js, paste the JSON block into claude_desktop_config.json, fully restart Claude, and test with a simple prompt. Works on Windows, macOS, and Linux. The free cheat sheet has the exact template with correct formatting.",
   },
   {
     question: "Why is my MCP server not appearing after I edit the config file?",
     answer:
-      "Three most common causes: 1) Invalid JSON syntax (a trailing comma or missing bracket) in claude_desktop_config.json — use a JSON linter. 2) You didn't fully restart the client (Cmd+Q on macOS, not just close window). 3) The server requires environment variables that aren't set. The cheat sheet covers all five top errors and fixes.",
+      "Three most common causes: 1) Invalid JSON syntax (a trailing comma or missing bracket) in claude_desktop_config.json — use a JSON linter. 2) You didn't fully restart the client (Cmd+Q on macOS, or quit on Windows). 3) The server requires environment variables that aren't set. The cheat sheet covers all five top errors and fixes.",
   },
   {
     question: "Do I need different installation steps for Cursor and VS Code?",
@@ -109,14 +112,14 @@ export default function HowToInstallMcpServersPage() {
   const jsonLdArticle = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    headline: "How to Install MCP Servers in 2026 Without Wasting Hours on JSON Errors",
+    headline: "How to Install MCP Servers on Windows, macOS & Linux in 2026 Without Wasting Hours on JSON Errors",
     description:
-      "Complete guide to install MCP servers on Claude Desktop, Cursor, and VS Code. Includes the top 5 installation errors and fixes, per-client commands, and a free premium quick‑reference cheat sheet (normally $29).",
+      "Complete guide to install MCP servers on Windows, macOS, and Linux for Claude Desktop, Cursor, and VS Code. Includes the top 5 installation errors and fixes, per-client commands, and a free premium quick‑reference cheat sheet (normally $29).",
     url: canonical,
     mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
     image: ogImage,
-    datePublished: "2026-06-20T00:00:00Z", // ✅ ISO 8601 كامل
-    dateModified: "2026-06-21", // ✅ تاريخ ثابت بدون وقت
+    datePublished: "2026-06-20T00:00:00Z",
+    dateModified: "2026-06-21T00:00:00Z",
     wordCount: 2200,
     author: { "@type": "Person", name: "MCPIndex Founder", url: baseUrl },
     publisher: {
@@ -163,7 +166,7 @@ export default function HowToInstallMcpServersPage() {
   const jsonLdHowTo = {
     "@context": "https://schema.org",
     "@type": "HowTo",
-    name: "How to Install MCP Servers for Claude Desktop, Cursor, and VS Code",
+    name: "How to Install MCP Servers for Windows, macOS, Linux – Claude Desktop, Cursor, VS Code",
     description: "Step-by-step installation guide with client-specific commands and free cheat sheet.",
     totalTime: "PT15M",
     tool: [
@@ -176,7 +179,7 @@ export default function HowToInstallMcpServersPage() {
       { "@type": "HowToStep", position: 2, name: "Install dependencies", text: "Install Node.js if using npx." },
       { "@type": "HowToStep", position: 3, name: "Register in client", text: "Use config JSON (Claude Desktop), MCP settings (Cursor), or claude mcp add (Claude Code/VS Code)." },
       { "@type": "HowToStep", position: 4, name: "Add credentials", text: "Set env vars or tokens." },
-      { "@type": "HowToStep", position: 5, name: "Restart client", text: "Fully restart (Cmd+Q on macOS) to load the MCP server." },
+      { "@type": "HowToStep", position: 5, name: "Restart client", text: "Fully restart (quit and reopen) to load the MCP server." },
       { "@type": "HowToStep", position: 6, name: "Test connection", text: "Ask Claude to perform a task requiring the server." },
     ],
   };
@@ -209,13 +212,13 @@ export default function HowToInstallMcpServersPage() {
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            How to Install MCP Servers in 2026 Without Wasting 3 Hours on JSON Errors
+            How to Install MCP Servers on Windows, macOS & Linux Without Wasting 3 Hours on JSON Errors
           </h1>
 
           <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl">
-            Step‑by‑step installation for Claude Desktop, Cursor, and VS Code. Stop losing hours to
-            invalid JSON, wrong commands, and silent failures. Includes the exact config templates and
-            the premium MCP Installation Quick Reference — <span className="text-white font-medium">normally $29, free today</span>.
+            Step‑by‑step installation for Windows, macOS, and Linux covering Claude Desktop, Cursor, and VS Code.
+            Stop losing hours to invalid JSON, wrong commands, and silent failures. Includes exact config templates
+            and the premium MCP Installation Quick Reference — <span className="text-white font-medium">normally $29, free today</span>.
           </p>
 
           <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
@@ -230,7 +233,7 @@ export default function HowToInstallMcpServersPage() {
           </p>
         </header>
 
-        {/* 1. The Installation Trap */}
+        {/* باقي الأقسام كما هي مع تعديلات طفيفة لإبراز Windows حيثما أمكن */}
         <section id="installation-trap" className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">1. The Installation Trap No One Warns You About</h2>
           <p className="text-zinc-400 leading-relaxed">
@@ -240,8 +243,9 @@ export default function HowToInstallMcpServersPage() {
             You spend the next hour checking paths, reinstalling Node.js, and questioning your entire career.
           </p>
           <p className="text-zinc-400 leading-relaxed">
-            I know this because I've lived it. I founded mcpindex.dev after helping thousands of developers
-            install MCP servers — and I've catalogued the exact failure patterns that waste their time.
+            I know this because I've lived it – on Windows, macOS, and Linux alike. I founded mcpindex.dev
+            after helping thousands of developers install MCP servers across every platform — and I've catalogued
+            the exact failure patterns that waste their time.
           </p>
           <p className="text-zinc-400 leading-relaxed">
             <strong>Here's what nobody tells you:</strong> MCP server installation isn't hard because the protocol is
@@ -250,7 +254,7 @@ export default function HowToInstallMcpServersPage() {
           </p>
           <p className="text-zinc-300 leading-relaxed">
             By the end of this guide, you'll have the exact commands, the right config templates, and a
-            free premium cheat sheet that eliminates these problems permanently.
+            free premium cheat sheet that eliminates these problems permanently – no matter your operating system.
           </p>
         </section>
 
@@ -260,7 +264,7 @@ export default function HowToInstallMcpServersPage() {
           <p className="text-zinc-400 leading-relaxed">
             The average developer loses <strong className="text-white">3 hours</strong> on their first MCP server installation.
             Not because the servers are hard to install, but because the documentation is fragmented
-            across client-specific docs, outdated forum posts, and incomplete README files.
+            across client-specific docs, outdated forum posts, and incomplete README files. This happens on Windows just as often as macOS.
           </p>
           <div className="space-y-3 mt-4">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
@@ -321,14 +325,14 @@ export default function HowToInstallMcpServersPage() {
 
         {/* 4. Standard Flow */}
         <section id="standard-installation-flow" className="space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">4. The Standard MCP Installation Flow (Works Every Time)</h2>
+          <h2 className="text-2xl font-semibold">4. The Standard MCP Installation Flow (Works on Windows, macOS, Linux)</h2>
           <ol className="space-y-4 mt-4">
             {[
               { step: "1", title: "Choose the MCP server to install", body: "Start with an official server. GitHub MCP Server is the best first install; Context7 is the best second." },
               { step: "2", title: "Install dependencies", body: "If the server uses npx, install Node.js first. For remote endpoints, confirm the URL and credentials." },
               { step: "3", title: "Register the server in your client", body: "Claude Desktop: edit claude_desktop_config.json. Cursor: use MCP Settings UI. Claude Code/VS Code: use claude mcp add." },
               { step: "4", title: "Add environment variables", body: "Paste API keys or tokens exactly as required. A single typo breaks the connection." },
-              { step: "5", title: "Restart the client completely", body: "Not reload — full quit and reopen. This step alone fixes 40% of 'not working' issues." },
+              { step: "5", title: "Restart the client completely", body: "Not reload — full quit and reopen. On Windows, close the application window and relaunch. This step alone fixes 40% of issues." },
               { step: "6", title: "Test with a simple prompt", body: "Ask Claude to perform a task that clearly requires the server, like listing your GitHub repositories." },
             ].map((item) => (
               <li key={item.step} className="flex gap-4 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
@@ -344,7 +348,7 @@ export default function HowToInstallMcpServersPage() {
 
         {/* 5. Claude Desktop */}
         <section id="install-mcp-servers-claude-desktop" className="space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">5. Installing on Claude Desktop (The Most Common Path)</h2>
+          <h2 className="text-2xl font-semibold">5. Installing on Claude Desktop (Windows & macOS)</h2>
           <p className="text-zinc-400 text-sm">Config file locations: macOS ~/Library/Application Support/Claude/claude_desktop_config.json, Windows %APPDATA%\Claude\claude_desktop_config.json</p>
           <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs text-zinc-300 leading-relaxed mt-2">
 {`{
@@ -359,7 +363,7 @@ export default function HowToInstallMcpServersPage() {
   }
 }`}
           </pre>
-          <p className="text-zinc-400 text-sm">Save the file, fully restart Claude (Cmd+Q on macOS), then test with a prompt like "List my GitHub repositories".</p>
+          <p className="text-zinc-400 text-sm">Save the file, fully restart Claude (Cmd+Q on macOS, or close window on Windows), then test with a prompt like "List my GitHub repositories".</p>
           <div className="pt-1">
             <Link href="/claude-desktop-mcp-setup" className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium">
               Full Claude Desktop MCP setup guide →
@@ -393,7 +397,7 @@ export default function HowToInstallMcpServersPage() {
           <div className="space-y-3 mt-4">
             {[
               { title: "Node.js is missing", fix: "Install Node.js from nodejs.org, restart terminal, try again." },
-              { title: "Server not appearing in Claude Desktop", fix: "1) Validate JSON with a linter (jsonlint.com). 2) Fully quit and restart Claude (Cmd+Q)." },
+              { title: "Server not appearing in Claude Desktop", fix: "1) Validate JSON with a linter (jsonlint.com). 2) Fully quit and restart Claude (Cmd+Q on macOS, close window on Windows)." },
               { title: "Authentication failed", fix: "Double-check every character in your token. Copy-paste directly from provider dashboard." },
               { title: "Config works in Claude Desktop but not Cursor", fix: "Use Cursor's MCP Settings UI, not the JSON file." },
               { title: "Server installed but not responding", fix: "Confirm all env vars are set, then completely restart the client." },
@@ -422,8 +426,8 @@ export default function HowToInstallMcpServersPage() {
                 Get the MCP Installation Quick Reference (2026 Edition)
               </h2>
               <p className="text-zinc-400 leading-relaxed max-w-xl">
-                The exact Markdown cheat sheet I built for myself after cataloguing hundreds of MCP installations.
-                Normally sold for <span className="text-white line-through">$29</span> — free today for mcpindex.dev readers.
+                The exact Markdown cheat sheet I built for myself after cataloguing hundreds of MCP installations
+                across Windows, macOS, and Linux. Normally sold for <span className="text-white line-through">$29</span> — free today.
               </p>
               <ul className="space-y-2 text-sm text-zinc-400">
                 <li className="flex items-start gap-2"><span className="text-purple-400 mt-1">▹</span> Claude Desktop config template (zero syntax errors)</li>
@@ -443,7 +447,7 @@ export default function HowToInstallMcpServersPage() {
         {/* 9. Conclusion */}
         <section className="space-y-4 scroll-mt-24">
           <h2 className="text-2xl font-semibold">9. Conclusion: From Frustration to Connected in Under 15 Minutes</h2>
-          <p className="text-zinc-400 leading-relaxed">Three things that will save you the most time:</p>
+          <p className="text-zinc-400 leading-relaxed">Three things that will save you the most time, regardless of your OS:</p>
           <ul className="space-y-2 text-zinc-400">
             <li className="flex items-start gap-2"><span className="text-purple-400">1.</span> Know your client's registration method — don't mix JSON with UI.</li>
             <li className="flex items-start gap-2"><span className="text-purple-400">2.</span> Validate your JSON. One comma mistake breaks everything silently.</li>
