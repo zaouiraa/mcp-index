@@ -7,12 +7,13 @@ const canonical = `${baseUrl}/github-mcp-server-setup`;
 const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("GitHub MCP Server Setup (2026)")}&description=${encodeURIComponent("Step-by-step guide + free premium cheat sheet worth $29.")}`;
 
 export const metadata: Metadata = {
-  title: "GitHub MCP Server Setup for Claude Desktop (2026 Guide) | MCPIndex",
+  title: "GitHub MCP Server Setup for Claude Desktop – Stop Tab‑Switching to GitHub in 2026 | MCPIndex",
   description:
-    "Stop tab-switching to GitHub. Step-by-step setup for the official GitHub MCP Server on Claude Desktop, Claude Code, and Cursor. Includes token scopes, claude_desktop_config.json, npx installation, troubleshooting, and a free premium cheat sheet (normally $29).",
+    "Stop tab‑switching to GitHub. Install the official GitHub MCP Server on Claude Desktop, Claude Code, or Cursor in under 10 minutes. Complete guide with token scopes, claude_desktop_config.json, npx setup, troubleshooting, and a free premium cheat sheet (normally $29).",
   keywords: [
+    "github mcp claude desktop",
+    "github mcp server claude",
     "GitHub MCP Server setup 2026",
-    "GitHub MCP Server Claude Desktop 2026",
     "GitHub MCP Server Claude Code",
     "GitHub MCP Server Cursor",
     "claude_desktop_config.json 2026",
@@ -20,7 +21,6 @@ export const metadata: Metadata = {
     "GitHub Personal Access Token MCP",
     "MCP server configuration 2026",
     "Model Context Protocol GitHub 2026",
-    "GitHub API Claude integration",
     "npx MCP server setup 2026",
     "GitHub MCP Server not showing",
     "free GitHub MCP cheat sheet",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
   },
   alternates: { canonical },
   openGraph: {
-    title: "GitHub MCP Server Setup for Claude Desktop (2026 Guide)",
+    title: "GitHub MCP Server Setup for Claude Desktop – Stop Tab‑Switching to GitHub (2026)",
     description:
-      "Stop wasting time tab-switching to GitHub. Complete setup guide with token scopes, config JSON, npx installation, and a free premium cheat sheet (worth $29).",
+      "Stop wasting time tab‑switching. Install the official GitHub MCP Server on Claude Desktop, Claude Code, or Cursor in 10 minutes. Free premium cheat sheet (normally $29) included.",
     url: canonical,
     siteName: "MCPIndex",
     type: "article",
@@ -54,11 +54,11 @@ export const metadata: Metadata = {
       },
     ],
     publishedTime: "2026-06-20T00:00:00Z",
-    modifiedTime: "2026-06-21T00:00:00Z", // ✅ ثابت
+    modifiedTime: "2026-06-21T00:00:00Z",
   },
   twitter: {
     card: "summary_large_image",
-    title: "GitHub MCP Server Setup for Claude Desktop (2026 Guide) | MCPIndex",
+    title: "GitHub MCP Server Setup for Claude Desktop – Stop Tab‑Switching (2026)",
     description:
       "Complete setup guide with free premium cheat sheet (normally $29). Step-by-step for Claude Desktop, Claude Code, Cursor.",
     images: [ogImage],
@@ -102,7 +102,7 @@ export default function GitHubMcpServerSetupPage() {
   const jsonLdArticle = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    headline: "GitHub MCP Server Setup for Claude Desktop in 2026",
+    headline: "GitHub MCP Server Setup for Claude Desktop – Stop Tab‑Switching to GitHub in 2026",
     description:
       "Complete GitHub MCP Server setup guide for Claude Desktop, Claude Code, and Cursor. Step-by-step token creation, claude_desktop_config.json, npx installation, troubleshooting, and security best practices. Includes free downloadable cheat sheet (normally $29).",
     url: canonical,
@@ -112,7 +112,7 @@ export default function GitHubMcpServerSetupPage() {
     },
     image: ogImage,
     datePublished: "2026-06-20T00:00:00Z",
-    dateModified: "2026-06-21T00:00:00Z", // ✅ ثابت
+    dateModified: "2026-06-21T00:00:00Z",
     wordCount: 1700,
     author: {
       "@type": "Organization",
@@ -232,7 +232,7 @@ export default function GitHubMcpServerSetupPage() {
           </div>
 
           <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            GitHub MCP Server Setup: Stop Tab-Switching to GitHub in 2026
+            GitHub MCP Server Setup: Stop Tab‑Switching to GitHub in 2026
           </h1>
 
           <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl">
@@ -270,8 +270,7 @@ export default function GitHubMcpServerSetupPage() {
           </p>
           <p className="text-zinc-400 leading-relaxed">
             Ask Claude to list repos, inspect PRs, review changed files, search code,
-            summarize issues, or prepare fixes before pushing changes. All without ever
-            leaving the chat window.
+            summarize issues, or prepare fixes before pushing changes.
           </p>
         </section>
 
