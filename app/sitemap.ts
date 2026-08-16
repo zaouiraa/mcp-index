@@ -1,21 +1,15 @@
 import type { MetadataRoute } from "next";
-import { getAllTools } from "@/lib/supabase";
-import { GUIDE_CATALOG } from "@/lib/content/related-guides";
+import { getSitemapTools } from "@/lib/supabase";
 
 export const revalidate = 3600;
 
 const baseUrl = "https://www.mcpindex.dev";
 
-type Tool = {
-  slug: string;
-  category: string | null;
-  last_updated?: string | null;
-  review_status?: string | null;
-  is_visible?: boolean | null;
-  status?: string | null;
-};
+type ChangeFrequency = NonNullable<
+  MetadataRoute.Sitemap[number]["changeFrequency"]
+>;
 
-function slugifyCategory(value: string) {
+function slugifyCategory(value: string): string {
   return value
     .trim()
     .toLowerCase()
@@ -25,113 +19,103 @@ function slugifyCategory(value: string) {
     .replace(/-+/g, "-");
 }
 
-function safeDate(value: string | null | undefined, fallback: Date) {
+function safeDate(
+  value: string | null | undefined,
+  fallback: Date
+): Date {
   if (!value) return fallback;
 
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? fallback : date;
+  const parsed = new Date(value);
+  return Number.isNaN(parsed.getTime()) ? fallback : parsed;
 }
 
-function normalizeHref(value: string | null | undefined) {
-  if (!value) return null;
-
-  const href = value.trim();
-
-  if (!href.startsWith("/")) return null;
-  if (href.includes(" ")) return null;
-  if (href.startsWith("//")) return null;
-
-  return href;
+function page(
+  path: string,
+  now: Date,
+  changeFrequency: ChangeFrequency,
+  priority: number
+): MetadataRoute.Sitemap[number] {
+  return {
+    url: `${baseUrl}${path}`,
+    lastModified: now,
+    changeFrequency,
+    priority,
+  };
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  const tools = (await getAllTools()) as Tool[];
+  const tools = await getSitemapTools();
 
-  const visibleTools = tools.filter(
-    (tool) =>
-      tool.slug?.trim() &&
-      tool.review_status === "reviewed" &&
-      tool.is_visible === true &&
-      tool.status === "active"
-  );
+  console.log(`[sitemap] active tools loaded: ${tools.length}`);
 
-  const staticPaths = [
-    "/",
-    "/tools",
-    "/categories",
-    "/submit",
-    "/privacy-policy",
-    "/terms-of-service",
-    "/contact",
-    "/what-is-model-context-protocol",
-    "/claude-desktop-mcp-setup",
-    "/how-to-install-mcp-servers",
-    "/github-mcp-server-setup",
-    "/github-mcp-server-authentication",
-    "/best-mcp-servers-for-claude",
-    "/best-mcp-servers-for-code-review",
-    "/best-mcp-servers-for-web-scraping",
-    "/best-mcp-tools-for-github-workflows",
-    "/best-open-source-mcp-tools-on-github",
-    "/mcp-server-discovery",
+  const staticPages: MetadataRoute.Sitemap = [
+    page("/", now, "daily", 1),
+    page("/tools", now, "daily", 0.9),
+    page("/categories", now, "weekly", 0.9),
+    page("/submit", now, "monthly", 0.5),
+    page("/privacy-policy", now, "yearly", 0.3),
+    page("/terms-of-service", now, "yearly", 0.3),
+    page("/contact", now, "yearly", 0.3),
+
+    page("/what-is-model-context-protocol", now, "monthly", 0.8),
+    page("/claude-desktop-mcp-setup", now, "monthly", 0.8),
+    page("/how-to-install-mcp-servers", now, "monthly", 0.8),
+    page("/github-mcp-server-setup", now, "monthly", 0.8),
+    page("/github-mcp-server-authentication", now, "monthly", 0.8),
+    page("/best-mcp-servers-for-claude", now, "monthly", 0.8),
+    page("/best-mcp-servers-for-code-review", now, "monthly", 0.8),
+    page("/best-mcp-servers-for-web-scraping", now, "monthly", 0.8),
+    page("/best-mcp-tools-for-github-workflows", now, "monthly", 0.8),
+    page("/best-open-source-mcp-tools-on-github", now, "monthly", 0.8),
+    page("/mcp-server-discovery", now, "monthly", 0.8),
   ];
 
-  const staticPages: MetadataRoute.Sitemap = staticPaths.map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: now,
-    changeFrequency: path === "/" ? "daily" : "monthly",
-    priority:
-      path === "/"
-        ? 1
-        : path === "/tools" || path === "/categories"
-          ? 0.9
-          : 0.8,
-  }));
-
-  const toolPages: MetadataRoute.Sitemap = visibleTools.map((tool) => ({
+  const toolPages: MetadataRoute.Sitemap = tools.map((tool) => ({
     url: `${baseUrl}/tools/${encodeURIComponent(tool.slug)}`,
     lastModified: safeDate(tool.last_updated, now),
-    changeFrequency: "weekly" as const,
+    changeFrequency: "weekly",
     priority: 0.8,
   }));
 
-  const categorySlugs = Array.from(
+  const categories = Array.from(
     new Set(
-      visibleTools
+      tools
         .map((tool) => tool.category)
-        .filter((category): category is string => Boolean(category))
+        .filter(
+          (category): category is string =>
+            typeof category === "string" && category.trim().length > 0
+        )
         .map(slugifyCategory)
         .filter(Boolean)
     )
   );
 
-  const categoryPages: MetadataRoute.Sitemap = categorySlugs.map((category) => ({
-    url: `${baseUrl}/categories/${category}`,
-    lastModified: now,
-    changeFrequency: "weekly",
-    priority: 0.7,
-  }));
-
-  const guidePages: MetadataRoute.Sitemap = GUIDE_CATALOG
-    .map((guide) => normalizeHref(guide.href))
-    .filter((href): href is string => Boolean(href))
-    .map((href) => ({
-      url: `${baseUrl}${href}`,
+  const categoryPages: MetadataRoute.Sitemap = categories.map(
+    (category) => ({
+      url: `${baseUrl}/categories/${category}`,
       lastModified: now,
-      changeFrequency: "weekly" as const,
+      changeFrequency: "weekly",
       priority: 0.7,
-    }));
+    })
+  );
 
-  const entries = [
+  const allEntries = [
     ...staticPages,
     ...categoryPages,
     ...toolPages,
-    ...guidePages,
   ];
 
-  return Array.from(
-    new Map(entries.map((entry) => [entry.url, entry])).values()
+  const uniqueEntries = Array.from(
+    new Map(
+      allEntries.map((entry) => [entry.url, entry])
+    ).values()
   );
+
+  console.log(
+    `[sitemap] generated ${uniqueEntries.length} unique URLs`
+  );
+
+  return uniqueEntries;
 }
