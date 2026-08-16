@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { DownloadDiscoveryBlueprint } from "@/components/download-discovery-blueprint";
-
+import DownloadDiscoveryBlueprint from "@/components/download-discovery-blueprint";
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/mcp-server-discovery`;
 const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(
