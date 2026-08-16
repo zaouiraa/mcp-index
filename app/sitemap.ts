@@ -10,78 +10,128 @@ type Tool = {
   slug: string;
   category: string | null;
   last_updated?: string | null;
+  review_status?: string | null;
+  is_visible?: boolean | null;
+  status?: string | null;
 };
 
 function slugifyCategory(value: string) {
-  return value.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-");
+  return value
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+function safeDate(value: string | null | undefined, fallback: Date) {
+  if (!value) return fallback;
+
+  const date = new Date(value);
+  return Number.isNaN(date.getTime()) ? fallback : date;
+}
+
+function normalizeHref(value: string | null | undefined) {
+  if (!value) return null;
+
+  const href = value.trim();
+
+  if (!href.startsWith("/")) return null;
+  if (href.includes(" ")) return null;
+  if (href.startsWith("//")) return null;
+
+  return href;
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  let tools: Tool[] = [];
+  const tools = (await getAllTools()) as Tool[];
 
-  try {
-    tools = (await getAllTools()) as Tool[];
-  } catch (err) {
-    console.error("[sitemap] failed to fetch tools:", err);
-  }
+  const visibleTools = tools.filter(
+    (tool) =>
+      tool.slug?.trim() &&
+      tool.review_status === "reviewed" &&
+      tool.is_visible === true &&
+      tool.status === "active"
+  );
 
-  const staticPages: MetadataRoute.Sitemap = [
-    { url: `${baseUrl}/`, lastModified: now, changeFrequency: "daily", priority: 1 },
-    { url: `${baseUrl}/tools`, lastModified: now, changeFrequency: "daily", priority: 0.9 },
-    { url: `${baseUrl}/categories`, lastModified: now, changeFrequency: "weekly", priority: 0.9 },
-    { url: `${baseUrl}/submit`, lastModified: now, changeFrequency: "monthly", priority: 0.5 },
-    { url: `${baseUrl}/privacy-policy`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${baseUrl}/terms-of-service`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-    { url: `${baseUrl}/contact`, lastModified: now, changeFrequency: "yearly", priority: 0.3 },
-
-    { url: `${baseUrl}/what-is-model-context-protocol`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/claude-desktop-mcp-setup`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/how-to-install-mcp-servers`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/github-mcp-server-setup`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/github-mcp-server-authentication`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/best-mcp-servers-for-claude`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/best-mcp-tools-for-github-workflows`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
-    { url: `${baseUrl}/best-open-source-mcp-tools-on-github`, lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+  const staticPaths = [
+    "/",
+    "/tools",
+    "/categories",
+    "/submit",
+    "/privacy-policy",
+    "/terms-of-service",
+    "/contact",
+    "/what-is-model-context-protocol",
+    "/claude-desktop-mcp-setup",
+    "/how-to-install-mcp-servers",
+    "/github-mcp-server-setup",
+    "/github-mcp-server-authentication",
+    "/best-mcp-servers-for-claude",
+    "/best-mcp-servers-for-code-review",
+    "/best-mcp-servers-for-web-scraping",
+    "/best-mcp-tools-for-github-workflows",
+    "/best-open-source-mcp-tools-on-github",
+    "/mcp-server-discovery",
   ];
 
-  const toolPages: MetadataRoute.Sitemap = tools
-    .filter((tool) => tool.slug && tool.slug.trim().length > 0)
-    .map((tool) => ({
-      url: `${baseUrl}/tools/${tool.slug}`,
-      lastModified: tool.last_updated ? new Date(tool.last_updated) : now,
-      changeFrequency: "weekly" as const,
-      priority: 0.8,
-    }));
+  const staticPages: MetadataRoute.Sitemap = staticPaths.map((path) => ({
+    url: `${baseUrl}${path}`,
+    lastModified: now,
+    changeFrequency: path === "/" ? "daily" : "monthly",
+    priority:
+      path === "/"
+        ? 1
+        : path === "/tools" || path === "/categories"
+          ? 0.9
+          : 0.8,
+  }));
+
+  const toolPages: MetadataRoute.Sitemap = visibleTools.map((tool) => ({
+    url: `${baseUrl}/tools/${encodeURIComponent(tool.slug)}`,
+    lastModified: safeDate(tool.last_updated, now),
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
+  }));
 
   const categorySlugs = Array.from(
     new Set(
-      tools
+      visibleTools
         .map((tool) => tool.category)
         .filter((category): category is string => Boolean(category))
-        .map((category) => slugifyCategory(category))
+        .map(slugifyCategory)
+        .filter(Boolean)
     )
   );
 
   const categoryPages: MetadataRoute.Sitemap = categorySlugs.map((category) => ({
     url: `${baseUrl}/categories/${category}`,
     lastModified: now,
-    changeFrequency: "weekly" as const,
+    changeFrequency: "weekly",
     priority: 0.7,
   }));
 
   const guidePages: MetadataRoute.Sitemap = GUIDE_CATALOG
-    .filter((guide) => guide.href && guide.href.trim().length > 0)
-    .map((guide) => {
-      const correctedHref = guide.href.replace(/^\/guides\//, "/");
-      return {
-        url: `${baseUrl}${correctedHref}`,
-        lastModified: now,
-        changeFrequency: "weekly" as const,
-        priority: 0.7,
-      };
-    });
+    .map((guide) => normalizeHref(guide.href))
+    .filter((href): href is string => Boolean(href))
+    .map((href) => ({
+      url: `${baseUrl}${href}`,
+      lastModified: now,
+      changeFrequency: "weekly" as const,
+      priority: 0.7,
+    }));
 
-  return [...staticPages, ...categoryPages, ...toolPages, ...guidePages];
+  const entries = [
+    ...staticPages,
+    ...categoryPages,
+    ...toolPages,
+    ...guidePages,
+  ];
+
+  return Array.from(
+    new Map(entries.map((entry) => [entry.url, entry])).values()
+  );
 }
