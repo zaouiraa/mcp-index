@@ -6,6 +6,11 @@ export default function robots(): MetadataRoute.Robots {
       {
         userAgent: "*",
         allow: "/",
+        disallow: [
+          "/api/",
+          "/admin/",
+          "/dashboard/",
+        ],
       },
     ],
     sitemap: "https://www.mcpindex.dev/sitemap.xml",
