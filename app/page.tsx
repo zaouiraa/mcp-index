@@ -2,46 +2,129 @@ import Link from "next/link";
 import { getAllTools } from "@/lib/supabase";
 import ToolsSearchClient from "@/components/tools-search-client";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+export const fetchCache = "force-no-store";
+
 type Tool = {
   slug: string;
   name?: string | null;
   short_description?: string | null;
   answer_first_summary?: string | null;
   developer?: string | null;
-  installs?: number | null;
+  installs?: number | string | null;
   is_free?: boolean | null;
   category?: string | null;
   tags?: string[] | null;
+  status?: string | null;
+  is_visible?: boolean | null;
+  review_status?: string | null;
+  last_updated?: string | null;
 };
 
-function getCategorySlug(category: string) {
-  return category.toLowerCase().replace(/&/g, "and").replace(/\s+/g, "-");
+function getCategorySlug(category: string): string {
+  return category
+    .trim()
+    .toLowerCase()
+    .replace(/&/g, "and")
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-");
+}
+
+function getInstallCount(installs: Tool["installs"]): number {
+  if (typeof installs === "number" && Number.isFinite(installs)) {
+    return installs;
+  }
+
+  if (typeof installs !== "string") {
+    return 0;
+  }
+
+  const normalized = installs
+    .trim()
+    .toUpperCase()
+    .replace(/,/g, "");
+
+  const match = normalized.match(/^([\d.]+)\s*([KM])?\+?$/);
+
+  if (!match) {
+    const numeric = Number(normalized);
+    return Number.isFinite(numeric) ? numeric : 0;
+  }
+
+  const value = Number(match[1]);
+  const suffix = match[2];
+
+  if (!Number.isFinite(value)) {
+    return 0;
+  }
+
+  if (suffix === "M") {
+    return value * 1_000_000;
+  }
+
+  if (suffix === "K") {
+    return value * 1_000;
+  }
+
+  return value;
+}
+
+function isPublishedTool(tool: Tool): boolean {
+  return (
+    tool.status === "active" &&
+    tool.is_visible === true &&
+    tool.review_status === "reviewed"
+  );
 }
 
 export default async function HomePage() {
   let tools: Tool[] = [];
 
   try {
-    tools = (await getAllTools()) ?? [];
+    const data = await getAllTools();
+    tools = (data ?? []).filter(isPublishedTool);
+
+    console.log("[HOME PAGE] published tools loaded:", tools.length);
+    console.log(
+      "[HOME PAGE] latest slugs:",
+      tools.slice(0, 10).map((tool) => tool.slug)
+    );
   } catch (error) {
     console.error("[HOME PAGE] getAllTools failed:", error);
-    tools = [];
   }
 
   const totalTools = tools.length;
-  const freeTools = tools.filter((tool) => Boolean(tool?.is_free)).length;
 
-  const categoryCounts = tools.reduce<Record<string, number>>((acc, tool) => {
-    const category = tool?.category?.trim();
-    if (!category) return acc;
-    acc[category] = (acc[category] || 0) + 1;
-    return acc;
-  }, {});
+  const freeTools = tools.filter(
+    (tool) => tool.is_free === true
+  ).length;
+
+  const categoryCounts = tools.reduce<Record<string, number>>(
+    (acc, tool) => {
+      const category = tool.category?.trim();
+
+      if (!category) {
+        return acc;
+      }
+
+      acc[category] = (acc[category] ?? 0) + 1;
+      return acc;
+    },
+    {}
+  );
 
   const categories = Object.keys(categoryCounts).length;
 
   const topCategories = Object.entries(categoryCounts)
-    .sort((a, b) => b[1] - a[1])
+    .sort((a, b) => {
+      if (b[1] !== a[1]) {
+        return b[1] - a[1];
+      }
+
+      return a[0].localeCompare(b[0]);
+    })
     .slice(0, 6)
     .map(([name, count]) => ({
       name,
@@ -49,10 +132,27 @@ export default async function HomePage() {
       slug: getCategorySlug(name),
     }));
 
-  const latestTools = tools.slice(0, 6);
+  const latestTools = [...tools]
+    .sort((a, b) => {
+      const dateA = a.last_updated
+        ? new Date(a.last_updated).getTime()
+        : 0;
+
+      const dateB = b.last_updated
+        ? new Date(b.last_updated).getTime()
+        : 0;
+
+      return dateB - dateA || a.name?.localeCompare(b.name ?? "") || 0;
+    })
+    .slice(0, 6);
 
   const mostUsedTools = [...tools]
-    .sort((a, b) => (b.installs ?? 0) - (a.installs ?? 0))
+    .sort((a, b) => {
+      return (
+        getInstallCount(b.installs) -
+        getInstallCount(a.installs)
+      );
+    })
     .slice(0, 6);
 
   const useCaseCards = [
@@ -67,7 +167,7 @@ export default async function HomePage() {
       title: "Database inspection",
       description:
         "Browse schemas, inspect records, and query structured data from your AI workflow.",
-      href: "/categories/databases",
+      href: "/categories/database",
       fallbackHref: "/tools",
     },
     {
@@ -81,7 +181,7 @@ export default async function HomePage() {
       title: "Cloud debugging",
       description:
         "Inspect infrastructure, cloud services, and operational environments with MCP tools.",
-      href: "/categories/cloud-infrastructure",
+      href: "/categories/cloud-and-infrastructure",
       fallbackHref: "/tools",
     },
     {
@@ -156,18 +256,30 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl px-6 py-10 md:py-12">
           <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">TOTAL TOOLS</p>
-              <p className="text-3xl font-bold text-white">{totalTools}</p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">
+                TOTAL TOOLS
+              </p>
+              <p className="text-3xl font-bold text-white">
+                {totalTools}
+              </p>
             </div>
 
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">FREE TOOLS</p>
-              <p className="text-3xl font-bold text-white">{freeTools}</p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">
+                FREE TOOLS
+              </p>
+              <p className="text-3xl font-bold text-white">
+                {freeTools}
+              </p>
             </div>
 
             <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6">
-              <p className="mb-2 text-xs font-mono text-zinc-500">CATEGORIES</p>
-              <p className="text-3xl font-bold text-white">{categories}</p>
+              <p className="mb-2 text-xs font-mono text-zinc-500">
+                CATEGORIES
+              </p>
+              <p className="text-3xl font-bold text-white">
+                {categories}
+              </p>
             </div>
           </div>
         </div>
@@ -177,7 +289,9 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl space-y-8 px-6 py-4 md:py-6">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-mono text-zinc-500">Start here</p>
+              <p className="text-sm font-mono text-zinc-500">
+                Start here
+              </p>
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Start from categories
               </h2>
@@ -202,6 +316,7 @@ export default async function HomePage() {
                   <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
                     {category.name}
                   </h3>
+
                   <span className="rounded-full border border-zinc-800 bg-zinc-900 px-3 py-1 text-xs font-mono text-zinc-400">
                     {category.count} tools
                   </span>
@@ -221,7 +336,9 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl space-y-8 px-6 py-12">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-mono text-zinc-500">Popular picks</p>
+              <p className="text-sm font-mono text-zinc-500">
+                Popular picks
+              </p>
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Most used MCP tools
               </h2>
@@ -278,7 +395,9 @@ export default async function HomePage() {
 
                 <div className="mt-auto flex items-center justify-between gap-3 text-xs font-mono text-zinc-500">
                   <span>by {tool.developer ?? "Unknown"}</span>
-                  <span>{tool.installs ?? 0} installs</span>
+                  <span>
+                    {getInstallCount(tool.installs).toLocaleString()} installs
+                  </span>
                 </div>
               </Link>
             ))}
@@ -290,7 +409,9 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl space-y-8 px-6 pb-12">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-mono text-zinc-500">Use cases</p>
+              <p className="text-sm font-mono text-zinc-500">
+                Use cases
+              </p>
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Best tools by use case
               </h2>
@@ -332,7 +453,9 @@ export default async function HomePage() {
         <div className="mx-auto max-w-6xl space-y-8 px-6 pb-16 md:pb-20">
           <div className="flex items-center justify-between gap-4">
             <div>
-              <p className="text-sm font-mono text-zinc-500">Featured</p>
+              <p className="text-sm font-mono text-zinc-500">
+                Featured
+              </p>
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Latest tools
               </h2>
@@ -351,9 +474,10 @@ export default async function HomePage() {
               <h3 className="mb-2 text-xl font-semibold text-white">
                 No tools found
               </h3>
+
               <p className="mx-auto max-w-xl leading-relaxed text-zinc-500">
-                Add rows to your Supabase tools table to populate the homepage and
-                the tools directory.
+                Add rows to your Supabase tools table to populate the homepage
+                and the tools directory.
               </p>
             </div>
           ) : (
@@ -400,7 +524,9 @@ export default async function HomePage() {
 
                   <div className="mt-auto flex items-center justify-between gap-3 text-xs font-mono text-zinc-500">
                     <span>by {tool.developer ?? "Unknown"}</span>
-                    <span>{tool.installs ?? 0} installs</span>
+                    <span>
+                      {getInstallCount(tool.installs).toLocaleString()} installs
+                    </span>
                   </div>
                 </Link>
               ))}
