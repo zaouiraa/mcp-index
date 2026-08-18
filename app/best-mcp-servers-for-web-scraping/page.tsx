@@ -1,850 +1,606 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { DownloadConfigButton } from "@/components/download-config-button";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-servers-for-web-scraping`;
-const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(
-  "Best MCP Servers for Web Scraping in 2026"
-)}&description=${encodeURIComponent(
-  "Playwright, Firecrawl & Puppeteer Compared for AI Data Extraction."
-)}`;
 
 export const metadata: Metadata = {
-  title: "Best MCP Servers for Web Scraping in 2026 | MCPIndex",
+  title: "5 Best MCP Servers for Web Scraping in 2026",
   description:
-    "Discover the best MCP servers for web scraping in 2026. A deep dive comparison of Playwright, Firecrawl, and Puppeteer for AI-assisted data extraction.",
-  keywords: [
-    "best MCP servers for web scraping",
-    "How to use MCP servers for web scraping",
-    "firecrawl vs playwright mcp",
-    "browserbase mcp server",
-    "chrome devtools mcp server",
-    "Puppeteer with Model Context Protocol",
-    "Claude web scraping",
-    "Cursor MCP servers scraping",
-  ],
-  authors: [{ name: "MCPIndex Team", url: baseUrl }],
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-video-preview": -1,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-    },
+    "Compare 5 best MCP servers for web scraping in 2026—browser control, anti-bot resilience, token efficiency, and exact configs.",
+  alternates: {
+    canonical,
   },
-  alternates: { canonical },
   openGraph: {
-    title: "Best MCP Servers for Web Scraping in 2026",
+    title: "5 Best MCP Servers for Web Scraping in 2026",
     description:
-      "A deep dive comparison of Playwright, Firecrawl, and Puppeteer MCP servers for AI-assisted data extraction and workflow automation.",
+      "A technical architecture guide to the best MCP servers for web scraping in 2026.",
     url: canonical,
     siteName: "MCPIndex",
     type: "article",
-    images: [
-      {
-        url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: "Best MCP Servers for Web Scraping in 2026",
-      },
-    ],
-    publishedTime: "2026-01-15T00:00:00Z",
-    modifiedTime: "2026-06-05T00:00:00Z",
+    publishedTime: "2026-08-18T00:00:00.000Z",
+    modifiedTime: "2026-08-18T00:00:00.000Z",
+    authors: ["MCPIndex Founder"],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Best MCP Servers for Web Scraping (2026) | MCPIndex",
+    title: "5 Best MCP Servers for Web Scraping in 2026",
     description:
-      "Compare Playwright, Firecrawl, and Puppeteer to find the best MCP servers for web scraping in 2026.",
-    images: [ogImage],
+      "A technical architecture guide to the best MCP servers for web scraping in 2026.",
   },
 };
 
-const picks = [
+const toolCards = [
   {
-    rank: 1,
-    name: "Playwright MCP Server",
-    slug: "playwright-mcp",
-    category: "Browser Automation",
-    bestFor: "Complex Portals & Auth",
-    oneliner: "Full cross-browser control for stateful, multi-step AI scraping.",
-    free: true,
+    number: "1",
+    name: "Firecrawl MCP",
+    subtitle: "Best for structured content extraction",
+    description:
+      "Firecrawl compresses a complex web retrieval pipeline into higher-level operations: scrape, crawl, search, and extract. That reduces tool-call fanout and limits browser-state decisions delegated to the model.",
+    advantage:
+      "The abstraction is optimized for document-oriented retrieval and LLM-ready output instead of exposing every browser primitive to the model.",
+    flaw:
+      "A consent wall, soft block, localized response, or incomplete JavaScript shell can still produce coherent-looking Markdown. Validate completeness independently.",
+    config: `{
+  "mcpServers": {
+    "firecrawl": {
+      "command": "npx",
+      "args": ["-y", "firecrawl-mcp"],
+      "env": {
+        "FIRECRAWL_API_KEY": "YOUR_FIRECRAWL_API_KEY"
+      }
+    }
+  }
+}`,
+    href: "/tools/firecrawl-mcp-server",
   },
   {
-    rank: 2,
-    name: "Firecrawl MCP Server",
-    slug: "firecrawl-mcp-server",
-    category: "Data Extraction",
-    bestFor: "LLM Markdown/JSON",
-    oneliner: "Convert entire dynamic websites into clean Markdown instantly.",
-    free: true,
+    number: "2",
+    name: "ZenRows MCP",
+    subtitle: "Best for managed anti-bot-aware scraping",
+    description:
+      "ZenRows separates the agent from proxy and rendering mechanics. The client does not need to own the browser runtime, proxy pool, or egress policy.",
+    advantage:
+      "Managed rendering and network infrastructure reduce workstation dependency and isolate browser execution from the local MCP client.",
+    flaw:
+      "A successful response may still be a regional variant, cached page, login form, challenge, or soft block. Persist final URL, locale, timestamp, rendering mode, and content hash.",
+    config: `{
+  "mcpServers": {
+    "zenrows": {
+      "command": "npx",
+      "args": ["-y", "@zenrows/mcp"],
+      "env": {
+        "ZENROWS_API_KEY": "YOUR_ZENROWS_API_KEY"
+      }
+    }
+  }
+}`,
+    href: "/tools/zenrows-mcp",
   },
   {
-    rank: 3,
-    name: "Puppeteer MCP Server",
-    slug: "puppeteer-mcp",
-    category: "Browser Automation",
-    bestFor: "High-Speed Snapshots",
-    oneliner: "Lightweight Chromium automation for rapid DOM extraction.",
-    free: true,
+    number: "3",
+    name: "Scrapfly MCP",
+    subtitle: "Best for managed extraction with operational controls",
+    description:
+      "Scrapfly provides a managed MCP interface for web scraping, AI extraction, and anti-bot-aware retrieval workflows.",
+    advantage:
+      "It fits production workflows that need cloud execution, explicit retrieval behavior, and provider-level operational controls.",
+    flaw:
+      "Remote execution introduces queued, slow, partial, and retry states. Without idempotency keys, an agent can duplicate requests and consume resources.",
+    config: `{
+  "mcpServers": {
+    "scrapfly": {
+      "command": "npx",
+      "args": [
+        "mcp-remote",
+        "https://mcp.scrapfly.io/mcp"
+      ]
+    }
+  }
+}`,
+    href: "/tools/scrapfly-mcp",
   },
   {
-    rank: 4,
-    name: "Browserbase MCP Server",
-    slug: "browserbase-mcp",
-    category: "Managed Infrastructure",
-    bestFor: "Enterprise Scale",
-    oneliner: "Run serverless headless browsers with built-in stealth evasion.",
-    free: false,
+    number: "4",
+    name: "Playwright MCP",
+    subtitle: "Best for deterministic browser workflows",
+    description:
+      "Playwright MCP is the correct choice when the task is browser automation first and web extraction second. It supports navigation, DOM interaction, authenticated sessions, and browser-state inspection.",
+    advantage:
+      "It operates at the browser-control layer and can reproduce workflows that cannot be represented by a one-shot HTTP request.",
+    flaw:
+      "An agent can repeat actions, follow unexpected redirects, interact with overlays, or mutate state. Separate read-only navigation from writes and cap browser actions.",
+    config: `{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": ["@playwright/mcp"]
+    }
+  }
+}`,
+    href: "/tools/playwright-mcp",
   },
   {
-    rank: 5,
+    number: "5",
     name: "Chrome DevTools MCP",
-    slug: "chrome-devtools-mcp",
-    category: "Low-Level Protocol",
-    bestFor: "Custom CDP Interactions",
-    oneliner: "Direct connection to the Chrome DevTools Protocol for custom logic.",
-    free: true,
+    subtitle: "Best for diagnosing browser-level failures",
+    description:
+      "Chrome DevTools MCP is a diagnostic instrument for browser automation. It exposes the runtime, network, console, rendering, DOM, and performance layers where extraction failures actually occur.",
+    advantage:
+      "It can identify whether data is absent, delayed, blocked, fetched through XHR or GraphQL, or overwritten after hydration.",
+    flaw:
+      "Network logs, DOM trees, traces, and console output can exhaust the token context window. Filter and summarize artifacts before returning them to the model.",
+    config: `{
+  "mcpServers": {
+    "chrome-devtools": {
+      "command": "npx",
+      "args": ["chrome-devtools-mcp@latest"]
+    }
+  }
+}`,
+    href: "/tools/chrome-devtools-mcp",
   },
 ];
 
-const faqs = [
+const faqItems = [
   {
-    question: "What is the easiest way to extract structured JSON using MCP?",
+    question:
+      "Which MCP server is best for JavaScript-heavy web scraping?",
     answer:
-      "The most efficient method is using the Firecrawl MCP server. Because it is natively designed for LLMs, you can use its `/extract` endpoint directly via the MCP tool, passing a JSON schema. Firecrawl handles the DOM parsing and returns strictly formatted JSON, saving your local LLM valuable processing tokens.",
+      "Use Playwright MCP when the task requires deterministic browser actions, authenticated sessions, DOM interaction, and reproducible navigation. Use Chrome DevTools MCP when you need to diagnose runtime behavior, hydration defects, or network requests. Use Firecrawl, ZenRows, or Scrapfly when the objective is managed content retrieval rather than browser-state debugging.",
   },
   {
-    question: "How do I prevent my AI scraper from getting stuck in infinite loops?",
+    question:
+      "Can an MCP web scraping server bypass anti-bot protections?",
     answer:
-      "Implement hard timeouts and execution caps inside your MCP server logic, not just in the LLM prompt. For instance, restrict the `click_element` tool to a maximum of 5 uses per session. If the LLM hits this threshold, the MCP server should forcefully terminate the browser context and return a timeout error to the client.",
+      "An MCP server does not bypass protections by itself. It exposes a tool interface. Anti-bot resilience depends on the underlying execution layer: proxy policy, browser fingerprinting, JavaScript rendering, challenge handling, rate limits, authentication flow, and the target site's access rules. Use only authorized collection workflows and enforce allowlists, request budgets, and audit logs.",
   },
   {
-    question: "Can I run an MCP scraping server in a serverless environment?",
+    question:
+      "How do you handle pagination limits when Claude's context window fills up?",
     answer:
-      "Yes, but Playwright and Puppeteer require specific binaries that exceed standard AWS Lambda limits. You must use specialized layers (like `chrome-aws-lambda`) or migrate the workload to containerized environments like AWS Fargate. Alternatively, relying on an API-based MCP server like Firecrawl completely bypasses the need to host heavy browser binaries.",
+      "Do not send raw page output into the model context. Persist each page to durable storage with a crawl run ID, normalized URL, content hash, cursor, extraction schema version, and timestamp. Return only a bounded summary, page cursor, row count, validation failures, and next-action state.",
+  },
+  {
+    question:
+      "Why does an MCP scraper sometimes return valid-looking but incorrect content?",
+    answer:
+      "The most common silent failure is stale or interstitial DOM extraction: the browser returns a successful HTTP response but the captured document is a consent wall, login form, bot challenge, client-side shell, or cached page variant. Mitigate this with post-extraction assertions, canonical URL checks, expected-content markers, content hashes, DOM readiness checks, and explicit provenance metadata.",
   },
 ];
 
-const relatedGuides = [
+const jsonLd = [
   {
-    title: "Claude Desktop MCP Setup (2026)",
-    body: "The complete beginner guide to connecting MCP servers to Claude.",
-    href: "/claude-desktop-mcp-setup",
-  },
-  {
-    title: "Best MCP Servers for Code Review",
-    body: "Automate PR feedback and security scanning with GitHub & Semgrep MCP.",
-    href: "/best-mcp-servers-for-code-review",
-  },
-  {
-    title: "How to Install MCP Servers",
-    body: "Cross-client installation for Cursor, Claude Code, and VS Code.",
-    href: "/how-to-install-mcp-servers",
-  },
-];
-
-export default function BestMcpServersForWebScrapingPage() {
-  const jsonLdArticle = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    headline:
-      "Best MCP Servers for Web Scraping in 2026: Playwright, Firecrawl & Puppeteer Compared",
+    headline: "5 Best MCP Servers for Web Scraping in 2026",
     description:
-      "Expert comparison of the best MCP servers for web scraping in 2026. Learn how to extract data using Playwright, Firecrawl, and Puppeteer with Claude.",
-    url: canonical,
-    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
-    image: ogImage,
-    datePublished: "2026-01-15T00:00:00Z",
-    dateModified: "2026-06-05T00:00:00Z",
-    wordCount: 2400,
-    author: { "@type": "Organization", name: "MCPIndex Team", url: baseUrl },
+      "A technical architecture guide to the best MCP servers for web scraping in 2026, comparing browser control, anti-bot handling, token safety, and operational failure modes.",
+    author: {
+      "@type": "Person",
+      name: "MCPIndex Founder",
+    },
     publisher: {
       "@type": "Organization",
       name: "MCPIndex",
       url: baseUrl,
-      logo: {
-        "@type": "ImageObject",
-        url: `${baseUrl}/logo.png`,
-        width: 120,
-        height: 120,
+    },
+    mainEntityOfPage: {
+      "@type": "WebPage",
+      "@id": canonical,
+    },
+    url: canonical,
+    datePublished: "2026-08-18",
+    dateModified: "2026-08-18",
+    keywords: [
+      "Best MCP Servers for Web Scraping",
+      "MCP web scraping",
+      "Firecrawl MCP",
+      "Playwright MCP",
+      "ZenRows MCP",
+      "Scrapfly MCP",
+      "Chrome DevTools MCP",
+    ],
+    about: [
+      {
+        "@type": "Thing",
+        name: "Model Context Protocol",
       },
-    },
-    about: {
-      "@type": "Thing",
-      name: "Web Scraping",
-      description:
-        "Automated data extraction using Model Context Protocol and AI.",
-    },
-    proficiencyLevel: "Advanced",
-  };
-
-  const jsonLdFaq = {
+      {
+        "@type": "Thing",
+        name: "Web Scraping",
+      },
+      {
+        "@type": "Thing",
+        name: "Browser Automation",
+      },
+    ],
+  },
+  {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    mainEntity: faqItems.map((item) => ({
       "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+      name: item.question,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: item.answer,
+      },
     })),
-  };
+  },
+];
 
-  const jsonLdBreadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Best MCP Servers for Web Scraping",
-        item: canonical,
-      },
-    ],
-  };
-
-  const jsonLdItemList = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Top MCP Servers for Web Scraping",
-    description:
-      "A curated list of the best MCP servers for data extraction.",
-    numberOfItems: picks.length,
-    itemListElement: picks.map((pick) => ({
-      "@type": "ListItem",
-      position: pick.rank,
-      name: pick.name,
-      url: `${baseUrl}/tools/${pick.slug}`,
-    })),
-  };
-
-  const jsonLdHowTo = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name: "How to Build a Complete AI Scraping Workflow with MCP",
-    description:
-      "Step-by-step practical scenario combining MCP tools for a real-world scraping project.",
-    totalTime: "PT15M",
-    step: [
-      {
-        "@type": "HowToStep",
-        position: 1,
-        name: "Configure the MCP Server Manifest",
-        text: "Register your server in your client configuration (e.g., claude_desktop_config.json) to launch your Node.js script.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 2,
-        name: "Expose the Right Tools",
-        text: "Define a tightly scoped toolset such as navigate_and_wait, get_clean_markdown, and screenshot_element.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 3,
-        name: "Write the Agentic Prompt",
-        text: "Provide structured directives to the LLM instead of generic scraping commands.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 4,
-        name: "Handle the Shadow DOM",
-        text: "Inject utility functions to traverse shadow roots or fallback to visual multi-modal screenshots.",
-      },
-    ],
-  };
-
+export default function BestMcpServersForWebScraping() {
   return (
     <main className="min-h-screen bg-black text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdItemList) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHowTo) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(
+            /</g,
+            "\\u003c"
+          ),
+        }}
       />
 
-      <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
-          <Link href="/" className="hover:text-white transition-colors">
+      <div className="mx-auto max-w-4xl space-y-16 px-6 py-12">
+        <nav
+          aria-label="Breadcrumb"
+          className="flex items-center gap-2 text-sm font-mono text-zinc-500"
+        >
+          <Link
+            href="/"
+            className="transition-colors hover:text-white"
+          >
             MCPIndex
           </Link>
+
           <span>/</span>
+
           <span className="text-zinc-300">
             Best MCP Servers for Web Scraping
           </span>
         </nav>
 
-        {/* Hero */}
         <header className="space-y-5">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono">
-              Updated 2026 Guide
-            </span>
-            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-mono">
-              Expert Engineering
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            Best MCP Servers for Web Scraping in 2026: Playwright, Firecrawl &
-            Puppeteer Compared
-          </h1>
-          <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl">
-            If you have spent any time dealing with automated data extraction
-            recently, you know the landscape has fundamentally shifted. It is
-            2026, and the days of writing brittle Python scripts with 500 lines
-            of CSS selectors are effectively over. Modern websites are
-            defensive, highly dynamic, and heavily obfuscated.
+          <p className="text-xs font-mono uppercase tracking-widest text-purple-400">
+            Technical architecture guide · Updated August 18, 2026
           </p>
-          <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
-            Trying to parse a single-page application built on Next.js 16 with
-            heavily hashed classes using legacy libraries like BeautifulSoup is
-            a fool&apos;s errand. You need the Model Context Protocol to empower
-            LLMs to drive the browser.
+
+          <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+            5 Best MCP Servers for Web Scraping in 2026
+          </h1>
+
+          <p className="max-w-3xl text-lg leading-relaxed text-zinc-400">
+            Most MCP scraping failures do not start with a blocked request. They
+            start when the agent receives a valid-looking response that is
+            structurally wrong: a cookie wall treated as an article, an empty
+            hydration shell treated as product data, or an anti-bot interstitial
+            compressed into clean Markdown.
+          </p>
+
+          <p className="text-sm text-zinc-500">
+            <Link
+              href="/how-to-install-mcp-servers"
+              className="text-purple-400 underline underline-offset-4 transition-colors hover:text-purple-300"
+            >
+              Read our full Claude Desktop setup guide
+            </Link>{" "}
+            before exposing browser or scraping tools to an AI client.
           </p>
         </header>
 
-        {/* Image 1: Why MCP (Hero visual) - eager loading */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`${baseUrl}/api/og?title=${encodeURIComponent("Web Scraping in 2026")}&description=${encodeURIComponent("Legacy scripts fail. AI-driven MCP browsers succeed.")}`}
-          alt="MCP-based web scraping overview"
-          className="rounded-2xl border border-zinc-800 w-full"
-          width={1200}
-          height={630}
-          loading="eager"
-        />
-
-        {/* Why MCP for scraping */}
-        <section id="why-web-scraping-needs-mcp" className="space-y-4 scroll-mt-24">
+        <section
+          id="architecture-problem"
+          className="scroll-mt-24 space-y-5"
+        >
           <h2 className="text-2xl font-semibold">
-            Why Web Scraping Needs the Model Context Protocol in 2026
+            Why standard scraping architectures fail
           </h2>
-          <p className="text-zinc-400 leading-relaxed">
-            The core challenge in modern web scraping is rendering and context
-            interpretation. Modern DOMs are bloated, dynamic, and aggressively
-            protected by anti-bot systems like Cloudflare Turnstile and Kasada.
-            A traditional scraper hits a wall the moment an interactive
-            challenge appears or a class name hashes from{" "}
-            <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-              .price-tag
-            </code>{" "}
-            to{" "}
-            <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-              .css-1x9fka
-            </code>
-            .
+
+          <p className="leading-relaxed text-zinc-400">
+            A traditional scraper assumes a deterministic pipeline:
           </p>
-          <p className="text-zinc-400 leading-relaxed">
-            MCP bridges this gap by acting as a universal translation layer. By
-            wrapping an underlying browser automation framework, it exposes
-            specific tools via standard JSON-RPC. When your LLM encounters a
-            hashed class, it doesn&apos;t fail; it uses the MCP server&apos;s{" "}
-            <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-              get_accessibility_tree
-            </code>{" "}
-            tool, visually &quot;sees&quot; the target button, retrieves its
-            dynamic ID, and clicks it.
+
+          <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm text-zinc-300">
+{`URL → HTTP request → HTML → parser → database`}
+          </pre>
+
+          <p className="leading-relaxed text-zinc-400">
+            Modern targets rarely behave that way. The actual execution path
+            includes edge-cache decisions, bot-detection heuristics, JavaScript
+            challenges, client-side hydration, XHR or GraphQL payloads, consent
+            state, authenticated sessions, and DOM mutation. Each stage can
+            change the output without producing a conventional error.
           </p>
-          <h3 className="text-xl font-medium text-zinc-200 mt-6">
-            How to use MCP servers for web scraping
-          </h3>
-          <p className="text-zinc-400 leading-relaxed">
-            To implement this, you need an MCP Client (like Cursor or Claude)
-            and an MCP Server. The client streams the user&apos;s intent to the
-            LLM. The secret to making this efficient isn&apos;t dumping raw HTML
-            into the LLM—that wastes context tokens. Instead, the{" "}
-            <strong>best MCP servers for web scraping</strong> convert the raw
-            DOM into a condensed Markdown representation or an Accessibility
-            Tree, mapping spatial relationships while stripping out massive
-            script tags.
-          </p>
+
+          <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+            <h3 className="text-base font-semibold text-white">
+              The token context bottleneck
+            </h3>
+
+            <p className="text-sm leading-relaxed text-zinc-400">
+              A 2 MB document can turn an extraction request into a payload
+              management problem. The correct architecture does not place entire
+              pages into the model context. It extracts typed fields, validates
+              output, stores the full artifact outside the prompt, and returns a
+              bounded summary.
+            </p>
+          </div>
+
+          <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+            <h3 className="text-base font-semibold text-white">
+              The stateful transport problem
+            </h3>
+
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Authentication cookies, redirect chains, device fingerprints,
+              pagination cursors, and challenge state can all depend on a
+              persistent execution context. Creating a fresh browser context for
+              every MCP call can invalidate a workflow halfway through even when
+              each individual call succeeds.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-red-500/20 bg-red-950/10 p-5">
+            <p className="text-sm font-mono text-red-400">
+              CRITICAL WARNING
+            </p>
+
+            <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+              An MCP server that accepts arbitrary URLs can become an SSRF
+              primitive. Enforce URL allowlists, private-network blocking,
+              timeouts, rate limits, output redaction, and audit logging.
+            </p>
+          </div>
         </section>
 
-        {/* Image 2: Comparison Table visual - lazy loading */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`${baseUrl}/api/og?title=${encodeURIComponent("Playwright vs Firecrawl vs Puppeteer")}&description=${encodeURIComponent("Side-by-side feature comparison for AI scraping")}`}
-          alt="Comparison chart of MCP scraping tools"
-          className="rounded-2xl border border-zinc-800 w-full"
-          width={1200}
-          height={630}
-          loading="lazy"
-        />
-
-        {/* Head-to-Head Table */}
-        <section id="head-to-head-comparison" className="space-y-5 scroll-mt-24">
+        <section
+          id="ranked-servers"
+          className="scroll-mt-24 space-y-8"
+        >
           <h2 className="text-2xl font-semibold">
-            Head-to-Head Comparison: Playwright vs Firecrawl vs Puppeteer
+            The 5 Best Web Scraping MCP Servers in 2026
           </h2>
-          <p className="text-zinc-500 text-sm">
-            Evaluating how these top MCP tools handle the realities of 2026
-            data extraction.
+
+          {toolCards.map((tool) => (
+            <article
+              key={tool.name}
+              className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-6"
+            >
+              <div className="space-y-2">
+                <p className="text-xs font-mono uppercase tracking-widest text-purple-400">
+                  Rank {tool.number}
+                </p>
+
+                <h3 className="text-xl font-semibold text-white">
+                  {tool.name} — {tool.subtitle}
+                </h3>
+              </div>
+
+              <p className="text-sm leading-relaxed text-zinc-400">
+                {tool.description}
+              </p>
+
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-emerald-300">
+                    Architectural advantage
+                  </h4>
+
+                  <p className="text-sm leading-relaxed text-zinc-400">
+                    {tool.advantage}
+                  </p>
+                </div>
+
+                <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-red-300">
+                    Fatal flaw
+                  </h4>
+
+                  <p className="text-sm leading-relaxed text-zinc-400">
+                    {tool.flaw}
+                  </p>
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs font-mono uppercase tracking-widest text-zinc-500">
+                  Claude Desktop configuration
+                </p>
+
+                <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs leading-relaxed text-zinc-300">
+                  <code>{tool.config}</code>
+                </pre>
+              </div>
+
+              <Link
+                href={tool.href}
+                className="inline-block text-sm text-purple-400 transition-colors hover:text-purple-300"
+              >
+                View {tool.name} full setup →
+              </Link>
+            </article>
+          ))}
+        </section>
+
+        <section
+          id="silent-failure"
+          className="scroll-mt-24 space-y-5"
+        >
+          <h2 className="text-2xl font-semibold">
+            The “Silent Failure” in MCP Scraping
+          </h2>
+
+          <p className="leading-relaxed text-zinc-400">
+            The most expensive failure is an extraction that looks successful.
+            A page may return HTTP 200 with empty product cards because the
+            browser snapshot was captured before a GraphQL response updated the
+            DOM. No exception occurs. The agent creates false business
+            intelligence.
           </p>
+
+          <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950 p-4 text-sm leading-relaxed text-zinc-300">
+{`Navigate
+→ verify final URL
+→ wait for required selector
+→ wait for target API response
+→ detect interstitial markers
+→ validate record count
+→ validate required fields
+→ hash normalized output
+→ persist provenance
+→ return bounded summary`}
+          </pre>
+
+          <div className="rounded-2xl border border-red-500/20 bg-red-950/10 p-5">
+            <p className="text-sm font-mono text-red-400">
+              EXTRACTION CONTRACT
+            </p>
+
+            <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+              Never allow the model to interpret an empty, partial, blocked, or
+              unvalidated extraction as an authoritative absence of data.
+            </p>
+          </div>
+
+          <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs leading-relaxed text-zinc-300">
+{`const blockedMarkers = [
+  "verify you are human",
+  "access denied",
+  "unusual traffic",
+  "enable cookies",
+  "just a moment"
+];
+
+if (blockedMarkers.some((marker) =>
+  bodyText.toLowerCase().includes(marker)
+)) {
+  throw new Error("BLOCK_INTERSTITIAL_DETECTED");
+}
+
+if (recordCount < 1) {
+  throw new Error("EXTRACTION_CONTRACT_FAILED");
+}`}
+          </pre>
+        </section>
+
+        <section
+          id="legacy-comparison"
+          className="scroll-mt-24 space-y-5"
+        >
+          <h2 className="text-2xl font-semibold">
+            MCP Scraping vs. Legacy Python and Node Workers
+          </h2>
+
+          <p className="leading-relaxed text-zinc-400">
+            The serious comparison is not MCP versus manual browsing. It is an
+            agent-facing tool layer versus a legacy scraping architecture built
+            from REST endpoints, Python or Node workers, browser sessions,
+            queues, and parsers.
+          </p>
+
           <div className="overflow-x-auto rounded-2xl border border-zinc-800">
-            <table className="w-full text-sm" aria-label="Comparison between Playwright, Firecrawl, and Puppeteer MCP features">
+            <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-zinc-800 bg-zinc-950/80">
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    Feature
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">
+                    Dimension
                   </th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    <Link href="/tools/playwright-mcp" className="hover:text-white transition-colors">Playwright MCP</Link>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">
+                    MCP architecture
                   </th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    <Link href="/tools/firecrawl-mcp-server" className="hover:text-white transition-colors">Firecrawl MCP</Link>
-                  </th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    <Link href="/tools/puppeteer-mcp" className="hover:text-white transition-colors">Puppeteer MCP</Link>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">
+                    Legacy Python/Node
                   </th>
                 </tr>
               </thead>
+
               <tbody>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">
-                    Ease of Setup
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">
+                    Latency
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Moderate. Requires custom tool mapping.
+                    Includes model planning and tool-call overhead.
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Easy. Native Markdown/JSON outputs.
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400">
-                    Moderate. Requires strict context management.
+                    Lower orchestration overhead for deterministic jobs.
                   </td>
                 </tr>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">
-                    JavaScript Support
+
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">
+                    State management
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Excellent. Deep execution control.
+                    Must be explicit across tool calls and execution contexts.
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Excellent. Handled server-side automatically.
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400">
-                    High. Chromium-only execution.
+                    Usually owned by workers, queues, Redis, or databases.
                   </td>
                 </tr>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">
-                    Data Cleaning
+
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">
+                    Payload handling
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Manual. LLM must parse raw DOM.
+                    Must protect the token context window.
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Exceptional. Native Markdown optimized for LLMs.
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400">
-                    Manual. Similar to Playwright.
+                    Can retain raw artifacts outside model context by default.
                   </td>
                 </tr>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">
-                    Anti-Bot Evasion
+
+                <tr>
+                  <td className="px-4 py-3 font-medium text-white">
+                    Best use case
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Requires third-party stealth plugins.
+                    Interactive, investigative, supervised workflows.
                   </td>
                   <td className="px-4 py-3 text-zinc-400">
-                    Built-in proxy rotation and evasion.
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400">
-                    Requires custom CDP patching.
-                  </td>
-                </tr>
-                <tr className="hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">
-                    Best Use Case
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400">
-                    Complex, multi-step authenticated portals.
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400">
-                    High-volume content ingestion & mapping.
-                  </td>
-                  <td className="px-4 py-3 text-zinc-400">
-                    Lightweight, high-frequency single-page snapshots.
+                    High-volume deterministic pipelines.
                   </td>
                 </tr>
               </tbody>
             </table>
           </div>
+
+          <p className="leading-relaxed text-zinc-400">
+            MCP does not replace durable workers, queues, artifact storage, or
+            validation services. A production design uses MCP to inspect,
+            trigger, validate, and analyze retrieval workflows while keeping
+            crawl state and raw payloads outside the LLM execution context.
+          </p>
         </section>
 
-        {/* Deep Dive: Playwright */}
-        <section id="deep-dive-playwright" className="space-y-6 scroll-mt-24">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h2 className="text-2xl font-semibold">
-              Deep Dive: Playwright MCP Server
-            </h2>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${baseUrl}/api/og?title=${encodeURIComponent("Playwright MCP Setup")}&description=${encodeURIComponent("Cross-browser control with stealth plugins")}`}
-              alt="Playwright MCP configuration example"
-              className="rounded-xl border border-zinc-700 w-full"
-              width={1200}
-              height={630}
-              loading="lazy"
-            />
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Playwright has dominated browser automation for years, and its MCP
-              wrapper is the heavyweight champion for complex, stateful scraping
-              operations. Developed by Microsoft, Playwright is designed to
-              handle cross-browser environments (Chromium, Firefox, WebKit) and
-              excels at managing multiple isolated browser contexts
-              simultaneously. This makes it the premier choice when your LLM
-              needs to log into a portal, navigate multi-step forms, or manage
-              authenticated sessions without losing state.
-            </p>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Setting up a Playwright MCP server involves exposing tools like{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                pw_goto
-              </code>{" "}
-              and{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                pw_evaluate
-              </code>
-              . While you could technically hack together a raw{" "}
-              <strong>chrome devtools mcp server</strong>, Playwright abstracts
-              the CDP complexities safely. What sets Playwright apart is its
-              auto-waiting mechanism: the LLM doesn&apos;t need to manually
-              check for network idle states or element visibility. Playwright
-              handles this internally, which dramatically reduces the number of
-              tool calls the LLM has to make, saving tokens and improving
-              response times.
-            </p>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              One non-obvious requirement: I strongly recommend wrapping your
-              Playwright instance with the{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                playwright-extra
-              </code>{" "}
-              framework and the{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                stealth
-              </code>{" "}
-              plugin inside your MCP server logic. You must patch the{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">
-                navigator.webdriver
-              </code>{" "}
-              property and spoof the WebGL rendering signatures. If you
-              don&apos;t, the site&apos;s firewall will block the browser before
-              the LLM even sees the page, invalidating its status as one of the{" "}
-              <strong>best MCP servers for web scraping</strong>.
-            </p>
-            <p className="pt-2">
-              <Link href="/tools/playwright-mcp" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
-                View Playwright MCP Server full setup guide →
-              </Link>
-            </p>
-          </div>
-        </section>
-
-        {/* Deep Dive: Firecrawl */}
-        <section id="deep-dive-firecrawl" className="space-y-6 scroll-mt-24">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h2 className="text-2xl font-semibold">
-              Deep Dive: Firecrawl MCP Server
-            </h2>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${baseUrl}/api/og?title=${encodeURIComponent("Firecrawl MCP")}&description=${encodeURIComponent("Instant Markdown output from any website")}`}
-              alt="Firecrawl MCP converting a website to clean Markdown"
-              className="rounded-xl border border-zinc-700 w-full"
-              width={1200}
-              height={630}
-              loading="lazy"
-            />
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              While Playwright requires the LLM to manually click its way
-              through a site, Firecrawl takes a fundamentally different
-              approach. Firecrawl is an LLM-native scraping and crawling API.
-              Its MCP server doesn&apos;t just expose browser controls; it
-              exposes high-level extraction functions. You don&apos;t tell the
-              Firecrawl MCP to click a button; you give it a URL and tell it to
-              return the entire site mapped as clean Markdown or structured
-              JSON.
-            </p>
-            <h3 className="text-lg font-medium text-zinc-200 mt-2">
-              What is the difference between Firecrawl MCP and Playwright MCP?
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              The core difference in the{" "}
-              <strong>firecrawl vs playwright mcp</strong> debate is
-              abstraction. Playwright MCP treats the LLM as an active browser
-              operator. Firecrawl MCP treats the LLM as a data consumer. For
-              enterprise operations, many developers offload rendering to a
-              managed <strong>browserbase mcp server</strong>, but
-              Firecrawl&apos;s all-in-one approach significantly reduces
-              engineering overhead.
-            </p>
-            <p className="pt-2">
-              <Link href="/tools/firecrawl-mcp-server" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
-                View Firecrawl MCP Server full setup guide →
-              </Link>
-            </p>
-          </div>
-        </section>
-
-        {/* Deep Dive: Puppeteer */}
-        <section id="deep-dive-puppeteer" className="space-y-6 scroll-mt-24">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h2 className="text-2xl font-semibold">
-              Deep Dive: Puppeteer MCP Server
-            </h2>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${baseUrl}/api/og?title=${encodeURIComponent("Puppeteer MCP")}&description=${encodeURIComponent("Fast, isolated browser contexts for high-frequency tasks")}`}
-              alt="Puppeteer MCP high-speed browser context"
-              className="rounded-xl border border-zinc-700 w-full"
-              width={1200}
-              height={630}
-              loading="lazy"
-            />
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Puppeteer is the veteran of the group, focused exclusively on
-              Chromium. While it lacks Playwright&apos;s native cross-browser
-              support and some of its advanced auto-waiting mechanisms, it
-              remains on the shortlist of the{" "}
-              <strong>best MCP servers for web scraping</strong> if your
-              infrastructure is strictly Chrome-based and you need maximum
-              execution speed with minimal overhead.
-            </p>
-            <h3 className="text-lg font-medium text-zinc-200 mt-2">
-              Can I use Puppeteer with Model Context Protocol?
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Absolutely. You can expose Puppeteer using the official MCP SDK.
-              My architectural insight: avoid keeping a single browser instance
-              alive indefinitely. Configure your MCP server to launch an
-              isolated Puppeteer BrowserContext per tool execution, perform the
-              scraping task, and immediately close it to prevent memory leaks.
-            </p>
-            <p className="pt-2">
-              <Link href="/tools/puppeteer-mcp" className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors">
-                View Puppeteer MCP Server full setup guide →
-              </Link>
-            </p>
-          </div>
-        </section>
-
-        {/* Build a workflow */}
-        <section id="build-ai-scraping-workflow" className="space-y-5 scroll-mt-24">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">
-              How to Build a Complete AI Scraping Workflow with MCP
-            </h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              Let&apos;s combine these insights into a practical, real-world
-              architecture for scraping a competitor&apos;s pricing page
-              automatically.
-            </p>
-          </div>
-
-          <ol className="space-y-4">
-            {[
-              {
-                step: "1",
-                title: "Configure the MCP Server Manifest",
-                detail:
-                  "Register your Playwright or Puppeteer server in your client's configuration. Define the executable path to launch your Node.js script.",
-              },
-              {
-                step: "2",
-                title: "Expose the Right Tools",
-                detail:
-                  "Inside your server, define a tightly scoped toolset. Expose structured tools like navigate_and_wait(), get_clean_markdown(), and screenshot_element().",
-              },
-              {
-                step: "3",
-                title: "The Agentic Prompt",
-                detail:
-                  "Instead of telling the LLM to 'scrape the page,' use a strict directive: 'Use navigate_and_wait to go to /pricing. If a cookie banner appears, locate its accept button and click it. Use get_clean_markdown on the pricing container and output JSON.'",
-              },
-              {
-                step: "4",
-                title: "Handling the Shadow DOM",
-                detail:
-                  "In your server's implementation, inject a utility that traverses shadow roots automatically. If the LLM still fails, instruct it to use the screenshot_element tool.",
-              },
-            ].map((item) => (
-              <li
-                key={item.step}
-                className="flex gap-4 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5"
-              >
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-mono flex items-center justify-center mt-0.5">
-                  {item.step}
-                </span>
-                <div className="space-y-1.5">
-                  <p className="text-white font-medium text-sm">
-                    {item.title}
-                  </p>
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    {item.detail}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* Security & Ethics */}
-        <section id="security-and-ethics" className="space-y-4 scroll-mt-24">
+        <section
+          id="faq"
+          className="scroll-mt-24 space-y-5"
+        >
           <h2 className="text-2xl font-semibold">
-            Key Security and Ethical Considerations for AI Scraping
+            Frequently Asked Questions
           </h2>
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-white">
-              Robots.txt and Rate Limiting
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Your MCP server must be the ultimate authority on respect. Do not
-              rely on the LLM to &quot;remember&quot; to read robots.txt.
-              Implement middleware inside your MCP server that automatically
-              parses it upon navigation. Furthermore, implement a token bucket
-              rate limiter to prevent an LLM in a loop from firing 50 requests a
-              second.
-            </p>
 
-            <h3 className="text-lg font-semibold text-white mt-4">
-              Authentication Management
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Never paste plain-text passwords into the LLM context window. If
-              the scraping task requires authentication, manage the session
-              entirely server-side. Have your MCP server authenticate via an
-              external secure vault, retrieve the cookies, and inject them
-              directly into the browser context.
-            </p>
-
-            <h3 className="text-lg font-semibold text-white mt-4">
-              Avoiding IP Bans
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Running one of the{" "}
-              <strong>best MCP servers for web scraping</strong> from your local
-              IP will result in an instant ban from modern Web Application
-              Firewalls. You must configure your MCP server to route traffic
-              through a residential proxy network for resilient, undetectable
-              extraction pipelines.
-            </p>
-          </div>
-        </section>
-
-        {/* Related guides */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Related Guides</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {relatedGuides.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:border-purple-500/30 transition-colors"
-              >
-                <h3 className="text-base font-semibold text-white">
-                  {item.title}
-                </h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  {item.body}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Free config download */}
-        <section className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/40 via-zinc-950 to-zinc-900 p-8 sm:p-10 space-y-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
-            <div className="flex-1 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono w-fit">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                </span>
-                Free Resource
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Skip the setup. Start extracting faster.
-              </h2>
-              <p className="text-zinc-400 leading-relaxed max-w-xl">
-                We combined the top scraping MCP servers (Playwright, Firecrawl,
-                and Puppeteer) into a single, ready-to-paste{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
-                  claude_desktop_config.json
-                </code>{" "}
-                file. Just add your proxy tokens and you&apos;re good to go.
-              </p>
-
-              <div className="flex flex-wrap gap-2 pt-1">
-                {["Playwright", "Firecrawl", "Puppeteer", "Browserbase"].map(
-                  (tool) => (
-                    <span
-                      key={tool}
-                      className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 border border-zinc-800 text-zinc-500"
-                    >
-                      {tool}
-                    </span>
-                  )
-                )}
-              </div>
-            </div>
-
-            <div className="w-full lg:w-auto flex-shrink-0">
-              <DownloadConfigButton />
-              <p className="text-[11px] text-zinc-600 mt-3 text-center lg:text-right">
-                No email required. Instant JSON download.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section id="best-mcp-servers-scraping-faq" className="space-y-5 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">
-            Frequently asked questions
-          </h2>
           <div className="space-y-3">
-            {faqs.map((faq) => (
+            {faqItems.map((item) => (
               <details
-                key={faq.question}
-                className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden"
-                aria-label={faq.question}
+                key={item.question}
+                className="group overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/60"
               >
-                <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
-                  {faq.question}
-                  <span className="text-zinc-500 group-open:rotate-180 transition-transform flex-shrink-0">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-white">
+                  <span>{item.question}</span>
+
+                  <span className="flex-shrink-0 text-zinc-500 transition-transform group-open:rotate-180">
                     ▾
                   </span>
                 </summary>
+
                 <div className="px-5 pb-4">
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    {faq.answer}
+                  <p className="text-sm leading-relaxed text-zinc-400">
+                    {item.answer}
                   </p>
                 </div>
               </details>
@@ -852,31 +608,36 @@ export default function BestMcpServersForWebScrapingPage() {
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4">
+        <section
+          id="recommendations"
+          className="space-y-5"
+        >
           <h2 className="text-2xl font-semibold">
-            Browse the full MCP tools directory
+            Final Architecture Recommendations
           </h2>
-          <p className="text-zinc-400 text-sm leading-relaxed max-w-xl mx-auto">
-            MCPIndex tracks the best MCP servers across every category — data
-            extraction, browser automation, APIs, databases, and more. Every
-            listing includes setup steps and a ready-to-copy configuration
-            block.
+
+          <p className="leading-relaxed text-zinc-400">
+            Use Firecrawl MCP for document-oriented extraction. Use ZenRows MCP
+            or Scrapfly MCP when managed, anti-bot-aware retrieval is required.
+            Use Playwright MCP when browser interaction and durable session state
+            are fundamental. Use Chrome DevTools MCP when you need to inspect the
+            rendering pipeline rather than guess at it.
           </p>
-          <div className="flex items-center justify-center gap-3 flex-wrap pt-2">
-            <Link
-              href="/tools"
-              className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-colors"
-            >
-              Browse all MCP tools
-            </Link>
-            <Link
-              href="/categories/browser-automation"
-              className="px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-semibold text-sm transition-colors"
-            >
-              Browse Browser Automation tools
-            </Link>
-          </div>
+
+          <p className="leading-relaxed text-zinc-400">
+            Do not treat HTTP 200 as proof of extraction success. Define
+            extraction contracts, isolate untrusted web content, keep raw
+            artifacts outside the token context window, enforce URL and network
+            policy, persist crawl state, and reject any result that cannot prove
+            its provenance.
+          </p>
+
+          <Link
+            href="/tools?category=devops"
+            className="inline-block text-sm text-purple-400 transition-colors hover:text-purple-300"
+          >
+            Explore more DevOps MCP tools →
+          </Link>
         </section>
       </div>
     </main>
