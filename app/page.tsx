@@ -1,26 +1,15 @@
 import Link from "next/link";
-import { getAllTools } from "@/lib/supabase";
+import {
+  getAllTools,
+  type ToolRow,
+} from "@/lib/supabase";
 import ToolsSearchClient from "@/components/tools-search-client";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 export const fetchCache = "force-no-store";
 
-type Tool = {
-  slug: string;
-  name?: string | null;
-  short_description?: string | null;
-  answer_first_summary?: string | null;
-  developer?: string | null;
-  installs?: number | string | null;
-  is_free?: boolean | null;
-  category?: string | null;
-  tags?: string[] | null;
-  status?: string | null;
-  is_visible?: boolean | null;
-  review_status?: string | null;
-  last_updated?: string | null;
-};
+type Tool = ToolRow;
 
 function getCategorySlug(category: string): string {
   return category
@@ -32,8 +21,13 @@ function getCategorySlug(category: string): string {
     .replace(/-+/g, "-");
 }
 
-function getInstallCount(installs: Tool["installs"]): number {
-  if (typeof installs === "number" && Number.isFinite(installs)) {
+function getInstallCount(
+  installs: Tool["installs"]
+): number {
+  if (
+    typeof installs === "number" &&
+    Number.isFinite(installs)
+  ) {
     return installs;
   }
 
@@ -46,11 +40,15 @@ function getInstallCount(installs: Tool["installs"]): number {
     .toUpperCase()
     .replace(/,/g, "");
 
-  const match = normalized.match(/^([\d.]+)\s*([KM])?\+?$/);
+  const match = normalized.match(
+    /^([\d.]+)\s*([KM])?\+?$/
+  );
 
   if (!match) {
     const numeric = Number(normalized);
-    return Number.isFinite(numeric) ? numeric : 0;
+    return Number.isFinite(numeric)
+      ? numeric
+      : 0;
   }
 
   const value = Number(match[1]);
@@ -71,28 +69,26 @@ function getInstallCount(installs: Tool["installs"]): number {
   return value;
 }
 
-function isPublishedTool(tool: Tool): boolean {
-  return (
-    tool.status === "active" &&
-    tool.is_visible === true &&
-    tool.review_status === "reviewed"
-  );
-}
-
 export default async function HomePage() {
   let tools: Tool[] = [];
 
   try {
-    const data = await getAllTools();
-    tools = (data ?? []).filter(isPublishedTool);
+    tools = (await getAllTools()) ?? [];
 
-    console.log("[HOME PAGE] published tools loaded:", tools.length);
+    console.log(
+      "[HOME PAGE] published tools loaded:",
+      tools.length
+    );
+
     console.log(
       "[HOME PAGE] latest slugs:",
       tools.slice(0, 10).map((tool) => tool.slug)
     );
   } catch (error) {
-    console.error("[HOME PAGE] getAllTools failed:", error);
+    console.error(
+      "[HOME PAGE] getAllTools failed:",
+      error
+    );
   }
 
   const totalTools = tools.length;
@@ -101,23 +97,27 @@ export default async function HomePage() {
     (tool) => tool.is_free === true
   ).length;
 
-  const categoryCounts = tools.reduce<Record<string, number>>(
-    (acc, tool) => {
-      const category = tool.category?.trim();
+  const categoryCounts = tools.reduce<
+    Record<string, number>
+  >((acc, tool) => {
+    const category = tool.category?.trim();
 
-      if (!category) {
-        return acc;
-      }
-
-      acc[category] = (acc[category] ?? 0) + 1;
+    if (!category) {
       return acc;
-    },
-    {}
-  );
+    }
 
-  const categories = Object.keys(categoryCounts).length;
+    acc[category] = (acc[category] ?? 0) + 1;
 
-  const topCategories = Object.entries(categoryCounts)
+    return acc;
+  }, {});
+
+  const categories = Object.keys(
+    categoryCounts
+  ).length;
+
+  const topCategories = Object.entries(
+    categoryCounts
+  )
     .sort((a, b) => {
       if (b[1] !== a[1]) {
         return b[1] - a[1];
@@ -142,7 +142,13 @@ export default async function HomePage() {
         ? new Date(b.last_updated).getTime()
         : 0;
 
-      return dateB - dateA || a.name?.localeCompare(b.name ?? "") || 0;
+      if (dateB !== dateA) {
+        return dateB - dateA;
+      }
+
+      return (a.name ?? "").localeCompare(
+        b.name ?? ""
+      );
     })
     .slice(0, 6);
 
@@ -161,42 +167,36 @@ export default async function HomePage() {
       description:
         "Tools for repositories, pull requests, issues, code review, and documentation workflows.",
       href: "/best-mcp-tools-for-github-workflows",
-      fallbackHref: "/categories/version-control",
     },
     {
       title: "Database inspection",
       description:
         "Browse schemas, inspect records, and query structured data from your AI workflow.",
       href: "/categories/database",
-      fallbackHref: "/tools",
     },
     {
       title: "Browser automation",
       description:
         "Automate websites, test flows, and extract structured web content.",
       href: "/categories/browser-automation",
-      fallbackHref: "/tools",
     },
     {
       title: "Cloud debugging",
       description:
         "Inspect infrastructure, cloud services, and operational environments with MCP tools.",
       href: "/categories/cloud-and-infrastructure",
-      fallbackHref: "/tools",
     },
     {
       title: "Security scanning",
       description:
         "Find vulnerabilities, scan code, and improve security workflows with AI assistance.",
       href: "/categories/security",
-      fallbackHref: "/tools",
     },
     {
       title: "Team knowledge search",
       description:
         "Search docs, notes, and workspace tools across productivity and collaboration systems.",
       href: "/categories/productivity",
-      fallbackHref: "/tools",
     },
   ];
 
@@ -247,7 +247,10 @@ export default async function HomePage() {
           </div>
 
           <div className="rounded-2xl border border-zinc-800 bg-zinc-950/70 p-4 md:p-6">
-            <ToolsSearchClient tools={tools} compact />
+            <ToolsSearchClient
+              tools={tools}
+              compact
+            />
           </div>
         </div>
       </section>
@@ -259,6 +262,7 @@ export default async function HomePage() {
               <p className="mb-2 text-xs font-mono text-zinc-500">
                 TOTAL TOOLS
               </p>
+
               <p className="text-3xl font-bold text-white">
                 {totalTools}
               </p>
@@ -268,6 +272,7 @@ export default async function HomePage() {
               <p className="mb-2 text-xs font-mono text-zinc-500">
                 FREE TOOLS
               </p>
+
               <p className="text-3xl font-bold text-white">
                 {freeTools}
               </p>
@@ -277,6 +282,7 @@ export default async function HomePage() {
               <p className="mb-2 text-xs font-mono text-zinc-500">
                 CATEGORIES
               </p>
+
               <p className="text-3xl font-bold text-white">
                 {categories}
               </p>
@@ -292,6 +298,7 @@ export default async function HomePage() {
               <p className="text-sm font-mono text-zinc-500">
                 Start here
               </p>
+
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Start from categories
               </h2>
@@ -339,6 +346,7 @@ export default async function HomePage() {
               <p className="text-sm font-mono text-zinc-500">
                 Popular picks
               </p>
+
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Most used MCP tools
               </h2>
@@ -379,24 +387,32 @@ export default async function HomePage() {
                   </div>
 
                   <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
-                    {tool.name ?? "Untitled tool"}
+                    {tool.name || "Untitled tool"}
                   </h3>
 
                   <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">
-                    {tool.short_description ?? "No description available."}
+                    {tool.short_description ||
+                      "No description available."}
                   </p>
                 </div>
 
                 <div className="rounded-xl border border-zinc-800 bg-black/30 p-4">
                   <p className="line-clamp-4 text-sm leading-relaxed text-zinc-300">
-                    {tool.answer_first_summary ?? "No summary available."}
+                    {tool.answer_first_summary ||
+                      "No summary available."}
                   </p>
                 </div>
 
                 <div className="mt-auto flex items-center justify-between gap-3 text-xs font-mono text-zinc-500">
-                  <span>by {tool.developer ?? "Unknown"}</span>
                   <span>
-                    {getInstallCount(tool.installs).toLocaleString()} installs
+                    by {tool.developer || "Unknown"}
+                  </span>
+
+                  <span>
+                    {getInstallCount(
+                      tool.installs
+                    ).toLocaleString()}{" "}
+                    installs
                   </span>
                 </div>
               </Link>
@@ -412,6 +428,7 @@ export default async function HomePage() {
               <p className="text-sm font-mono text-zinc-500">
                 Use cases
               </p>
+
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Best tools by use case
               </h2>
@@ -429,7 +446,7 @@ export default async function HomePage() {
             {useCaseCards.map((item) => (
               <Link
                 key={item.title}
-                href={item.href || item.fallbackHref}
+                href={item.href}
                 className="group rounded-2xl border border-zinc-800 bg-zinc-950/70 p-6 transition-colors hover:border-zinc-700 hover:bg-zinc-900/80"
               >
                 <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
@@ -456,6 +473,7 @@ export default async function HomePage() {
               <p className="text-sm font-mono text-zinc-500">
                 Featured
               </p>
+
               <h2 className="text-2xl font-semibold text-white md:text-3xl">
                 Latest tools
               </h2>
@@ -508,24 +526,32 @@ export default async function HomePage() {
                     </div>
 
                     <h3 className="text-xl font-semibold text-white transition-colors group-hover:text-purple-300">
-                      {tool.name ?? "Untitled tool"}
+                      {tool.name || "Untitled tool"}
                     </h3>
 
                     <p className="line-clamp-3 text-sm leading-relaxed text-zinc-400">
-                      {tool.short_description ?? "No description available."}
+                      {tool.short_description ||
+                        "No description available."}
                     </p>
                   </div>
 
                   <div className="rounded-xl border border-zinc-800 bg-black/30 p-4">
                     <p className="line-clamp-4 text-sm leading-relaxed text-zinc-300">
-                      {tool.answer_first_summary ?? "No summary available."}
+                      {tool.answer_first_summary ||
+                        "No summary available."}
                     </p>
                   </div>
 
                   <div className="mt-auto flex items-center justify-between gap-3 text-xs font-mono text-zinc-500">
-                    <span>by {tool.developer ?? "Unknown"}</span>
                     <span>
-                      {getInstallCount(tool.installs).toLocaleString()} installs
+                      by {tool.developer || "Unknown"}
+                    </span>
+
+                    <span>
+                      {getInstallCount(
+                        tool.installs
+                      ).toLocaleString()}{" "}
+                      installs
                     </span>
                   </div>
                 </Link>
