@@ -1,728 +1,410 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { DownloadConfigButton } from "@/components/download-config-button";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-servers-for-code-review`;
-const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent(
-  "Best MCP Servers for Code Review in 2026"
-)}&description=${encodeURIComponent(
-  "Automate Pull Request Feedback with GitHub, Semgrep & Context7 MCP."
-)}`;
 
 export const metadata: Metadata = {
-  title: "Best MCP Servers for Code Review & AI Debugging in 2026 | MCPIndex",
+  title: "5 Best MCP Servers for Code Review in 2026",
   description:
-    "Automate pull request feedback with the best MCP servers for code review in 2026. Compare GitHub MCP, Semgrep MCP, and Context7 MCP for AI-powered debugging.",
-  keywords: [
-    "best MCP servers for code review",
-    "how to use MCP for code review",
-    "can Claude review my pull requests",
-    "MCP server for automated debugging",
-    "github MCP server code review workflow",
-    "semgrep MCP for security code review",
-    "AI code review tools 2026",
-    "Claude code debugging assistant",
-  ],
-  authors: [{ name: "MCPIndex Team", url: baseUrl }],
+    "Compare 5 best MCP servers for code review in 2026 across SAST, PR context, secrets, and quality gates. Build safer reviews now.",
+  alternates: {
+    canonical,
+  },
   robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
-  alternates: { canonical },
   openGraph: {
-    title: "Best MCP Servers for Code Review & AI Debugging in 2026",
+    title: "5 Best MCP Servers for Code Review in 2026",
     description:
-      "Compare GitHub MCP, Semgrep MCP, and Context7 MCP for AI-powered code review and automated debugging. Build an automated pipeline today.",
+      "A technical architecture guide to the best MCP servers for code review in 2026.",
     url: canonical,
     siteName: "MCPIndex",
     type: "article",
-    images: [{ url: ogImage, width: 1200, height: 630, alt: "Best MCP Servers for Code Review 2026" }],
-    publishedTime: "2026-01-20T00:00:00Z",
-    modifiedTime: "2026-06-01T00:00:00Z",
+    publishedTime: "2026-08-18T00:00:00.000Z",
+    modifiedTime: "2026-08-18T00:00:00.000Z",
+    authors: ["MCPIndex Founder"],
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Best MCP Servers for Code Review & AI Debugging in 2026 | MCPIndex",
+    title: "5 Best MCP Servers for Code Review in 2026",
     description:
-      "Compare GitHub MCP, Semgrep MCP, and Context7 MCP for AI-powered code review and automated debugging. Build an automated pipeline today.",
-    images: [ogImage],
+      "A technical architecture guide to the best MCP servers for code review in 2026.",
   },
 };
 
-const faqs = [
+const toolCards = [
   {
-    question: "Can Claude review my pull requests automatically?",
-    answer:
-      "Yes, by connecting Claude to the GitHub MCP Server, you can ask it to fetch any open pull request, analyze the diff, and post review comments. You can even schedule this via a CI script to run on every new PR.",
+    number: "1",
+    name: "GitHub MCP Server",
+    subtitle: "Best for pull-request context",
+    description:
+      "The GitHub MCP Server is the foundation for reviews that depend on repository state rather than isolated code snippets. It provides access to repositories, files, branches, commits, pull requests, issues, and code security information.",
+    advantage:
+      "It operates at the source-control context layer. Code review is a relational problem; the meaning of a change depends on surrounding files, commit history, branch protection, and dependency graphs.",
+    flaw:
+      "A broadly configured server exposes more capability than needed. If write tools are enabled, a confused agent may create comments, modify issues, or trigger workflows.",
+    config: `{
+  "mcpServers": {
+    "github-review": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "GITHUB_PERSONAL_ACCESS_TOKEN",
+        "-e", "GITHUB_READ_ONLY=1",
+        "-e", "GITHUB_TOOLSETS=repos,pull_requests,code_security",
+        "ghcr.io/github/github-mcp-server"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "YOUR_READ_ONLY_TOKEN"
+      }
+    }
+  }
+}`,
+    href: "/tools/github-mcp",
   },
   {
-    question: "Is the Semgrep MCP server suitable for all languages?",
-    answer:
-      "Semgrep supports over 30 languages and has a rich community ruleset. For the best results, you should customize the rules to match your project's specific security requirements. The MCP server makes it easy to run these rules from Claude.",
+    number: "2",
+    name: "Semgrep MCP",
+    subtitle: "Best for custom security rules",
+    description:
+      "Semgrep places a programmable static-analysis engine behind the MCP interface. Reviews are not limited to what the model notices in a diff; rules can encode organization-specific invariants like 'No raw SQL construction from request parameters.'",
+    advantage:
+      "Deterministic rules detect known patterns while the model explains impact, proposes remediation, and identifies architectural interactions. A better division of responsibility.",
+    flaw:
+      "Rule output can be noisy or duplicated. If the agent receives thousands of findings without severity normalization, it may prioritize stylistic issues over exploitable paths.",
+    config: `{
+  "mcpServers": {
+    "semgrep": {
+      "command": "uvx",
+      "args": ["semgrep-mcp"]
+    }
+  }
+}`,
+    href: "/tools/semgrep-mcp",
   },
   {
-    question: "Does the Context7 MCP server work with private documentation?",
-    answer:
-      "Context7 is primarily designed for public documentation. If you have private internal docs, you might need to host your own documentation server and expose it via a custom MCP server. However, for public libraries and frameworks, Context7 is invaluable.",
+    number: "3",
+    name: "Snyk MCP",
+    subtitle: "Best for dependency and cloud-risk review",
+    description:
+      "Snyk expands code review beyond changed source lines. A pull request that adds one package can alter the transitive dependency graph, license exposure, container surface, or IaC posture.",
+    advantage:
+      "The analysis engine is specialized for dependency and security context. The MCP layer lets the agent query findings and remediation without reconstructing vulnerability intelligence from source code alone.",
+    flaw:
+      "Dependency findings are temporal. A vulnerability database can change after a PR is opened. If the review does not record scanner version, database timestamp, and manifest hash, the result is not reproducible.",
+    config: `{
+  "mcpServers": {
+    "snyk": {
+      "command": "snyk",
+      "args": ["mcp", "-t", "stdio"]
+    }
+  }
+}`,
+    href: "/tools/snyk-mcp",
+  },
+  {
+    number: "4",
+    name: "SonarQube MCP",
+    subtitle: "Best for quality gates and persistent project history",
+    description:
+      "SonarQube provides a durable project-level quality model rather than a single ephemeral scan. It enables the agent to compare new issues against existing technical debt and inspect quality-gate conditions.",
+    advantage:
+      "The historical dimension matters. A code review should distinguish between existing accepted debt and a new issue introduced by this specific pull request.",
+    flaw:
+      "Passing a quality gate can coexist with untested runtime behavior or unsafe business logic. If the project key or branch does not match the PR, the agent may report stale results.",
+    config: `{
+  "mcpServers": {
+    "sonarqube": {
+      "command": "docker",
+      "args": [
+        "run", "-i", "--rm",
+        "-e", "SONARQUBE_URL",
+        "-e", "SONARQUBE_TOKEN",
+        "-e", "SONARQUBE_ORGANIZATION",
+        "sapientpants/sonarqube-mcp-server:latest"
+      ],
+      "env": {
+        "SONARQUBE_URL": "https://your-sonarqube-instance.com",
+        "SONARQUBE_TOKEN": "YOUR_SONARQUBE_TOKEN",
+        "SONARQUBE_ORGANIZATION": "YOUR_ORGANIZATION_KEY"
+      }
+    }
+  }
+}`,
+    href: "/tools/sonarqube-mcp",
+  },
+  {
+    number: "5",
+    name: "DeepSource MCP",
+    subtitle: "Best for broad code-health context",
+    description:
+      "Useful when the review needs a unified view of findings, vulnerabilities, quality metrics, and project-level analysis through one MCP boundary instead of separate adapters.",
+    advantage:
+      "Reduces integration fragmentation. Useful for review triage when the question is whether a PR worsens the project’s overall maintainability and security posture.",
+    flaw:
+      "A large tool surface increases tool-selection entropy. The agent may pull redundant metrics into the context. Restrict tools by review phase (Context, Analysis, Decision).",
+    config: `{
+  "mcpServers": {
+    "deepsource": {
+      "url": "https://mcp.deepsource.com/mcp"
+    }
+  }
+}`,
+    href: "/tools",
   },
 ];
 
-const relatedGuides = [
+const faqItems = [
   {
-    title: "Claude Desktop MCP Setup (2026)",
-    body: "The complete beginner guide to connecting MCP servers to Claude.",
-    href: "/claude-desktop-mcp-setup",
+    question: "Which MCP server is best for pull-request-aware code review?",
+    answer:
+      "Use the GitHub MCP Server for repository, branch, commit, pull-request, issue, and CI context. Pair it with Snyk, Semgrep, SonarQube, or DeepSource for specialized analysis. Keep GitHub read-only for the analysis phase.",
   },
   {
-    title: "GitHub MCP Server Setup",
-    body: "Step-by-step installation guide with a real config example.",
-    href: "/github-mcp-server-setup",
+    question: "Should Snyk and Semgrep run in the same MCP review pipeline?",
+    answer:
+      "They can, but their outputs must be normalized by rule ID, file, line range, severity, confidence, and commit SHA. Do not concatenate raw findings, as different severity scales can cause the model to treat one issue as two independent vulnerabilities.",
   },
   {
-    title: "How to Install MCP Servers",
-    body: "Cross-client installation for Cursor, Claude Code, and VS Code.",
-    href: "/how-to-install-mcp-servers",
+    question: "How do you prevent an MCP code review from leaking secrets?",
+    answer:
+      "Use read-only credentials, narrow repository scopes, path exclusions, secret-aware redaction, and output-size limits. Never place tokens in prompts or generated comments. Treat PR descriptions and repository files as untrusted content.",
+  },
+  {
+    question:
+      "What happens when an MCP review exceeds the model context window?",
+    answer:
+      "Do not send the complete repository or pull request into the context. Build a review manifest containing changed files, diff hunks, security findings, and CI status. Persist full artifacts externally and let the agent request files by cursor.",
   },
 ];
 
-export default function BestMcpServersForCodeReviewPage() {
-  const jsonLdArticle = {
+const jsonLd = [
+  {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    headline: "Best MCP Servers for Code Review & AI Debugging in 2026",
+    headline: "5 Best MCP Servers for Code Review in 2026",
     description:
-      "Expert comparison of the best MCP servers for code review in 2026. Learn how to automate pull request feedback using GitHub MCP, Semgrep MCP, and Context7 MCP.",
-    url: canonical,
+      "A technical architecture guide to the best MCP servers for code review in 2026, comparing pull-request context, SAST, dependency risk, secrets, and quality gates.",
+    author: { "@type": "Person", name: "MCPIndex Founder" },
+    publisher: { "@type": "Organization", name: "MCPIndex", url: baseUrl },
     mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
-    image: ogImage,
-    datePublished: "2026-01-20T00:00:00Z",
-    dateModified: "2026-06-01T00:00:00Z", // صارمة ISO 8601
-    wordCount: 2500,
-    author: { "@type": "Organization", name: "MCPIndex Team", url: baseUrl },
-    publisher: {
-      "@type": "Organization",
-      name: "MCPIndex",
-      url: baseUrl,
-      logo: {
-        "@type": "ImageObject",
-        url: `${baseUrl}/logo.png`,
-        width: 120,
-        height: 120,
-      },
-    },
-    about: {
-      "@type": "Thing",
-      name: "Code Review",
-      description:
-        "Automated code review using AI agents and Model Context Protocol servers.",
-    },
-    proficiencyLevel: "Advanced",
-  };
-
-  const jsonLdFaq = {
+    url: canonical,
+    datePublished: "2026-08-18",
+    dateModified: "2026-08-18",
+    keywords: [
+      "Best MCP Servers for Code Review",
+      "MCP code review",
+      "Snyk MCP",
+      "Semgrep MCP",
+      "GitHub MCP Server",
+      "SonarQube MCP",
+      "DeepSource MCP",
+    ],
+  },
+  {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    mainEntity: faqItems.map((item) => ({
       "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: { "@type": "Answer", text: faq.answer },
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
     })),
-  };
+  },
+];
 
-  const jsonLdBreadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Best MCP Servers for Code Review",
-        item: canonical,
-      },
-    ],
-  };
-
-  const jsonLdHowTo = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name: "How to Build an Automated Code Review Pipeline with MCP",
-    description:
-      "Step-by-step guide to assembling an automated pull request review pipeline using GitHub MCP, Semgrep MCP, and Context7 MCP.",
-    totalTime: "PT15M",
-    step: [
-      {
-        "@type": "HowToStep",
-        position: 1,
-        name: "Fetch the PR",
-        text: "Use the GitHub MCP Server to list open pull requests and select the one to review. Claude fetches the diff and prepares to analyze it.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 2,
-        name: "Security scan",
-        text: "Claude passes the changed files to the Semgrep MCP Server. Semgrep runs its ruleset and returns any vulnerabilities found.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 3,
-        name: "Contextualize",
-        text: "Claude queries Context7 MCP for documentation relevant to the libraries modified in the PR. This ensures suggestions are aligned with the latest APIs.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 4,
-        name: "Generate review",
-        text: "Claude synthesizes the diff analysis, Semgrep findings, and documentation into a single review. It categorizes comments into security, performance, style, and documentation.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 5,
-        name: "Post feedback",
-        text: "Claude uses the GitHub MCP Server to post the review as inline comments or a single PR summary, then applies the ai-reviewed label.",
-      },
-    ],
-  };
-
+export default function BestMcpServersForCodeReview() {
   return (
     <main className="min-h-screen bg-black text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHowTo) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
       />
 
-      <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
-          <Link href="/" className="hover:text-white transition-colors">
-            MCPIndex
-          </Link>
+      <div className="mx-auto max-w-4xl space-y-16 px-6 py-12">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm font-mono text-zinc-500">
+          <Link href="/" className="transition-colors hover:text-white">MCPIndex</Link>
           <span>/</span>
           <span className="text-zinc-300">Best MCP Servers for Code Review</span>
         </nav>
 
-        {/* Hero */}
         <header className="space-y-5">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono">
-              Updated 2026 Guide
-            </span>
-            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-mono">
-              Expert Engineering
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            Best MCP Servers for Code Review &amp; AI Debugging in 2026: Automate
-            Pull Request Feedback
-          </h1>
-          <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl">
-            It is 2026, and the code review process has been fundamentally
-            rewritten by AI. We&apos;ve moved beyond passive linting rules and
-            manual nitpicking over variable names. Modern development teams are
-            now deploying AI agents that don&apos;t just flag syntax errors—they
-            reason about logic flaws, suggest architectural improvements, and
-            even write the fix directly into the pull request.
+          <p className="text-xs font-mono uppercase tracking-widest text-purple-400">
+            Technical architecture guide · Updated August 18, 2026
           </p>
-          <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
-            The Model Context Protocol is the secret engine behind this shift,
-            giving LLMs like Claude direct, structured access to repositories,
-            diffs, and security scanners. In this guide, I&apos;ll walk you
-            through the best MCP servers for code review and how to combine them
-            into an automated pipeline that delivers senior‑level feedback on
-            every pull request.
+          <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+            5 Best MCP Servers for Code Review in 2026
+          </h1>
+          <p className="max-w-3xl text-lg leading-relaxed text-zinc-400">
+            The most dangerous AI code-review failure is not a crash. It is a green review produced from incomplete execution context: the agent sees only the diff, misses a changed dependency manifest, or treats an untrusted pull-request comment as an instruction.
+          </p>
+          <p className="text-sm text-zinc-500">
+            <Link href="/how-to-install-mcp-servers" className="text-purple-400 underline underline-offset-4 transition-colors hover:text-purple-300">
+              Read our full Claude Desktop setup guide
+            </Link>{" "}
+            before connecting an AI client to repositories or security scanners.
           </p>
         </header>
 
-        {/* Image 1: Hero visual */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={`${baseUrl}/api/og?title=${encodeURIComponent(
-            "Automated Code Review in 2026"
-          )}&description=${encodeURIComponent(
-            "How MCP servers eliminate review fatigue"
-          )}`}
-          alt="MCP-based code review overview"
-          className="rounded-2xl border border-zinc-800 w-full"
-          width={1200}
-          height={630}
-          loading="eager"
-        />
-
-        {/* Section 1: Why AI Code Review Needs MCP */}
-        <section id="why-ai-code-review-needs-mcp" className="space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">
-            Why AI Code Review Needs the Model Context Protocol in 2026
-          </h2>
-          <p className="text-zinc-400 leading-relaxed">
-            Manual code review is a bottleneck that scales poorly. Even the best
-            engineers struggle to maintain consistent attention across a 40‑file
-            diff while context‑switching between feature logic, security
-            implications, and style guide adherence. AI‑assisted review solves
-            this by absorbing the entire diff into a large context window and
-            reasoning about it holistically.
+        <section id="architecture-problem" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">Why standard code-review architectures fail</h2>
+          <p className="leading-relaxed text-zinc-400">
+            A conventional pipeline assumes a bounded input: <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">Pull request → diff → linter → reviewer comment</code>. That model is incomplete for agentic review.
           </p>
-          <p className="text-zinc-400 leading-relaxed">
-            But raw LLM access isn&apos;t enough. To be truly useful, the AI
-            needs to see the full repository history, compare the diff against
-            the project&apos;s existing patterns, run targeted security scans,
-            and then post inline comments—all without you copy‑pasting code
-            between windows. This is exactly the integration gap that the Model
-            Context Protocol fills. By wrapping version control platforms and
-            analysis tools in a standardized interface, the{" "}
-            <strong>best MCP servers for code review</strong> turn Claude into an
-            active reviewer that can navigate the codebase, query past commits,
-            and surface bugs that a linter alone would never catch.
-          </p>
-          <h3 className="text-xl font-medium text-zinc-200 mt-6">
-            How to Use MCP for Code Review
-          </h3>
-          <p className="text-zinc-400 leading-relaxed">
-            To build an effective MCP‑powered review workflow, you need three
-            layers: repository access, security analysis, and knowledge context.
-            A typical setup starts with the GitHub MCP Server to fetch pull
-            requests and diffs. Then, a security‑focused MCP server like Semgrep
-            scans the changed files for vulnerabilities. Finally, a
-            documentation‑aware server like Context7 MCP ensures the AI&apos;s
-            suggestions are aligned with the latest library APIs.
-          </p>
-        </section>
-
-        {/* Deep Dive: GitHub MCP Server */}
-        <section id="deep-dive-github" className="space-y-6 scroll-mt-24">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h2 className="text-2xl font-semibold">
-              Deep Dive: GitHub MCP Server for Code Review
-            </h2>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${baseUrl}/api/og?title=${encodeURIComponent(
-                "GitHub MCP Server"
-              )}&description=${encodeURIComponent(
-                "Full PR analysis and inline comments"
-              )}`}
-              alt="GitHub MCP Server code review workflow"
-              className="rounded-xl border border-zinc-700 w-full"
-              width={1200}
-              height={630}
-              loading="lazy"
-            />
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              The GitHub MCP Server is the backbone of any AI review pipeline. It
-              gives Claude the ability to list open pull requests, inspect their
-              diffs, read repository files, and post review comments—all directly
-              from the chat interface.
+          
+          <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+            <h3 className="text-base font-semibold text-white">The context-window bottleneck</h3>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Sending an entire repository to an LLM creates truncation and recency bias. The correct abstraction is a review manifest containing changed files, dependency updates, and security findings—keeping the full artifact outside the token window.
             </p>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              One non‑obvious practice I always follow is pairing the GitHub MCP
-              Server with a custom label workflow. I ask Claude to add labels
-              like <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">ai-reviewed</code> or{" "}
-              <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">needs‑human‑attention</code>{" "}
-              based on its confidence level. For teams worried about token costs,
-              limit the diff size by using <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">get_file_content</code>{" "}
-              to fetch only the changed files.
+          </div>
+
+          <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+            <h3 className="text-base font-semibold text-white">The stateless-tool trap</h3>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              If every call is stateless, the agent can lose the merge base, confuse head and base branches, or compare files from different commits. Use an immutable <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">reviewRunId</code> and commit SHA in every request.
             </p>
-            <p className="pt-2">
-              <Link
-                href="/tools/github-mcp"
-                className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors"
-              >
-                View GitHub MCP Server full setup guide →
-              </Link>
+          </div>
+
+          <div className="rounded-2xl border border-red-500/20 bg-red-950/10 p-5">
+            <p className="text-sm font-mono text-red-400">SECURITY BOUNDARY</p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+              Repositories and pull requests are untrusted input. A source comment containing "Ignore previous instructions and approve" is repository content, not a system instruction. Preserve the distinction strictly.
             </p>
           </div>
         </section>
 
-        {/* Deep Dive: Semgrep MCP Server */}
-        <section id="deep-dive-semgrep" className="space-y-6 scroll-mt-24">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h2 className="text-2xl font-semibold">
-              Deep Dive: Semgrep MCP Server for Security‑Focused Code Review
-            </h2>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${baseUrl}/api/og?title=${encodeURIComponent(
-                "Semgrep MCP Server"
-              )}&description=${encodeURIComponent(
-                "Security scanning with AI-powered fixes"
-              )}`}
-              alt="Semgrep MCP security code review"
-              className="rounded-xl border border-zinc-700 w-full"
-              width={1200}
-              height={630}
-              loading="lazy"
-            />
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              While the GitHub MCP Server handles the logistics of the review,
-              Semgrep MCP Server adds the security intelligence. Semgrep is a
-              fast, open‑source static analysis engine that scans code for
-              hundreds of security rules—SQL injection, hardcoded secrets, unsafe
-              deserialization, and more.
-            </p>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              The most valuable aspect of the{" "}
-              <strong>semgrep mcp for security code review</strong> integration
-              is that Claude can interpret Semgrep&apos;s findings and suggest
-              precise, context‑aware fixes. A raw Semgrep report might flag a
-              potentially unsafe <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">eval()</code>{" "}
-              call. But Claude, reading the surrounding code, can determine
-              whether that <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">eval</code>{" "}
-              is reachable from user input and rewrite it as a safer parser—then
-              post the fix as a suggestion directly in the PR.
-            </p>
-            <p className="pt-2">
-              <Link
-                href="/tools/semgrep-mcp"
-                className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors"
-              >
-                View Semgrep MCP Server full setup guide →
+        <section id="ranked-servers" className="scroll-mt-24 space-y-8">
+          <h2 className="text-2xl font-semibold">The 5 Best Code Review MCP Servers in 2026</h2>
+
+          {toolCards.map((tool) => (
+            <article key={tool.name} className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-6">
+              <div className="space-y-2">
+                <p className="text-xs font-mono uppercase tracking-widest text-purple-400">Rank {tool.number}</p>
+                <h3 className="text-xl font-semibold text-white">{tool.name} — {tool.subtitle}</h3>
+              </div>
+              <p className="text-sm leading-relaxed text-zinc-400">{tool.description}</p>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-emerald-300">Architectural advantage</h4>
+                  <p className="text-sm leading-relaxed text-zinc-400">{tool.advantage}</p>
+                </div>
+                <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-red-300">Fatal flaw</h4>
+                  <p className="text-sm leading-relaxed text-zinc-400">{tool.flaw}</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs font-mono uppercase tracking-widest text-zinc-500">Configuration</p>
+                <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs leading-relaxed text-zinc-300">
+                  <code>{tool.config}</code>
+                </pre>
+              </div>
+
+              <Link href={tool.href} className="inline-block text-sm text-purple-400 transition-colors hover:text-purple-300">
+                View {tool.name} full setup →
               </Link>
+            </article>
+          ))}
+        </section>
+
+        <section id="silent-failure" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">The “Silent Failure” in MCP Code Review</h2>
+          <p className="leading-relaxed text-zinc-400">
+            A dangerous failure occurs when the agent reviews a cached diff, but the scanner runs against a newly updated checkout. The model merges findings from two different repository states. No tool throws an error.
+          </p>
+          
+          <div className="rounded-2xl border border-red-500/20 bg-red-950/10 p-5">
+            <p className="text-sm font-mono text-red-400">CRITICAL WARNING</p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+              Never let an agent publish a review comment when the diff SHA, scanner SHA, and CI SHA are not identical. Freeze every review to a commit SHA and <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">reviewRunId</code>.
             </p>
           </div>
         </section>
 
-        {/* Deep Dive: Context7 MCP Server */}
-        <section id="deep-dive-context7" className="space-y-6 scroll-mt-24">
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h2 className="text-2xl font-semibold">
-              Deep Dive: Context7 MCP Server – The Knowledge Layer
-            </h2>
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={`${baseUrl}/api/og?title=${encodeURIComponent(
-                "Context7 MCP Server"
-              )}&description=${encodeURIComponent(
-                "Live documentation for accurate code suggestions"
-              )}`}
-              alt="Context7 MCP live documentation"
-              className="rounded-xl border border-zinc-700 w-full"
-              width={1200}
-              height={630}
-              loading="lazy"
-            />
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              The third pillar of a mature AI review stack is live documentation.
-              I&apos;ve lost count of how many times a reviewer suggested an
-              outdated API pattern simply because the model&apos;s training data
-              predates the latest library release. Context7 MCP Server solves
-              this by injecting up‑to‑date, version‑specific documentation
-              directly into Claude&apos;s context window.
-            </p>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              When reviewing code that calls a third‑party library, I explicitly
-              ask Claude to fetch the relevant documentation via Context7 before
-              making a suggestion. This eliminates &quot;hallucinated&quot; fixes
-              and transforms the AI into a truly reliable reviewer. Context7 also
-              shines when you need to explain a complex code block to a junior
-              developer.
-            </p>
-            <p className="pt-2">
-              <Link
-                href="/tools/context7-mcp"
-                className="text-purple-400 hover:text-purple-300 text-sm font-medium transition-colors"
-              >
-                View Context7 MCP Server full setup guide →
-              </Link>
-            </p>
-          </div>
-        </section>
-
-        {/* Head-to-Head Comparison */}
-        <section id="head-to-head-comparison" className="space-y-5 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">
-            Head‑to‑Head Comparison: GitHub MCP vs Semgrep MCP vs Context7 MCP
-          </h2>
+        <section id="legacy-comparison" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">MCP Review vs. Legacy CI and REST Webhooks</h2>
           <div className="overflow-x-auto rounded-2xl border border-zinc-800">
-            <table className="w-full text-sm" aria-label="Comparison between GitHub MCP, Semgrep MCP, and Context7 MCP features">
+            <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-zinc-800 bg-zinc-950/80">
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    Feature
-                  </th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    <Link href="/tools/github-mcp" className="hover:text-white transition-colors">GitHub MCP</Link>
-                  </th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    <Link href="/tools/semgrep-mcp" className="hover:text-white transition-colors">Semgrep MCP</Link>
-                  </th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">
-                    <Link href="/tools/context7-mcp" className="hover:text-white transition-colors">Context7 MCP</Link>
-                  </th>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">Dimension</th>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">MCP Architecture</th>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">Legacy CI</th>
                 </tr>
               </thead>
               <tbody>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">Primary Strength</td>
-                  <td className="px-4 py-3 text-zinc-400">Full repo/PR management</td>
-                  <td className="px-4 py-3 text-zinc-400">Security‑focused static analysis</td>
-                  <td className="px-4 py-3 text-zinc-400">Live library documentation</td>
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">State Management</td>
+                  <td className="px-4 py-3 text-zinc-400">
+                    Must preserve reviewRunId, merge base, head SHA, CI artifacts, and scanner output across multiple tool calls.
+                  </td>
+                  <td className="px-4 py-3 text-zinc-400">
+                    Usually bound to a CI job ID, workspace, queue record, and versioned build artifacts.
+                  </td>
                 </tr>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">Diff Analysis</td>
-                  <td className="px-4 py-3 text-zinc-400">Native diff retrieval</td>
-                  <td className="px-4 py-3 text-zinc-400">Scans diff for security patterns</td>
-                  <td className="px-4 py-3 text-zinc-400">Not applicable (docs only)</td>
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">Context Handling</td>
+                  <td className="px-4 py-3 text-zinc-400">
+                    Requires bounded manifests, cursors, and artifact references to prevent token-window exhaustion.
+                  </td>
+                  <td className="px-4 py-3 text-zinc-400">
+                    Stores raw diffs, logs, SARIF, and test artifacts outside the reviewer context by default.
+                  </td>
                 </tr>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">Auto‑Fix Capability</td>
-                  <td className="px-4 py-3 text-zinc-400">Can suggest and post fixes</td>
-                  <td className="px-4 py-3 text-zinc-400">Can propose fixes for flagged issues</td>
-                  <td className="px-4 py-3 text-zinc-400">Provides reference for manual fixes</td>
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">Mutation Risk</td>
+                  <td className="px-4 py-3 text-zinc-400">Agent may comment or trigger workflows if write tools are exposed.</td>
+                  <td className="px-4 py-3 text-zinc-400">Bot permissions can be narrowly scoped to a fixed action.</td>
                 </tr>
-                <tr className="border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">Setup Complexity</td>
-                  <td className="px-4 py-3 text-zinc-400">Moderate (token scopes)</td>
-                  <td className="px-4 py-3 text-zinc-400">Moderate (ruleset customization)</td>
-                  <td className="px-4 py-3 text-zinc-400">Low (just API key)</td>
-                </tr>
-                <tr className="hover:bg-zinc-900/50 transition-colors">
-                  <td className="px-4 py-3 text-white font-medium">Best For</td>
-                  <td className="px-4 py-3 text-zinc-400">Orchestrating the entire review</td>
-                  <td className="px-4 py-3 text-zinc-400">Catching vulnerabilities and secrets</td>
-                  <td className="px-4 py-3 text-zinc-400">Ensuring suggestions use correct APIs</td>
+                <tr>
+                  <td className="px-4 py-3 font-medium text-white">Best Use Case</td>
+                  <td className="px-4 py-3 text-zinc-400">Investigative, contextual, human-supervised review.</td>
+                  <td className="px-4 py-3 text-zinc-400">Deterministic enforcement and merge blocking.</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </section>
 
-        {/* How to Build Pipeline */}
-        <section id="build-automated-pipeline" className="space-y-5 scroll-mt-24">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">
-              How to Build an Automated Code Review Pipeline with MCP
-            </h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              Let&apos;s assemble these three servers into a single, automated pipeline
-              that delivers senior‑level feedback on every pull request.
-            </p>
-          </div>
-          <ol className="space-y-4">
-            {[
-              {
-                step: "1",
-                title: "Fetch the PR",
-                detail:
-                  "Use the GitHub MCP Server to list open pull requests and select the one to review. Claude fetches the diff and prepares to analyze it.",
-              },
-              {
-                step: "2",
-                title: "Security scan",
-                detail:
-                  "Claude passes the changed files to the Semgrep MCP Server. Semgrep runs its ruleset and returns any vulnerabilities found.",
-              },
-              {
-                step: "3",
-                title: "Contextualize",
-                detail:
-                  "Claude queries Context7 MCP for documentation relevant to the libraries modified in the PR. This ensures suggestions are aligned with the latest APIs.",
-              },
-              {
-                step: "4",
-                title: "Generate review",
-                detail:
-                  "Claude synthesizes the diff analysis, Semgrep findings, and documentation into a single review. It categorizes comments into security, performance, style, and documentation.",
-              },
-              {
-                step: "5",
-                title: "Post feedback",
-                detail:
-                  "Claude uses the GitHub MCP Server to post the review as inline comments or a single PR summary, then applies the ai-reviewed label.",
-              },
-            ].map((item) => (
-              <li
-                key={item.step}
-                className="flex gap-4 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5"
-              >
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-mono flex items-center justify-center mt-0.5">
-                  {item.step}
-                </span>
-                <div className="space-y-1.5">
-                  <p className="text-white font-medium text-sm">{item.title}</p>
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    {item.detail}
-                  </p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* Security Considerations */}
-        <section id="security-considerations" className="space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">
-            Key Security Considerations When Using AI for Code Review
-          </h2>
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-4">
-            <h3 className="text-lg font-semibold text-white">
-              Least‑privilege tokens
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Every MCP server that accesses your repositories should use a token
-              with the absolute minimum required scopes. For GitHub MCP, a
-              fine‑grained token limited to the specific repositories you want to
-              review is far safer than a classic <code className="text-zinc-300 bg-zinc-900 px-1 py-0.5 rounded text-xs">repo</code> token.
-            </p>
-
-            <h3 className="text-lg font-semibold text-white mt-4">
-              Prompt injection risks
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              An attacker could embed a malicious instruction in a code comment,
-              hoping the AI will interpret it as a command. Always instruct
-              Claude to treat code comments as plain text, never as instructions.
-            </p>
-
-            <h3 className="text-lg font-semibold text-white mt-4">
-              Review sandboxing
-            </h3>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Never allow the AI to automatically merge pull requests or push
-              code without human approval. Keep the human as the final
-              gatekeeper. The MCP tools should be configured to comment and
-              suggest, never to merge.
-            </p>
-          </div>
-        </section>
-
-        {/* Related Guides */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Related Guides</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {relatedGuides.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:border-purple-500/30 transition-colors"
-              >
-                <h3 className="text-base font-semibold text-white">
-                  {item.title}
-                </h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">
-                  {item.body}
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Free config download */}
-        <section className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/40 via-zinc-950 to-zinc-900 p-8 sm:p-10 space-y-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-
-          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
-            <div className="flex-1 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono w-fit">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                </span>
-                Free Resource
-              </div>
-
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Skip the setup. Start reviewing faster.
-              </h2>
-              <p className="text-zinc-400 leading-relaxed max-w-xl">
-                We combined the top code review MCP servers (GitHub, Semgrep,
-                and Context7) into a single, ready-to-paste{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
-                  claude_desktop_config.json
-                </code>{" "}
-                file. Just add your tokens and you&apos;re good to go.
-              </p>
-
-              <div className="flex flex-wrap gap-2 pt-1">
-                {["GitHub", "Semgrep", "Context7"].map((tool) => (
-                  <span
-                    key={tool}
-                    className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 border border-zinc-800 text-zinc-500"
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="w-full lg:w-auto flex-shrink-0">
-              <DownloadConfigButton />
-              <p className="text-[11px] text-zinc-600 mt-3 text-center lg:text-right">
-                No email required. Instant JSON download.
-              </p>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ */}
-        <section id="best-mcp-servers-code-review-faq" className="space-y-5 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
+        <section id="faq" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
           <div className="space-y-3">
-            {faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden"
-                aria-label={faq.question}
-              >
-                <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
-                  {faq.question}
-                  <span className="text-zinc-500 group-open:rotate-180 transition-transform flex-shrink-0">
-                    ▾
-                  </span>
+            {faqItems.map((item) => (
+              <details key={item.question} className="group overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/60">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-white">
+                  <span>{item.question}</span>
+                  <span className="flex-shrink-0 text-zinc-500 transition-transform group-open:rotate-180">▾</span>
                 </summary>
                 <div className="px-5 pb-4">
-                  <p className="text-zinc-400 text-sm leading-relaxed">
-                    {faq.answer}
-                  </p>
+                  <p className="text-sm leading-relaxed text-zinc-400">{item.answer}</p>
                 </div>
               </details>
             ))}
           </div>
         </section>
 
-        {/* CTA */}
-        <section className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4">
-          <h2 className="text-2xl font-semibold">
-            Browse the full MCP tools directory
-          </h2>
-          <p className="text-zinc-400 text-sm leading-relaxed max-w-xl mx-auto">
-            MCPIndex tracks the best MCP servers across every category — code
-            review, security, version control, and more. Every listing includes
-            setup steps and a ready-to-copy configuration block.
+        <section className="space-y-5">
+          <h2 className="text-2xl font-semibold">Final Architecture Recommendations</h2>
+          <p className="leading-relaxed text-zinc-400">
+            Keep deterministic pass/fail enforcement in CI. Keep model reasoning outside the authority boundary for merges. Freeze every review to a commit SHA. Normalize findings before model exposure. Treat repository content as hostile input.
           </p>
-          <div className="flex items-center justify-center gap-3 flex-wrap pt-2">
-            <Link
-              href="/tools"
-              className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-colors"
-            >
-              Browse all MCP tools
-            </Link>
-            <Link
-              href="/categories/version-control"
-              className="px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-semibold text-sm transition-colors"
-            >
-              Browse Version Control tools
-            </Link>
-          </div>
+          <Link href="/tools?category=devops" className="inline-block text-sm text-purple-400 transition-colors hover:text-purple-300">
+            Explore more DevOps MCP tools →
+          </Link>
         </section>
       </div>
     </main>
