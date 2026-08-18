@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { DownloadScrapingMcpBundle } from "@/components/download-scraping-mcp-bundle";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-servers-for-web-scraping`;
@@ -11,6 +12,17 @@ export const metadata: Metadata = {
   alternates: {
     canonical,
   },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   openGraph: {
     title: "5 Best MCP Servers for Web Scraping in 2026",
     description:
@@ -21,6 +33,7 @@ export const metadata: Metadata = {
     publishedTime: "2026-08-18T00:00:00.000Z",
     modifiedTime: "2026-08-18T00:00:00.000Z",
     authors: ["MCPIndex Founder"],
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
@@ -236,10 +249,7 @@ export default function BestMcpServersForWebScraping() {
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify(jsonLd).replace(
-            /</g,
-            "\\u003c"
-          ),
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
         }}
       />
 
@@ -422,6 +432,44 @@ export default function BestMcpServersForWebScraping() {
               </Link>
             </article>
           ))}
+        </section>
+
+        {/* CRO: Production-Ready Configuration Bundle */}
+        <section className="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/40 via-zinc-950 to-zinc-900 p-8 sm:p-10">
+          <div className="absolute right-0 top-0 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-600/10 blur-3xl" />
+
+          <div className="relative z-10 space-y-6">
+            <div className="space-y-3">
+              <p className="text-xs font-mono uppercase tracking-widest text-purple-400">
+                MCP configuration bundle
+              </p>
+
+              <h2 className="text-2xl font-bold tracking-tight text-white">
+                Production-Ready Configuration Bundle
+              </h2>
+
+              <p className="max-w-2xl leading-relaxed text-zinc-400">
+                Download the exact configurations from this guide in one
+                <code className="mx-1 rounded bg-zinc-900 px-1.5 py-0.5 text-xs text-zinc-300">
+                  claude_desktop_config.json
+                </code>
+                file. Replace the placeholders locally before connecting the servers.
+              </p>
+            </div>
+
+            <DownloadScrapingMcpBundle />
+
+            <div className="space-y-1 text-[11px] leading-relaxed text-zinc-600">
+              <p>
+                Includes Firecrawl, ZenRows, Scrapfly, Playwright, and Chrome DevTools.
+              </p>
+
+              <p>
+                The bundle contains placeholders only. Never commit API keys to source
+                control.
+              </p>
+            </div>
+          </div>
         </section>
 
         <section
