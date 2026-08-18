@@ -1,981 +1,429 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { DownloadConfigButton } from "@/components/download-config-button";
+import { DownloadBestClaudeMcpBundle } from "@/components/download-best-claude-mcp-bundle";
 
 const baseUrl = "https://www.mcpindex.dev";
 const canonical = `${baseUrl}/best-mcp-servers-for-claude`;
-const ogImage = `${baseUrl}/api/og?title=${encodeURIComponent("Best MCP Servers for Claude in 2026")}&description=${encodeURIComponent("Top 10 MCP servers ranked by use case with setup examples.")}`;
 
 export const metadata: Metadata = {
-  title: "Best MCP Servers for Claude (2026 Top 10) | MCPIndex",
+  title: "5 Best MCP Servers for Claude in 2026",
   description:
-    "Top 10 best MCP servers for Claude Desktop, Claude Code, and Cursor in 2026. Ranked by use case with claude_desktop_config.json setup examples.",
-  keywords: [
-    "best MCP servers for Claude",
-    "Claude Desktop MCP servers",
-    "Claude Code MCP tools",
-    "Cursor MCP servers",
-    "best MCP servers 2026",
-    "Claude Desktop config",
-    "claude_desktop_config.json examples",
-    "Model Context Protocol tools",
-    "free MCP servers Claude",
-    "MCP server ranking",
-    "GitHub MCP Server Claude",
-    "Context7 MCP Claude",
-  ],
-  authors: [{ name: "MCPIndex Team", url: baseUrl }],
+    "Compare the 5 best MCP servers for Claude in 2026 by context cost, security, and execution. Copy tested configs and build a safer stack.",
+  alternates: { canonical },
   robots: {
     index: true,
     follow: true,
     googleBot: {
       index: true,
       follow: true,
-      "max-video-preview": -1,
       "max-image-preview": "large",
       "max-snippet": -1,
+      "max-video-preview": -1,
     },
   },
-  alternates: { canonical },
   openGraph: {
-    title: "Best MCP Servers for Claude (2026 Top 10)",
-    description:
-      "Top 10 best MCP servers for Claude Desktop, Claude Code, and Cursor in 2026. Ranked by use case with claude_desktop_config.json examples.",
+    title: "5 Best MCP Servers for Claude in 2026",
+    description: "Compare the 5 best MCP servers for Claude in 2026 by context cost, security, and execution.",
     url: canonical,
     siteName: "MCPIndex",
     type: "article",
-    images: [
-      {
-        url: ogImage,
-        width: 1200,
-        height: 630,
-        alt: "Best MCP Servers for Claude in 2026",
-      },
-    ],
-    publishedTime: "2025-01-15T00:00:00Z",
-    modifiedTime: "2026-06-10T00:00:00Z", // تاريخ ثابت
+    publishedTime: "2026-08-18T00:00:00.000Z",
+    modifiedTime: "2026-08-18T00:00:00.000Z",
+    authors: ["MCPIndex Founder"],
+    locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Best MCP Servers for Claude (2026 Top 10) | MCPIndex",
-    description:
-      "Top 10 best MCP servers for Claude Desktop, Claude Code, and Cursor in 2026 with claude_desktop_config.json examples.",
-    images: [ogImage],
+    title: "5 Best MCP Servers for Claude in 2026",
+    description: "Compare the 5 best MCP servers for Claude in 2026 by context cost, security, and execution.",
   },
 };
 
-const picks = [
+const toolCards = [
   {
-    rank: 1,
+    number: "1",
     name: "GitHub MCP Server",
-    slug: "github-mcp",
-    category: "Version Control",
-    bestFor: "Developers",
-    oneliner: "Manage repos, PRs, issues, and code search from inside Claude via the Model Context Protocol.",
-    free: true,
+    subtitle: "Best for source-control context",
+    description:
+      "Claude without repository context is forced to infer architecture from fragments. GitHub MCP provides access to repositories, branches, commits, pull requests, issues, and related source-control data.",
+    advantage:
+      "Anchors reasoning to repository state. Claude can inspect a pull request against its base branch, locate the relevant commit, read adjacent files, and correlate code changes with issues or CI results.",
+    flaw:
+      "A broad configuration exposes dangerous write tools. If enabled, Claude may create issues, publish comments, or trigger workflows. A second failure occurs when the agent reads a stale branch.",
+    config: `{
+  "mcpServers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/readonly"
+    }
+  }
+}`,
+    href: "/tools/github-mcp",
   },
   {
-    rank: 2,
+    number: "2",
+    name: "Filesystem MCP",
+    subtitle: "Best for bounded local workspace access",
+    description:
+      "Filesystem MCP gives Claude controlled access to specific directories. The security boundary is explicit: Claude can operate only within directories supplied to the server.",
+    advantage:
+      "Lets Claude trace imports, inspect project structure, edit related files, and maintain architectural consistency. The correct scope is a project directory, not a user profile.",
+    flaw:
+      "An overly broad directory exposes secrets, credentials, private keys, and unrelated projects. A write-enabled server turns prompt injection into a local mutation risk.",
+    config: `{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem",
+        "/absolute/path/to/your/project"
+      ]
+    }
+  }
+}`,
+    href: "/tools/filesystem-mcp",
+  },
+  {
+    number: "3",
+    name: "Playwright MCP",
+    subtitle: "Best for browser and UI verification",
+    description:
+      "Playwright MCP gives Claude a browser execution layer for navigation, DOM inspection, accessibility snapshots, and UI verification to close the implementation loop.",
+    advantage:
+      "More reliable than asking Claude to infer UI behavior from JSX or CSS. Accessibility snapshots are more token-efficient than returning raw HTML or full-page screenshots.",
+    flaw:
+      "Browser state is mutable. Under an ambiguous interface, Claude may enter an action loop (clicking overlays repeatedly). Cap action counts and isolate storage state.",
+    config: `{
+  "mcpServers": {
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    }
+  }
+}`,
+    href: "/tools/playwright-mcp",
+  },
+  {
+    number: "4",
     name: "Context7 MCP",
-    slug: "context7-mcp",
-    category: "Developer Tools",
-    bestFor: "Developers",
-    oneliner: "Live, version-specific library docs injected straight into Claude context.",
-    free: true,
+    subtitle: "Best for current library documentation",
+    description:
+      "Context7 provides version-aware library documentation and code examples through a small MCP tool surface, reducing stale API assumptions and outdated examples.",
+    advantage:
+      "A narrow documentation abstraction rather than a general web browser. A focused tool surface reduces selection entropy when working with rapidly changing frameworks.",
+    flaw:
+      "Documentation retrieval can be wrong if the library identity is resolved incorrectly, the version doesn't match the installed package, or the request is too broad and consumes the context window.",
+    config: `{
+  "mcpServers": {
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    }
+  }
+}`,
+    href: "/tools/context7-mcp",
   },
   {
-    rank: 3,
-    name: "Supabase MCP",
-    slug: "supabase-mcp",
-    category: "Database",
-    bestFor: "Backend / Full-stack",
-    oneliner: "Query Postgres, manage tables, and deploy Edge Functions via Claude.",
-    free: true,
-  },
-  {
-    rank: 4,
-    name: "Figma Context MCP",
-    slug: "figma-mcp",
-    category: "Design",
-    bestFor: "Frontend Developers",
-    oneliner: "Read Figma file data and produce pixel-perfect design-to-code output.",
-    free: true,
-  },
-  {
-    rank: 5,
-    name: "Desktop Commander MCP",
-    slug: "desktop-commander-mcp",
-    category: "Developer Tools",
-    bestFor: "Local Automation",
-    oneliner: "Run shell commands, edit files, and manage processes on your machine.",
-    free: true,
-  },
-  {
-    rank: 6,
-    name: "Grafana MCP",
-    slug: "grafana-mcp",
-    category: "Monitoring",
-    bestFor: "DevOps / SRE",
-    oneliner: "Search dashboards, query Prometheus and Loki, investigate incidents.",
-    free: true,
-  },
-  {
-    rank: 7,
-    name: "Atlassian MCP",
-    slug: "atlassian-mcp",
-    category: "Project Management",
-    bestFor: "Teams using Jira/Confluence",
-    oneliner: "Create Jira issues, search Confluence, and manage sprints with Claude.",
-    free: true,
-  },
-  {
-    rank: 8,
-    name: "Semgrep MCP",
-    slug: "semgrep-mcp",
-    category: "Security",
-    bestFor: "Security-focused developers",
-    oneliner: "Scan code for vulnerabilities across 30+ languages with Claude.",
-    free: true,
-  },
-  {
-    rank: 9,
-    name: "Google Workspace MCP",
-    slug: "google-workspace-mcp",
-    category: "Productivity",
-    bestFor: "Productivity workflows",
-    oneliner: "Control Gmail, Calendar, Drive, and Docs from a single MCP server.",
-    free: true,
-  },
-  {
-    rank: 10,
-    name: "AWS MCP Server",
-    slug: "aws-mcp",
-    category: "Cloud & Infrastructure",
-    bestFor: "Cloud engineers",
-    oneliner: "Interact with S3, EC2, Lambda, DynamoDB, and 20+ AWS services via Claude.",
-    free: true,
+    number: "5",
+    name: "PostgreSQL MCP",
+    subtitle: "Best for schema-aware data reasoning",
+    description:
+      "PostgreSQL MCP exposes database schema and query capabilities to Claude, helping it understand tables, columns, relationships, and constraints instead of guessing.",
+    advantage:
+      "Claude can inspect the schema before generating SQL, which reduces trial-and-error queries and prevents runtime errors caused by incorrect joins.",
+    flaw:
+      "A writable database connection gives an LLM a destructive capability. Use a dedicated read-only role, a staging database, and statement timeouts. Never connect Claude directly to production.",
+    config: `{
+  "mcpServers": {
+    "postgres": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "YOUR_VERIFIED_POSTGRES_MCP_PACKAGE",
+        "postgresql://readonly_user:YOUR_PASSWORD@localhost:5432/your_db?sslmode=require"
+      ]
+    }
+  }
+}`,
+    href: "/tools/postgres-mcp",
   },
 ];
 
-const faqs = [
+const faqItems = [
   {
-    question: "What is an MCP server for Claude?",
-    answer:
-      "An MCP (Model Context Protocol) server is a standardized plugin that gives Claude Desktop, Claude Code, or Cursor access to external tools and data sources through a claude_desktop_config.json file. Instead of copying content into a chat window, Claude connects directly to services like GitHub or Supabase via the Model Context Protocol.",
+    question: "How many MCP servers should I run with Claude Desktop at once?",
+    answer: "Start with three to five active servers. A coherent baseline is Filesystem for a scoped project directory, GitHub read-only for repository context, and Context7 for current documentation. Add Playwright only when browser verification is part of the workflow.",
   },
   {
-    question: "Which MCP server should I install first?",
-    answer:
-      "For most developers, the GitHub MCP Server is the best starting point. It unlocks repository management, pull requests, issues, and code search directly inside Claude with a simple Personal Access Token and has the highest installation rate among Claude Code users.",
+    question: "Why does Claude hallucinate code even when connected to GitHub?",
+    answer: "Claude may be reading the wrong branch, an outdated commit, a truncated file, or a repository path that differs from the local workspace. Before asking for a fix, require repository owner, branch, commit SHA, and exact file path.",
   },
   {
-    question: "Do MCP servers work with Claude Desktop and Claude Code?",
-    answer:
-      "Yes. All MCP servers listed here are compatible with Claude Desktop, Claude Code, Cursor, and other MCP-compatible clients. The Model Context Protocol configuration is done once in claude_desktop_config.json and shared across clients.",
+    question: "Is it safe to give Claude write access to my filesystem?",
+    answer: "Only within a dedicated, non-sensitive project directory. Never expose ~/.ssh, ~/.aws, .env files, production credentials, or home-directory roots. Use separate read-only and write-enabled configurations.",
   },
   {
-    question: "Are all MCP servers free?",
-    answer:
-      "All servers in this list are free and open source. Some require free API tokens (like GitHub PAT or Supabase access token) but the MCP servers themselves have no licensing cost.",
-  },
-  {
-    question: "How many MCP servers can I run at once?",
-    answer:
-      "There is no hard limit on the number of MCP servers you can configure in claude_desktop_config.json. In practice, most developers run 3 to 6 MCP servers simultaneously. Adding too many can create noise in Claude's context window, so it is best to install only what you actively use.",
-  },
-  {
-    question: "Is it safe to give Claude access to my machine via MCP?",
-    answer:
-      "MCP servers that access your local system, such as Desktop Commander, should be used with care. Review all commands before allowing execution and consider running Claude in a sandboxed environment for sensitive workloads. MCP servers with read-only access, like Context7, carry minimal risk.",
+    question: "How do I handle pagination when a Claude MCP result exceeds the context window?",
+    answer: "Require server-side pagination and completeness metadata (returned, total, truncated, nextCursor). Persist the full result outside the model context. Claude should request the next page, not repeat the unbounded query.",
   },
 ];
 
-const relatedGuides = [
+const jsonLd = [
   {
-    title: "Claude Desktop MCP Setup",
-    body: "The definitive guide for claude_desktop_config.json configuration.",
-    href: "/claude-desktop-mcp-setup",
-  },
-  {
-    title: "GitHub MCP Server Setup",
-    body: "Step-by-step installation guide with a real config example.",
-    href: "/github-mcp-server-setup",
-  },
-  {
-    title: "How to Install MCP Servers",
-    body: "Cross-client installation for Cursor, Claude Code, and VS Code.",
-    href: "/how-to-install-mcp-servers",
-  },
-];
-
-export default function BestMcpServersForClaudePage() {
-  const jsonLdArticle = {
     "@context": "https://schema.org",
     "@type": "TechArticle",
-    headline: "Best MCP Servers for Claude in 2026",
-    description:
-      "Top 10 best MCP servers for Claude Desktop, Claude Code, and Cursor in 2026, ranked by use case with claude_desktop_config.json examples.",
+    headline: "5 Best MCP Servers for Claude in 2026",
+    description: "A technical architecture guide to the five best MCP servers for Claude in 2026.",
+    author: { "@type": "Person", name: "MCPIndex Founder" },
+    publisher: { "@type": "Organization", name: "MCPIndex", url: baseUrl },
+    mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
     url: canonical,
-    mainEntityOfPage: {
-      "@type": "WebPage",
-      "@id": canonical,
-    },
-    image: ogImage,
-    datePublished: "2025-01-15T00:00:00Z",
-    dateModified: "2026-06-10", // تاريخ ثابت
-    wordCount: 2800,
-    author: {
-      "@type": "Organization",
-      name: "MCPIndex Team",
-      url: baseUrl,
-    },
-    publisher: {
-      "@type": "Organization",
-      name: "MCPIndex",
-      url: baseUrl,
-      logo: {
-        "@type": "ImageObject",
-        url: `${baseUrl}/logo.png`,
-        width: 120,
-        height: 120,
-      },
-    },
-    about: {
-      "@type": "Thing",
-      name: "Model Context Protocol",
-      description: "An open standard for connecting AI applications to external tools and data sources through MCP servers.",
-    },
-    proficiencyLevel: "Beginner to Intermediate",
-  };
-
-  const jsonLdFaq = {
+    datePublished: "2026-08-18",
+    dateModified: "2026-08-18",
+    keywords: [
+      "Best MCP Servers for Claude",
+      "Claude Desktop MCP",
+      "Claude Code MCP",
+      "GitHub MCP Server",
+      "Filesystem MCP",
+      "Playwright MCP",
+      "Context7 MCP",
+      "Postgres MCP",
+    ],
+  },
+  {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    mainEntity: faqs.map((faq) => ({
+    mainEntity: faqItems.map((item) => ({
       "@type": "Question",
-      name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
+      name: item.question,
+      acceptedAnswer: { "@type": "Answer", text: item.answer },
     })),
-  };
+  },
+];
 
-  const jsonLdBreadcrumb = {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    itemListElement: [
-      { "@type": "ListItem", position: 1, name: "Home", item: baseUrl },
-      {
-        "@type": "ListItem",
-        position: 2,
-        name: "Guides",
-        item: `${baseUrl}/guides`,
-      },
-      {
-        "@type": "ListItem",
-        position: 3,
-        name: "Best MCP Servers for Claude",
-        item: canonical,
-      },
-    ],
-  };
-
-  const jsonLdItemList = {
-    "@context": "https://schema.org",
-    "@type": "ItemList",
-    name: "Best MCP Servers for Claude in 2026",
-    description: "A curated list of the top 10 most useful MCP servers for Claude Desktop, Claude Code, and Cursor.",
-    numberOfItems: picks.length,
-    itemListElement: picks.map((pick) => ({
-      "@type": "ListItem",
-      position: pick.rank,
-      name: pick.name,
-      url: `${baseUrl}/tools/${pick.slug}`,
-    })),
-  };
-
-  const jsonLdHowTo = {
-    "@context": "https://schema.org",
-    "@type": "HowTo",
-    name: "How to Install MCP Servers on Claude Desktop",
-    description: "Step-by-step guide to install Model Context Protocol servers on Claude Desktop using claude_desktop_config.json.",
-    totalTime: "PT5M",
-    step: [
-      {
-        "@type": "HowToStep",
-        position: 1,
-        name: "Open claude_desktop_config.json",
-        text: "Locate and open your Claude Desktop config file (~/Library/Application Support/Claude/claude_desktop_config.json on macOS or %APPDATA%\\Claude\\claude_desktop_config.json on Windows).",
-      },
-      {
-        "@type": "HowToStep",
-        position: 2,
-        name: "Add MCP server configuration block",
-        text: "Paste the ready-to-copy config JSON block from the MCP tool page inside the mcpServers object.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 3,
-        name: "Add API token or credentials",
-        text: "Replace placeholder values in the env block with your actual API token or credentials.",
-      },
-      {
-        "@type": "HowToStep",
-        position: 4,
-        name: "Restart Claude Desktop",
-        text: "Quit and reopen Claude Desktop to load the new MCP server configuration.",
-      },
-    ],
-  };
-
+export default function BestMcpServersForClaude() {
   return (
     <main className="min-h-screen bg-black text-white">
       <script
         type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdArticle) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdFaq) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdBreadcrumb) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdItemList) }}
-      />
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLdHowTo) }}
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
       />
 
-      <div className="max-w-4xl mx-auto px-6 py-12 space-y-16">
-
-        {/* Breadcrumb */}
-        <nav className="flex items-center gap-2 text-sm text-zinc-500 font-mono flex-wrap">
-          <Link href="/" className="hover:text-white transition-colors">MCPIndex</Link>
+      <div className="mx-auto max-w-4xl space-y-16 px-6 py-12">
+        <nav aria-label="Breadcrumb" className="flex items-center gap-2 text-sm font-mono text-zinc-500">
+          <Link href="/" className="transition-colors hover:text-white">MCPIndex</Link>
           <span>/</span>
           <span className="text-zinc-300">Best MCP Servers for Claude</span>
         </nav>
 
-        {/* Hero */}
         <header className="space-y-5">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-mono">
-              Updated June 2026
-            </span>
-            <span className="px-3 py-1 rounded-full bg-zinc-900 border border-zinc-800 text-zinc-400 text-xs font-mono">
-              10 Picks
-            </span>
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold tracking-tight leading-tight">
-            Best MCP Servers for Claude in 2026
-          </h1>
-          <p className="text-zinc-400 text-lg leading-relaxed max-w-3xl">
-            MCP servers turn Claude from a chat assistant into an agent that reads
-            your files, manages your GitHub repos, queries your database, and
-            automates real workflows through the Model Context Protocol. These are
-            the servers that deliver the most value in 2026, ranked by use case.
+          <p className="text-xs font-mono uppercase tracking-widest text-purple-400">
+            Claude Desktop Architecture · Updated August 18, 2026
           </p>
-          <p className="text-zinc-500 text-sm leading-relaxed max-w-3xl">
-            All MCP servers on this list are open source, free to use, and compatible
-            with{" "}
-            <strong className="text-zinc-300">Claude Desktop</strong>,{" "}
-            <strong className="text-zinc-300">Claude Code</strong>,{" "}
-            <strong className="text-zinc-300">Cursor</strong>, and other MCP-compatible clients.
+          <h1 className="text-4xl font-bold leading-tight tracking-tight md:text-5xl">
+            5 Best MCP Servers for Claude in 2026
+          </h1>
+          <p className="max-w-3xl text-lg leading-relaxed text-zinc-400">
+            The most dangerous Claude MCP failure is not a visible exception. It is a confident answer produced from incomplete execution context: a stale repository branch, an unverified database schema, or a browser snapshot taken before hydration completed.
+          </p>
+          <p className="text-sm text-zinc-500">
+            <Link href="/claude-desktop-mcp-setup" className="text-purple-400 underline underline-offset-4 transition-colors hover:text-purple-300">
+              Read our full Claude Desktop setup guide
+            </Link>{" "}
+            before connecting these capabilities.
           </p>
         </header>
 
-        {/* What are MCP servers - scroll-mt-24 added */}
-        <section id="what-are-mcp-servers" className="space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">What are MCP servers?</h2>
-          <p className="text-zinc-400 leading-relaxed">
-            MCP stands for{" "}
-            <strong className="text-zinc-300">Model Context Protocol</strong>, an
-            open standard introduced by Anthropic that lets AI models communicate
-            with external tools and data sources through a unified interface. An
-            MCP server exposes a set of tools — functions Claude can call — and a
-            set of resources — data Claude can read — over a standardized protocol.
+        <section id="architecture-problem" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">Why default Claude environments fail</h2>
+          <p className="leading-relaxed text-zinc-400">
+            Claude without MCP is a reasoning engine with no direct knowledge of your local execution environment. The standard workaround—copying files and logs into the chat—fails for architectural reasons.
           </p>
-          <p className="text-zinc-400 leading-relaxed">
-            Instead of you manually copying a GitHub issue into the chat window,
-            Claude connects to the GitHub MCP server and reads it directly. Instead
-            of pasting Figma screenshots, Claude reads the component tree data
-            through the Figma MCP server and produces accurate code in one pass.
-            The Model Context Protocol is what makes Claude useful in real production environments.
+          
+          <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+            <h3 className="text-base font-semibold text-white">Context fragmentation</h3>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              A copied snippet has no guarantee of repository identity, commit SHA, or runtime state. Claude may reason accurately about the snippet while producing an invalid change for the actual project.
+            </p>
+          </div>
+
+          <div className="space-y-2 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5">
+            <h3 className="text-base font-semibold text-white">Tool-selection entropy</h3>
+            <p className="text-sm leading-relaxed text-zinc-400">
+              Ten servers with overlapping capabilities create ambiguity. Similar tools increase the chance of routing a call to the wrong abstraction layer.
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-red-500/20 bg-red-950/10 p-5">
+            <p className="text-sm font-mono text-red-400">CRITICAL WARNING</p>
+            <p className="mt-2 text-sm leading-relaxed text-zinc-300">
+              An MCP server is a privileged process. A prompt injection inside a repository file, issue body, or database row must never be allowed to override the system’s authorization policy.
+            </p>
+          </div>
+        </section>
+
+        <section id="ranked-servers" className="scroll-mt-24 space-y-8">
+          <h2 className="text-2xl font-semibold">The 5 Best MCP Servers for Claude in 2026</h2>
+
+          {toolCards.map((tool) => (
+            <article key={tool.name} className="space-y-5 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-6">
+              <div className="space-y-2">
+                <p className="text-xs font-mono uppercase tracking-widest text-purple-400">Rank {tool.number}</p>
+                <h3 className="text-xl font-semibold text-white">{tool.name} — {tool.subtitle}</h3>
+              </div>
+              <p className="text-sm leading-relaxed text-zinc-400">{tool.description}</p>
+              
+              <div className="grid gap-4 md:grid-cols-2">
+                <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-emerald-300">Architectural advantage</h4>
+                  <p className="text-sm leading-relaxed text-zinc-400">{tool.advantage}</p>
+                </div>
+                <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4">
+                  <h4 className="mb-2 text-sm font-semibold text-red-300">Fatal flaw</h4>
+                  <p className="text-sm leading-relaxed text-zinc-400">{tool.flaw}</p>
+                </div>
+              </div>
+
+              <div>
+                <p className="mb-2 text-xs font-mono uppercase tracking-widest text-zinc-500">Claude Desktop configuration</p>
+                <pre className="overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs leading-relaxed text-zinc-300">
+                  <code>{tool.config}</code>
+                </pre>
+              </div>
+
+              <Link href={tool.href} className="inline-block text-sm text-purple-400 transition-colors hover:text-purple-300">
+                View {tool.name} full setup →
+              </Link>
+            </article>
+          ))}
+        </section>
+
+        {/* CRO: Production-Ready Configuration Bundle */}
+        <section className="relative overflow-hidden rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/40 via-zinc-950 to-zinc-900 p-8 sm:p-10">
+          <div className="absolute right-0 top-0 h-64 w-64 translate-x-1/2 -translate-y-1/2 rounded-full bg-purple-600/10 blur-3xl" />
+          <div className="relative z-10 space-y-6">
+            <div className="space-y-3">
+              <p className="text-xs font-mono uppercase tracking-widest text-purple-400">Claude environment bundle</p>
+              <h2 className="text-2xl font-bold tracking-tight text-white">Production Configuration Bundle</h2>
+              <p className="max-w-2xl leading-relaxed text-zinc-400">
+                The exact 5-server stack from this guide, intentionally using placeholders and read-only boundaries. Replace locally and audit before connecting to Claude.
+              </p>
+            </div>
+            <DownloadBestClaudeMcpBundle />
+            <div className="space-y-1 text-[11px] leading-relaxed text-zinc-600">
+              <p>Includes GitHub (read-only), Filesystem, Playwright, Context7, and Postgres.</p>
+              <p>The bundle contains placeholders and verified package warnings only. Never commit API keys to source control.</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="silent-failure" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">The “Silent Failure” in Claude MCP Stacks</h2>
+          <p className="leading-relaxed text-zinc-400">
+            The most expensive failure is version drift. Claude receives a tool description, but <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">npx</code> resolves a newer package at startup. The local binary exposes changed behavior. Claude generates code against an unverified execution contract.
+          </p>
+          
+          <div className="rounded-2xl border border-red-500/20 bg-red-950/10 p-5">
+            <p className="text-sm font-mono text-red-400">ENFORCE THESE ERRORS</p>
+            <pre className="mt-2 overflow-x-auto rounded-xl border border-zinc-800 bg-black p-4 text-xs leading-relaxed text-zinc-300">
+{`MCP_SERVER_VERSION_MISMATCH
+MCP_RESULT_TRUNCATED
+MCP_CONTEXT_COMMIT_MISMATCH
+MCP_TOOL_SCOPE_VIOLATION`}
+            </pre>
+          </div>
+
+          <p className="leading-relaxed text-zinc-400">
+            Claude must not summarize a result when the payload explicitly states <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">truncated === true</code>.
           </p>
         </section>
 
-        {/* Quick Picks Table - aria-label and scroll-mt-24 added */}
-        <section id="top-10-mcp-servers-claude" className="space-y-5 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">Top 10 MCP servers for Claude</h2>
-          <p className="text-zinc-500 text-sm">
-            Quick reference — full breakdowns by use case below.
-          </p>
+        <section id="legacy-comparison" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">Claude MCP vs. Custom GPTs and ChatGPT Plugins</h2>
           <div className="overflow-x-auto rounded-2xl border border-zinc-800">
-            <table className="w-full text-sm" aria-label="Top 10 MCP servers for Claude ranked by category">
+            <table className="w-full text-sm">
               <thead>
                 <tr className="border-b border-zinc-800 bg-zinc-950/80">
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">#</th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">MCP Server</th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs hidden md:table-cell">Category</th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs hidden lg:table-cell">Best for</th>
-                  <th className="text-left px-4 py-3 text-zinc-400 font-mono text-xs">Free</th>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">Dimension</th>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">Claude MCP Stack</th>
+                  <th className="px-4 py-3 text-left text-xs font-mono text-zinc-400">Custom GPTs</th>
                 </tr>
               </thead>
               <tbody>
-                {picks.map((pick, i) => (
-                  <tr
-                    key={pick.slug}
-                    className={`border-b border-zinc-900 hover:bg-zinc-900/50 transition-colors ${
-                      i === picks.length - 1 ? "border-b-0" : ""
-                    }`}
-                  >
-                    <td className="px-4 py-3 text-zinc-600 font-mono text-xs">{pick.rank}</td>
-                    <td className="px-4 py-3">
-                      <Link
-                        href={`/tools/${pick.slug}`}
-                        className="text-white hover:text-purple-300 font-medium transition-colors"
-                      >
-                        {pick.name}
-                      </Link>
-                      <p className="text-zinc-500 text-xs mt-0.5 hidden sm:block">
-                        {pick.oneliner}
-                      </p>
-                    </td>
-                    <td className="px-4 py-3 hidden md:table-cell">
-                      <span className="px-2 py-0.5 rounded-md bg-zinc-900 border border-zinc-800 text-xs text-zinc-400 font-mono">
-                        {pick.category}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-zinc-400 text-xs hidden lg:table-cell">
-                      {pick.bestFor}
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className="px-2 py-0.5 rounded-md bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono">
-                        Free
-                      </span>
-                    </td>
-                  </tr>
-                ))}
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">Local Execution</td>
+                  <td className="px-4 py-3 text-zinc-400">Supports local subprocesses and controlled project access.</td>
+                  <td className="px-4 py-3 text-zinc-400">Usually depends on remote actions or hosted connectors.</td>
+                </tr>
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">Context Control</td>
+                  <td className="px-4 py-3 text-zinc-400">The operator chooses which tools and payloads enter the context.</td>
+                  <td className="px-4 py-3 text-zinc-400">The platform controls much of the routing and context injection.</td>
+                </tr>
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">Latency</td>
+                  <td className="px-4 py-3 text-zinc-400">Local tools avoid network round trips; remote tools add transport latency.</td>
+                  <td className="px-4 py-3 text-zinc-400">Hosted actions add network and platform orchestration overhead.</td>
+                </tr>
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">Security Ownership</td>
+                  <td className="px-4 py-3 text-zinc-400">The operator owns local permissions, credentials, binaries, and logs.</td>
+                  <td className="px-4 py-3 text-zinc-400">The platform and action provider own more of the execution boundary.</td>
+                </tr>
+                <tr className="border-b border-zinc-900">
+                  <td className="px-4 py-3 font-medium text-white">Maintenance</td>
+                  <td className="px-4 py-3 text-zinc-400">Requires package pinning, process management, and permission reviews.</td>
+                  <td className="px-4 py-3 text-zinc-400">Less local process management but more dependency on provider behavior.</td>
+                </tr>
+                <tr>
+                  <td className="px-4 py-3 font-medium text-white">Failure Observability</td>
+                  <td className="px-4 py-3 text-zinc-400">Can expose raw server logs and structured tool errors.</td>
+                  <td className="px-4 py-3 text-zinc-400">Often limited to action responses and provider-level diagnostics.</td>
+                </tr>
               </tbody>
             </table>
           </div>
+          <p className="leading-relaxed text-zinc-400">
+            The MCP advantage is control, not automatic safety. You control the server boundary, but you also inherit responsibility for credentials, updates, and result validation.
+          </p>
         </section>
 
-        {/* For Developers - scroll-mt-24 added */}
-        <section id="best-mcp-servers-developers" className="space-y-6 scroll-mt-24">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Best MCP servers for developers</h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              These are the MCP servers that have the highest daily-driver adoption among
-              Claude Code and Cursor users in 2026.
-            </p>
-          </div>
-
-          <div className="space-y-4">
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
-              <div className="flex items-start justify-between gap-4 flex-wrap">
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    <Link href="/tools/github-mcp" className="hover:text-purple-300 transition-colors">
-                      GitHub MCP Server
-                    </Link>
-                  </h3>
-                  <p className="text-zinc-500 text-xs font-mono mt-0.5">by GitHub • 23K+ stars • MIT</p>
-                </div>
-                <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  #1 Pick
-                </span>
-              </div>
-              <p className="text-zinc-400 leading-relaxed text-sm">
-                The GitHub MCP Server is the most installed MCP server across all
-                Claude clients, with an estimated installation rate above 80% among
-                Claude Code users. It gives Claude full access to your repositories:
-                creating and reviewing pull requests, managing issues, searching code,
-                listing branches, and reading workflow run results via the Model Context Protocol.
-              </p>
-              <p className="text-zinc-400 leading-relaxed text-sm">
-                Setup requires a GitHub Personal Access Token with the{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">repo</code>,{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">read:org</code>, and{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">read:user</code> scopes configured in claude_desktop_config.json. Once
-                configured, you can ask Claude to open a PR, triage issues by label,
-                or search your entire codebase in natural language.
-              </p>
-              <div className="flex items-center gap-3 pt-1 flex-wrap">
-                <Link
-                  href="/tools/github-mcp"
-                  className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium"
-                >
-                  Full setup guide →
-                </Link>
-                <Link
-                  href="/categories/version-control"
-                  className="text-sm text-zinc-500 hover:text-zinc-300 transition-colors"
-                >
-                  View Version Control category →
-                </Link>
-              </div>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
-              <div className="flex items-start justify-between gap-4 flex-wrap">
-                <div>
-                  <h3 className="text-lg font-semibold">
-                    <Link href="/tools/context7-mcp" className="hover:text-purple-300 transition-colors">
-                      Context7 MCP Server
-                    </Link>
-                  </h3>
-                  <p className="text-zinc-500 text-xs font-mono mt-0.5">by Upstash • 33K+ stars • MIT • No API key required</p>
-                </div>
-                <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800">
-                  No config
-                </span>
-              </div>
-              <p className="text-zinc-400 leading-relaxed text-sm">
-                Context7 solves one of the most common Claude Code frustrations:
-                outdated documentation in the model's training data. When you ask
-                Claude to use a specific version of React, Next.js, or Supabase,
-                this MCP server fetches the exact, versioned docs in real time and injects them
-                directly into the context before answering.
-              </p>
-              <p className="text-zinc-400 leading-relaxed text-sm">
-                It requires no API key and no environment variables — just add it
-                to your claude_desktop_config.json and include{" "}
-                <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">use context7</code> in your
-                prompt. It supports thousands of libraries including React, Next.js,
-                Prisma, Drizzle, Supabase, Tailwind CSS, and more.
-              </p>
-              <Link
-                href="/tools/context7-mcp"
-                className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium"
-              >
-                Full setup guide →
-              </Link>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  <Link href="/tools/supabase-mcp" className="hover:text-purple-300 transition-colors">
-                    Supabase MCP Server
-                  </Link>
-                </h3>
-                <p className="text-zinc-500 text-xs font-mono mt-0.5">by Supabase • Apache-2.0</p>
-              </div>
-              <p className="text-zinc-400 leading-relaxed text-sm">
-                The official Supabase MCP server lets Claude query your Postgres
-                database, run migrations, manage tables and RLS policies, and
-                interact with Edge Functions. It connects to your Supabase project
-                directly via a personal access token configured in claude_desktop_config.json, giving Claude full read/write
-                access to your backend without leaving the conversation.
-              </p>
-              <Link
-                href="/tools/supabase-mcp"
-                className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium"
-              >
-                Full setup guide →
-              </Link>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  <Link href="/tools/desktop-commander-mcp" className="hover:text-purple-300 transition-colors">
-                    Desktop Commander MCP
-                  </Link>
-                </h3>
-                <p className="text-zinc-500 text-xs font-mono mt-0.5">by wonderwhy-er • 4.7K stars • MIT</p>
-              </div>
-              <p className="text-zinc-400 leading-relaxed text-sm">
-                Desktop Commander gives Claude full control over your local machine:
-                running shell commands, reading and writing files, searching code
-                with regex, and managing background processes. It requires no API
-                key and works across macOS, Linux, and Windows. Use it when you
-                need Claude to operate like a senior developer who can actually run
-                code and modify your project files.
-              </p>
-              <p className="text-zinc-400 text-sm">
-                <strong className="text-zinc-300">Note:</strong>{" "}
-                Always review commands before confirmation. Use this MCP server with caution in
-                sensitive environments.
-              </p>
-              <Link
-                href="/tools/desktop-commander-mcp"
-                className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium"
-              >
-                Full setup guide →
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* For Design & Frontend - scroll-mt-24 added */}
-        <section id="best-mcp-server-design-frontend" className="space-y-6 scroll-mt-24">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Best MCP server for design and frontend</h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              For teams that use Figma for design handoff.
-            </p>
-          </div>
-
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
-            <div className="flex items-start justify-between gap-4 flex-wrap">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  <Link href="/tools/figma-mcp" className="hover:text-purple-300 transition-colors">
-                    Figma Context MCP
-                  </Link>
-                </h3>
-                <p className="text-zinc-500 text-xs font-mono mt-0.5">by GLips • 11K+ stars • MIT • Works with any Figma account</p>
-              </div>
-              <span className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 text-zinc-400 border border-zinc-800">
-                Design → Code
-              </span>
-            </div>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Figma Context MCP gives Claude direct read access to Figma file
-              data — component trees, layout properties, design tokens, spacing, and
-              styles — without screenshots through the Model Context Protocol. Claude can read the design spec and
-              produce accurate React, Tailwind, or HTML/CSS implementation in one
-              shot. It works with any Figma account including the free tier and
-              supports all major front-end frameworks.
-            </p>
-            <Link
-              href="/tools/figma-mcp"
-              className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium"
-            >
-              Full setup guide →
-            </Link>
-          </div>
-        </section>
-
-        {/* For DevOps & Monitoring - scroll-mt-24 added */}
-        <section id="best-mcp-servers-devops-monitoring" className="space-y-6 scroll-mt-24">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">Best MCP servers for DevOps and monitoring</h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              For teams that run infrastructure and need Claude to help with incident
-              investigation, cloud resources, and observability via the Model Context Protocol.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-3">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  <Link href="/tools/grafana-mcp" className="hover:text-purple-300 transition-colors">
-                    Grafana MCP Server
-                  </Link>
-                </h3>
-                <p className="text-zinc-500 text-xs font-mono mt-0.5">by Grafana Labs • Apache-2.0</p>
-              </div>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Search dashboards, run queries against Prometheus and Loki
-                datasources, and investigate incidents directly from Claude.
-                Works with Grafana Cloud and self-hosted instances.
-              </p>
-              <Link href="/tools/grafana-mcp" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                Setup guide →
-              </Link>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-3">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  <Link href="/tools/aws-mcp" className="hover:text-purple-300 transition-colors">
-                    AWS MCP Server
-                  </Link>
-                </h3>
-                <p className="text-zinc-500 text-xs font-mono mt-0.5">by AWS Labs • 6.7K+ stars • Apache-2.0</p>
-              </div>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Interact with S3, EC2, Lambda, DynamoDB, IAM, and 20+ AWS
-                services via existing AWS credentials configured in claude_desktop_config.json.
-              </p>
-              <Link href="/tools/aws-mcp" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                Setup guide →
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* For Security - scroll-mt-24 added */}
-        <section id="best-mcp-server-security" className="space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">Best MCP server for security</h2>
-          <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-6 space-y-3">
-            <div>
-              <h3 className="text-lg font-semibold">
-                <Link href="/tools/semgrep-mcp" className="hover:text-purple-300 transition-colors">
-                  Semgrep MCP Server
-                </Link>
-              </h3>
-              <p className="text-zinc-500 text-xs font-mono mt-0.5">by Semgrep • MIT • Free community rules</p>
-            </div>
-            <p className="text-zinc-400 leading-relaxed text-sm">
-              Semgrep MCP lets Claude scan your codebase for security vulnerabilities
-              using Semgrep's static analysis engine, with support for 30+ languages
-              and thousands of rules including OWASP Top 10. The MCP server reports issues
-              with fix suggestions that Claude can then apply. Free community rules
-              are available without a paid plan.
-            </p>
-            <Link
-              href="/tools/semgrep-mcp"
-              className="text-sm text-purple-400 hover:text-purple-300 transition-colors font-medium"
-            >
-              Full setup guide →
-            </Link>
-          </div>
-        </section>
-
-        {/* For Productivity - scroll-mt-24 added */}
-        <section id="best-mcp-servers-productivity" className="space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">Best MCP servers for productivity</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-3">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  <Link href="/tools/atlassian-mcp" className="hover:text-purple-300 transition-colors">
-                    Atlassian MCP Server
-                  </Link>
-                </h3>
-                <p className="text-zinc-500 text-xs font-mono mt-0.5">by Sooperset • 3.3K stars • MIT</p>
-              </div>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Create Jira issues, search Confluence, update sprint statuses,
-                and manage epics — all from inside Claude. Supports Jira Cloud
-                and self-hosted Server/Data Center.
-              </p>
-              <Link href="/tools/atlassian-mcp" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                Setup guide →
-              </Link>
-            </div>
-
-            <div className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-3">
-              <div>
-                <h3 className="text-lg font-semibold">
-                  <Link href="/tools/google-workspace-mcp" className="hover:text-purple-300 transition-colors">
-                    Google Workspace MCP
-                  </Link>
-                </h3>
-                <p className="text-zinc-500 text-xs font-mono mt-0.5">by taylorwilsdon • MIT</p>
-              </div>
-              <p className="text-zinc-400 text-sm leading-relaxed">
-                Full access to Gmail, Calendar, Drive, Docs, and Chat through a
-                single MCP server with OAuth authentication.
-              </p>
-              <Link href="/tools/google-workspace-mcp" className="text-sm text-purple-400 hover:text-purple-300 transition-colors">
-                Setup guide →
-              </Link>
-            </div>
-          </div>
-        </section>
-
-        {/* How to install - scroll-mt-24 added */}
-        <section id="how-to-install-mcp-servers-claude-desktop" className="space-y-5 scroll-mt-24">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">How to install MCP servers on Claude Desktop</h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              All MCP servers on this list are installed via the same Model Context Protocol process. You
-              only need to do this once per server in claude_desktop_config.json.
-            </p>
-          </div>
-
-          <ol className="space-y-4">
-            {[
-              {
-                step: "1",
-                title: "Open your Claude Desktop config file",
-                detail: (
-                  <>
-                    On macOS:{" "}
-                    <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
-                      ~/Library/Application Support/Claude/claude_desktop_config.json
-                    </code>
-                    <br />
-                    On Windows:{" "}
-                    <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">
-                      %APPDATA%\Claude\claude_desktop_config.json
-                    </code>
-                  </>
-                ),
-              },
-              {
-                step: "2",
-                title: "Add the MCP server's config block",
-                detail:
-                  "Each tool page on MCPIndex includes a ready-to-copy JSON block. Paste it inside the mcpServers object in your claude_desktop_config.json file.",
-              },
-              {
-                step: "3",
-                title: "Add your API token or credentials",
-                detail:
-                  "Most MCP servers need an API token in the env block. Generate one from the provider's settings page and replace the placeholder value.",
-              },
-              {
-                step: "4",
-                title: "Restart Claude Desktop",
-                detail:
-                  "Quit and reopen Claude Desktop. The MCP server will connect on startup and its tools will appear in the conversation.",
-              },
-            ].map((item) => (
-              <li
-                key={item.step}
-                className="flex gap-4 rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5"
-              >
-                <span className="flex-shrink-0 w-7 h-7 rounded-full bg-purple-600/20 border border-purple-500/30 text-purple-400 text-xs font-mono flex items-center justify-center mt-0.5">
-                  {item.step}
-                </span>
-                <div className="space-y-1.5">
-                  <p className="text-white font-medium text-sm">{item.title}</p>
-                  <p className="text-zinc-400 text-sm leading-relaxed">{item.detail}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
-        </section>
-
-        {/* How to choose - scroll-mt-24 added */}
-        <section id="how-to-choose-mcp-servers" className="space-y-5 scroll-mt-24">
-          <div className="space-y-2">
-            <h2 className="text-2xl font-semibold">How to choose the right MCP servers</h2>
-            <p className="text-zinc-500 text-sm leading-relaxed">
-              Not every MCP server is worth installing for every workflow. Use this guide to decide.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {[
-              {
-                title: "Start with your bottleneck",
-                body: "Pick the one task that interrupts your Claude workflow most — copying GitHub issue URLs, pasting Figma designs, or running shell commands manually. Install the one MCP server that eliminates that friction first.",
-              },
-              {
-                title: "Install 3 to 6 MCP servers maximum",
-                body: "Every active MCP server adds tools to Claude's context window. Running too many at once dilutes focus. Install only what you use daily in claude_desktop_config.json, and deactivate the rest.",
-              },
-              {
-                title: "Prefer official MCP servers",
-                body: "Official MCP servers from GitHub, Supabase, Grafana, and AWS are maintained by the vendor, better tested, and less likely to break on API updates. Use community Model Context Protocol servers only when no official option exists.",
-              },
-            ].map((card) => (
-              <div
-                key={card.title}
-                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2"
-              >
-                <h3 className="text-base font-semibold text-white">{card.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{card.body}</p>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* Related Guides */}
-        <section className="space-y-4">
-          <h2 className="text-2xl font-semibold">Related Guides</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            {relatedGuides.map((item) => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-5 space-y-2 hover:border-purple-500/30 transition-colors"
-              >
-                <h3 className="text-base font-semibold text-white">{item.title}</h3>
-                <p className="text-zinc-400 text-sm leading-relaxed">{item.body}</p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        {/* Free Lead Magnet - Download Config */}
-        <section className="rounded-2xl border border-purple-500/30 bg-gradient-to-br from-purple-950/40 via-zinc-950 to-zinc-900 p-8 sm:p-10 space-y-6 relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-64 h-64 bg-purple-600/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2" />
-          <div className="absolute bottom-0 left-0 w-48 h-48 bg-emerald-600/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2" />
-          
-          <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center gap-8">
-            <div className="flex-1 space-y-4">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-mono w-fit">
-                <span className="relative flex h-2 w-2">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-                </span>
-                Free Resource
-              </div>
-              
-              <h2 className="text-2xl sm:text-3xl font-bold text-white tracking-tight">
-                Skip the setup. Start building faster.
-              </h2>
-              <p className="text-zinc-400 leading-relaxed max-w-xl">
-                We combined the top 5 essential MCP servers (Context7, GitHub, Supabase, Desktop Commander, and Figma) into a single, ready-to-paste <code className="text-zinc-300 bg-zinc-900 px-1.5 py-0.5 rounded text-xs">claude_desktop_config.json</code> file. Just add your tokens and you're good to go.
-              </p>
-              
-              <div className="flex flex-wrap gap-2 pt-1">
-                {["Context7", "GitHub", "Supabase", "Desktop Cmdr", "Figma"].map((tool) => (
-                  <span key={tool} className="px-2.5 py-1 text-[11px] font-mono rounded-md bg-zinc-900 border border-zinc-800 text-zinc-500">
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            <div className="w-full lg:w-auto flex-shrink-0">
-              <DownloadConfigButton />
-              <p className="text-[11px] text-zinc-600 mt-3 text-center lg:text-right">No email required. Instant JSON download.</p>
-            </div>
-          </div>
-        </section>
-
-        {/* FAQ - aria-label and scroll-mt-24 added */}
-        <section id="best-mcp-servers-claude-faq" className="space-y-5 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">Frequently asked questions</h2>
+        <section id="faq" className="scroll-mt-24 space-y-5">
+          <h2 className="text-2xl font-semibold">Frequently Asked Questions</h2>
           <div className="space-y-3">
-            {faqs.map((faq) => (
-              <details
-                key={faq.question}
-                className="group rounded-2xl border border-zinc-800 bg-zinc-950/60 overflow-hidden"
-                aria-label={faq.question}
-              >
-                <summary className="flex items-center justify-between gap-4 px-5 py-4 cursor-pointer list-none text-white font-medium text-sm">
-                  {faq.question}
-                  <span className="text-zinc-500 group-open:rotate-180 transition-transform flex-shrink-0">
-                    ▾
-                  </span>
+            {faqItems.map((item) => (
+              <details key={item.question} className="group overflow-hidden rounded-2xl border border-zinc-800 bg-zinc-950/60">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-medium text-white">
+                  <span>{item.question}</span>
+                  <span className="flex-shrink-0 text-zinc-500 transition-transform group-open:rotate-180">▾</span>
                 </summary>
                 <div className="px-5 pb-4">
-                  <p className="text-zinc-400 text-sm leading-relaxed">{faq.answer}</p>
+                  <p className="text-sm leading-relaxed text-zinc-400">{item.answer}</p>
                 </div>
               </details>
             ))}
           </div>
         </section>
 
-        {/* CTA - scroll-mt-24 added */}
-        <section id="browse-full-mcp-tools-directory" className="rounded-2xl border border-zinc-800 bg-zinc-950/60 p-8 text-center space-y-4 scroll-mt-24">
-          <h2 className="text-2xl font-semibold">Browse the full MCP tools directory</h2>
-          <p className="text-zinc-400 text-sm leading-relaxed max-w-xl mx-auto">
-            MCPIndex tracks the best MCP servers across every category — version
-            control, databases, monitoring, productivity, security, and more. Every
-            listing includes a ready-to-copy claude_desktop_config.json block, setup steps, and FAQ.
+        <section className="space-y-5">
+          <h2 className="text-2xl font-semibold">Final Architecture Recommendations</h2>
+          <p className="leading-relaxed text-zinc-400">
+            Build the smallest stack that closes your actual execution gaps: GitHub for repository truth, Filesystem for one bounded project directory, Playwright for browser verification, Context7 for version-aware documentation, and PostgreSQL only through a verified read-only boundary.
           </p>
-          <div className="flex items-center justify-center gap-3 flex-wrap pt-2">
-            <Link
-              href="/tools"
-              className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-semibold text-sm transition-colors"
-            >
-              Browse all MCP tools
-            </Link>
-            <Link
-              href="/categories"
-              className="px-5 py-2.5 rounded-xl bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-white font-semibold text-sm transition-colors"
-            >
-              Browse by category
-            </Link>
-          </div>
+          <Link href="/tools?category=devops" className="inline-block text-sm text-purple-400 transition-colors hover:text-purple-300">
+            Explore more DevOps MCP tools →
+          </Link>
         </section>
-
       </div>
     </main>
   );
